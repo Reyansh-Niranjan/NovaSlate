@@ -2,7 +2,7 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Check, Heart, BookOpen, ArrowRight, Building2, Cpu, ShieldCheck } from "lucide-react";
+import { Check, Heart, BookOpen, ArrowRight, Cpu, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -65,12 +65,12 @@ export default function Pricing() {
     <section
       id="pricing"
       ref={containerRef}
-      className="py-16 sm:py-28 bg-background border-t border-border relative overflow-hidden"
+      className="py-16 sm:py-28 relative overflow-hidden"
     >
       <div className="container mx-auto px-4 sm:px-6 max-w-6xl relative z-10">
         {/* Section Header */}
         <div className="max-w-3xl mb-10 sm:mb-12">
-          <div className="pricing-header-item inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-secondary text-primary border border-border mb-3 font-heading">
+          <div className="pricing-header-item inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold tracking-wide bg-secondary text-primary border border-border mb-3 font-heading">
             <ShieldCheck className="w-3.5 h-3.5" />
             Transparent Open-Access Model
           </div>
@@ -90,7 +90,7 @@ export default function Pricing() {
         {/* The Authentic ₹20 Ad Removal Welfare Story Banner */}
         <div className="pricing-header-item p-5 sm:p-6 rounded-2xl border border-[var(--pomelli-crimson)]/20 bg-[var(--pomelli-crimson)]/5 mb-12 sm:mb-16">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <div className="p-3 rounded-xl bg-card border border-border text-[var(--pomelli-crimson)] shrink-0 shadow-xs">
+            <div className="p-2 text-[var(--pomelli-crimson)] shrink-0">
               <Heart className="w-6 h-6 fill-current" />
             </div>
             <div className="space-y-1">
@@ -98,11 +98,11 @@ export default function Pricing() {
                 <h3 className="text-base font-bold text-foreground font-heading">
                   The ₹20 Ad Profit Story &amp; Our Public Welfare Pledge
                 </h3>
-                <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-card text-[var(--pomelli-crimson)] border border-[var(--pomelli-crimson)]/30">
-                  GUARANTEED AD-FREE
+                <span className="text-xs font-mono font-bold text-[var(--pomelli-crimson)]">
+                  Guaranteed Ad-Free
                 </span>
               </div>
-              <p className="text-xs sm:text-sm text-foreground/80 leading-relaxed font-body">
+              <p className="text-xs sm:text-sm text-foreground/80 leading-relaxed font-body max-w-[65ch]">
                 In our earliest iteration, NovaSlate briefly experimented with small display ads that yielded approximately <strong>₹20 in total profit</strong>. Recognizing that commercial advertising exploits student focus and introduces intrusive surveillance trackers, we permanently purged all advertisements and paywalls. Today, NovaSlate's web platform is 100% free, tracker-free, and dedicated solely to educational equity for Indian students.
               </p>
             </div>
@@ -115,11 +115,11 @@ export default function Pricing() {
           <div className="pricing-card-item rounded-2xl border border-border bg-card p-6 sm:p-8 flex flex-col justify-between shadow-xs hover:border-primary/50 transition-fluid">
             <div>
               <div className="flex items-center justify-between gap-2 mb-4">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground">
-                  STUDENTS &amp; SELF-LEARNERS
+                <span className="text-xs font-mono font-bold tracking-wider text-muted-foreground">
+                  Students &amp; Self-Learners
                 </span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-secondary text-primary border border-border font-mono">
-                  PUBLIC GOOD
+                <span className="text-xs font-bold text-primary font-mono">
+                  Public Good
                 </span>
               </div>
 
@@ -135,7 +135,7 @@ export default function Pricing() {
                   <span className="text-4xl font-black text-foreground font-heading">₹0</span>
                   <span className="text-xs text-muted-foreground font-mono">/ Free Forever</span>
                 </div>
-                <span className="text-[11px] text-primary font-mono block mt-1">
+                <span className="text-xs text-primary font-mono block mt-1">
                   No credit card · No account lockout
                 </span>
               </div>
@@ -176,17 +176,17 @@ export default function Pricing() {
 
           {/* Tier 2: Atlas ESP32 Reader (Featured Tier) */}
           <div className="pricing-card-item rounded-2xl border-2 border-primary bg-card p-6 sm:p-8 flex flex-col justify-between shadow-md relative hover:shadow-lg transition-fluid">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[10px] font-bold font-mono px-3 py-1 rounded-full uppercase tracking-wider">
-              ★ PHYSICAL HARDWARE · AT-COST
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold font-mono px-3 py-1 rounded-full">
+              ★ Physical Hardware · At-Cost
             </div>
 
             <div>
               <div className="flex items-center justify-between gap-2 mb-4">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-primary">
-                  OFFLINE CLASSROOM
+                <span className="text-xs font-mono font-bold tracking-wider text-primary">
+                  Offline Classroom
                 </span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-secondary text-primary border border-border font-mono">
-                  PERMANENT DEVICE
+                <span className="text-xs font-bold text-primary font-mono">
+                  Permanent Device
                 </span>
               </div>
 
@@ -202,16 +202,16 @@ export default function Pricing() {
                   <span className="text-4xl font-black text-foreground font-heading">₹1,499</span>
                   <span className="text-xs text-muted-foreground font-mono">one-time / device</span>
                 </div>
-                <span className="text-[11px] text-[var(--pomelli-gold)] font-mono block mt-1">
+                <span className="text-xs text-[var(--pomelli-gold)] font-mono block mt-1">
                   Zero recurring subscription · At manufacturing cost
                 </span>
               </div>
 
-              <div className="p-3 rounded-xl bg-secondary/50 border border-border mb-6">
-                <span className="text-[11px] font-bold text-foreground font-heading block mb-1">
+              <div className="border-l-2 border-primary pl-3 py-1 mb-6">
+                <span className="text-xs font-bold text-foreground font-heading block mb-0.5">
                   Fixed Hardware Architecture:
                 </span>
-                <p className="text-[11px] text-muted-foreground font-body leading-relaxed">
+                <p className="text-xs text-muted-foreground font-body leading-relaxed">
                   The Atlas hardware does not change—it is engineered as a permanent, reliable physical constant for low-connectivity India.
                 </p>
               </div>
@@ -256,12 +256,12 @@ export default function Pricing() {
           <div className="pricing-card-item rounded-2xl border border-border/60 bg-card p-6 sm:p-8 flex flex-col justify-between transition-fluid relative">
             <div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
-                  INSTITUTIONAL PARTNERSHIP
+                <span className="text-xs font-mono tracking-wider text-muted-foreground">
+                  Institutional Partnership
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-accent/10 text-accent border border-accent/25 flex items-center gap-1.5 font-semibold">
-                  <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-                  PLANNED FEATURE
+                <span className="text-xs font-mono text-accent flex items-center gap-1.5 font-semibold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                  Planned Feature
                 </span>
               </div>
 
@@ -277,39 +277,39 @@ export default function Pricing() {
                   <span className="text-2xl sm:text-3xl font-bold text-foreground font-heading tracking-tight">Planned Release</span>
                   <span className="text-xs text-muted-foreground font-mono">/ roadmap</span>
                 </div>
-                <p className="text-[11px] text-muted-foreground/90 font-mono mt-1.5">
+                <p className="text-xs text-muted-foreground/90 font-mono mt-1.5">
                   Scheduled for upcoming development cycle for district school fleets
                 </p>
               </div>
 
-              {/* Micro-Deliverables Section */}
-              <div className="features-container space-y-2.5 mb-6">
-                <div className="p-2.5 rounded-md bg-secondary/25 border border-border/40 text-xs font-body">
-                  <div className="font-semibold text-foreground text-[11px] font-mono uppercase tracking-wider mb-0.5 text-primary">01. Bulk Atlas Readers</div>
-                  <p className="text-[11px] text-muted-foreground leading-normal">Classroom hardware bundles with pre-flashed offline storage</p>
+              {/* Micro-Deliverables Section - Clean Flat Layout */}
+              <div className="divide-y divide-border/40 py-2 mb-6">
+                <div className="py-2.5 text-xs font-body">
+                  <div className="font-semibold text-foreground text-xs font-mono mb-0.5 text-primary">01. Bulk Atlas Readers</div>
+                  <p className="text-xs text-muted-foreground leading-normal">Classroom hardware bundles with pre-flashed offline storage</p>
                 </div>
-                <div className="p-2.5 rounded-md bg-secondary/25 border border-border/40 text-xs font-body">
-                  <div className="font-semibold text-foreground text-[11px] font-mono uppercase tracking-wider mb-0.5 text-primary">02. Campus Cache Hub</div>
-                  <p className="text-[11px] text-muted-foreground leading-normal">Local LAN server enabling zero-bandwidth textbook sync</p>
+                <div className="py-2.5 text-xs font-body">
+                  <div className="font-semibold text-foreground text-xs font-mono mb-0.5 text-primary">02. Campus Cache Hub</div>
+                  <p className="text-xs text-muted-foreground leading-normal">Local LAN server enabling zero-bandwidth textbook sync</p>
                 </div>
-                <div className="p-2.5 rounded-md bg-secondary/25 border border-border/40 text-xs font-body">
-                  <div className="font-semibold text-foreground text-[11px] font-mono uppercase tracking-wider mb-0.5 text-primary">03. Regional Boards</div>
-                  <p className="text-[11px] text-muted-foreground leading-normal">State Boards, ICSE, and local vernacular curriculum ingestion</p>
+                <div className="py-2.5 text-xs font-body">
+                  <div className="font-semibold text-foreground text-xs font-mono mb-0.5 text-primary">03. Regional Boards</div>
+                  <p className="text-xs text-muted-foreground leading-normal">State Boards, ICSE, and local vernacular curriculum ingestion</p>
                 </div>
-                <div className="p-2.5 rounded-md bg-secondary/25 border border-border/40 text-xs font-body">
-                  <div className="font-semibold text-foreground text-[11px] font-mono uppercase tracking-wider mb-0.5 text-primary">04. Engineer SLA</div>
-                  <p className="text-[11px] text-muted-foreground leading-normal">On-site setup, hardware swap SLA, and telemetry monitoring</p>
+                <div className="py-2.5 text-xs font-body">
+                  <div className="font-semibold text-foreground text-xs font-mono mb-0.5 text-primary">04. Engineer SLA</div>
+                  <p className="text-xs text-muted-foreground leading-normal">On-site setup, hardware swap SLA, and telemetry monitoring</p>
                 </div>
               </div>
             </div>
 
-            {/* Minimalist Planned Status Footer (No Email) */}
-            <div className="pt-4 border-t border-border/40 flex items-center justify-between text-[11px] font-mono text-muted-foreground mt-2">
+            {/* Minimalist Planned Status Footer */}
+            <div className="pt-4 border-t border-border/40 flex items-center justify-between text-xs font-mono text-muted-foreground mt-2">
               <span className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent/80" />
                 <span>Availability:</span>
               </span>
-              <span className="text-[11px] font-mono text-foreground font-semibold px-2.5 py-0.5 rounded bg-secondary/50 border border-border/60">
+              <span className="text-xs font-mono text-foreground font-semibold">
                 Future Roadmap Item
               </span>
             </div>

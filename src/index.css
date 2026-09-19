@@ -120,41 +120,42 @@ html.lenis body {
   .dark,
   [data-theme="dark"] {
     /* ═══════════════════════════════════════════════════
-       Pomelli Brand Palette  — Dark Mode
+       Dark Mode — Refined Architectural Slate & Cobalt
+       (Eliminates AI-slop cyan-on-dark detection)
     ═══════════════════════════════════════════════════ */
-    --background:     #0A1317;
-    --foreground:     #F0F5F7;
+    --background:     #0B1216;
+    --foreground:     #F1F5F9;
 
-    --card:           #101D23;
-    --card-foreground:#F0F5F7;
+    --card:           #131E24;
+    --card-foreground:#F1F5F9;
 
-    --popover:        #101D23;
-    --popover-foreground:#F0F5F7;
+    --popover:        #131E24;
+    --popover-foreground:#F1F5F9;
 
-    --primary:        #29A5DB;
-    --primary-foreground:#0A1317;
+    --primary:        #60A5FA;
+    --primary-foreground:#0B1216;
 
-    --secondary:      #162831;
-    --secondary-foreground:#DEE4E6;
+    --secondary:      #16232B;
+    --secondary-foreground:#F1F5F9;
 
-    --muted:          #14252D;
-    --muted-foreground:#88A9B6;
+    --muted:          #131F26;
+    --muted-foreground:#94A3B8;
 
     --accent:         #E4B34C;
-    --accent-foreground:#0A1317;
+    --accent-foreground:#0B1216;
 
     --destructive:    #E25B72;
-    --destructive-foreground:#0A1317;
+    --destructive-foreground:#FFFFFF;
 
-    --border:         rgba(222, 228, 230, 0.16);
-    --input:          rgba(222, 228, 230, 0.2);
-    --ring:           #29A5DB;
+    --border:         rgba(226, 232, 240, 0.14);
+    --input:          rgba(226, 232, 240, 0.18);
+    --ring:           #60A5FA;
 
     /* Status pastels — dark */
     --pastel-green-bg:  rgba(26, 105, 59, 0.25);
     --pastel-green-text:#6EE7B7;
-    --pastel-blue-bg:   rgba(24, 131, 177, 0.25);
-    --pastel-blue-text: #7DD3FC;
+    --pastel-blue-bg:   rgba(96, 165, 250, 0.15);
+    --pastel-blue-text: #93C5FD;
     --pastel-amber-bg:  rgba(228, 179, 76, 0.25);
     --pastel-amber-text:#FDE68A;
     --pastel-red-bg:    rgba(210, 71, 95, 0.25);
@@ -162,18 +163,18 @@ html.lenis body {
 
     /* Legacy bridge tokens — dark */
     --theme-bg:             var(--background);
-    --theme-bg-secondary:   #0E171B;
+    --theme-bg-secondary:   #0E171C;
     --theme-text:           var(--foreground);
     --theme-text-secondary: var(--muted-foreground);
-    --theme-text-light:     #88A9B6;
+    --theme-text-light:     #94A3B8;
     --theme-border:         var(--border);
-    --theme-border-secondary:rgba(222, 228, 230, 0.12);
+    --theme-border-secondary:rgba(226, 232, 240, 0.12);
     --theme-card-bg:        var(--card);
     --theme-card-shadow:    none;
-    --theme-input-bg:       #132228;
-    --theme-nav-bg:         rgba(10, 19, 23, 0.94);
+    --theme-input-bg:       #15222A;
+    --theme-nav-bg:         rgba(11, 18, 22, 0.94);
     --theme-hero-bg:        var(--background);
-    --theme-footer-bg:      #070E11;
+    --theme-footer-bg:      #080E12;
   }
 }
 

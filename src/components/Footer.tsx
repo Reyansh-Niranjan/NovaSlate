@@ -18,18 +18,18 @@ export default function Footer() {
   };
 
   return (
-    <footer className="border-t border-border bg-card text-foreground text-xs">
+    <footer className="border-t border-border bg-background text-foreground text-xs">
       {/* High-Impact Pre-Footer Conversion Banner */}
       <div className="border-b border-border py-12 sm:py-16 bg-secondary/40">
         <div className="container mx-auto px-4 sm:px-6 max-w-6xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="max-w-xl">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-primary font-mono block mb-2">
-              START LEARNING TODAY · 100% FREE
+            <span className="text-xs font-bold tracking-wide text-primary font-mono block mb-2">
+              Start Learning Today · 100% Free
             </span>
             <h3 className="text-2xl sm:text-3xl font-black font-heading text-foreground tracking-tight mb-2">
               Transform your K–12 study workflow.
             </h3>
-            <p className="text-xs sm:text-sm text-muted-foreground font-body leading-relaxed">
+            <p className="text-xs sm:text-sm text-muted-foreground font-body leading-relaxed max-w-[50ch]">
               No ads, no subscription lockouts, and no tracking. Launch the open web library immediately or deploy Atlas hardware for zero-connectivity classrooms.
             </p>
           </div>
@@ -70,12 +70,12 @@ export default function Footer() {
               Automated curriculum curation, OpenCV watermark sanitization, and offline hardware delivery for Class 1–12 education across India.
             </p>
 
-            <div className="p-3.5 rounded-xl border border-primary/20 bg-primary/5 space-y-1 max-w-[40ch]">
-              <div className="flex items-center gap-1.5 text-[11px] font-bold text-primary font-heading">
+            <div className="border-l-2 border-primary/60 pl-3.5 py-1 space-y-1 max-w-[40ch]">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-primary font-heading">
                 <Heart className="w-3.5 h-3.5 fill-current text-[var(--pomelli-crimson)]" />
                 <span>Student Welfare Commitment</span>
               </div>
-              <p className="text-[11px] text-muted-foreground font-body leading-relaxed">
+              <p className="text-xs text-muted-foreground font-body leading-relaxed">
                 100% free web access. All commercial advertising was permanently removed after our early ₹20 ad experiment to safeguard distraction-free study.
               </p>
             </div>
@@ -83,7 +83,7 @@ export default function Footer() {
 
           {/* Column 1: Platform Links */}
           <div className="space-y-3">
-            <h4 className="text-[11px] font-bold uppercase tracking-wider text-foreground font-heading">
+            <h4 className="text-xs font-bold tracking-wider text-foreground font-heading">
               Platform
             </h4>
             <ul className="space-y-2 font-heading text-xs">
@@ -117,7 +117,7 @@ export default function Footer() {
 
           {/* Column 2: Resources & Source */}
           <div className="space-y-3">
-            <h4 className="text-[11px] font-bold uppercase tracking-wider text-foreground font-heading">
+            <h4 className="text-xs font-bold tracking-wider text-foreground font-heading">
               Resources &amp; Source
             </h4>
             <ul className="space-y-2 font-heading text-xs">
@@ -161,7 +161,7 @@ export default function Footer() {
 
           {/* Column 3: Legal & Trust */}
           <div className="space-y-3">
-            <h4 className="text-[11px] font-bold uppercase tracking-wider text-foreground font-heading">
+            <h4 className="text-xs font-bold tracking-wider text-foreground font-heading">
               Legal &amp; Trust
             </h4>
             <ul className="space-y-2 font-heading text-xs">
@@ -176,7 +176,7 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <span className="text-primary font-semibold block text-[11px]">
+                <span className="text-primary font-semibold block text-xs">
                   NCERT · CBSE · State Boards
                 </span>
               </li>

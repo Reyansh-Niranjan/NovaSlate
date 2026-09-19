@@ -162,7 +162,7 @@ export default function Creator() {
     <section
       id="timeline"
       ref={containerRef}
-      className="py-16 sm:py-28 bg-background relative border-t border-border overflow-hidden"
+      className="py-16 sm:py-28 relative"
     >
       <div id="creator" className="absolute -top-14" />
       <div id="evolution" className="absolute -top-14" />
@@ -170,7 +170,7 @@ export default function Creator() {
       <div className="container mx-auto px-4 sm:px-6 max-w-5xl relative z-10">
         {/* Section Header & Founder Mission */}
         <div className="max-w-3xl mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-secondary text-primary border border-border mb-3 font-heading">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold tracking-wider bg-secondary text-primary border border-border mb-3 font-heading">
             <ShieldCheck className="w-3.5 h-3.5" />
             Founder's Mission &amp; Evolution
           </div>
@@ -193,7 +193,7 @@ export default function Creator() {
                 <span className="font-bold text-base text-foreground font-heading">
                   Reyansh Niranjan
                 </span>
-                <span className="text-[11px] font-mono text-primary font-bold px-2 py-0.5 rounded-full bg-secondary border border-border">
+                <span className="text-xs font-mono text-primary font-bold">
                   Sole Architect
                 </span>
               </div>
@@ -220,8 +220,8 @@ export default function Creator() {
         {/* Alternating Spine Header */}
         <div className="flex items-center justify-between pb-6 border-b border-border mb-12">
           <div>
-            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-primary">
-              GSAP DUAL-RAIL SPINE
+            <span className="text-xs font-mono font-bold tracking-wide text-primary">
+              GSAP Dual-Rail Spine
             </span>
             <h3 className="text-xl sm:text-2xl font-bold text-foreground font-heading mt-1">
               How NovaSlate Evolved
@@ -259,7 +259,7 @@ export default function Creator() {
                       ? "bg-background border-muted-foreground/40 text-muted-foreground"
                       : "bg-card border-primary text-primary"
                   }`}>
-                    <span className="text-[10px] font-mono font-bold">{idx + 1}</span>
+                    <span className="text-xs font-mono font-bold">{idx + 1}</span>
                   </div>
 
                   {/* Card container with alternating offset */}
@@ -270,15 +270,13 @@ export default function Creator() {
                       isCurrent ? "border-primary/60 shadow-md ring-1 ring-primary/20" : "border-border shadow-xs hover:border-border/90"
                     }`}>
                       <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                        <span className="text-[11px] font-mono font-bold text-muted-foreground">
+                        <span className="text-xs font-mono font-bold text-muted-foreground">
                           {milestone.stage}
                         </span>
-                        <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
+                        <span className={`text-xs font-mono font-bold tracking-wider ${
                           isCurrent
-                            ? "bg-primary text-primary-foreground"
-                            : isFuture
-                            ? "bg-secondary text-muted-foreground border border-border"
-                            : "bg-secondary text-primary border border-border"
+                            ? "text-primary"
+                            : "text-muted-foreground"
                         }`}>
                           {milestone.badge}
                         </span>
@@ -293,18 +291,13 @@ export default function Creator() {
                         {milestone.subtitle}
                       </div>
 
-                      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-body mb-5">
+                      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-body mb-5 max-w-[55ch]">
                         {milestone.description}
                       </p>
 
-                      <div className="flex flex-wrap gap-1.5 pt-3 border-t border-border/70">
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 pt-3 border-t border-border/70 text-xs font-mono text-muted-foreground">
                         {milestone.tech.map((t) => (
-                          <span
-                            key={t}
-                            className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-secondary text-foreground/80 border border-border"
-                          >
-                            {t}
-                          </span>
+                          <span key={t}>#{t}</span>
                         ))}
                       </div>
                     </div>

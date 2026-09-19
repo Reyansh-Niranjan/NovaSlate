@@ -14,7 +14,7 @@ export default function Projects() {
     {
       id: "web-hub",
       name: "NovaSlate Cloud Web Platform",
-      badge: "CLOUD PLATFORM · EVOLVING",
+      badge: "Cloud Platform · Evolving",
       badgeVariant: "blue" as const,
       tagline: "Universal access for every connected browser.",
       description:
@@ -34,7 +34,7 @@ export default function Projects() {
     {
       id: "hardware-device",
       name: "Atlas ESP32 Physical Reader",
-      badge: "EMBEDDED HARDWARE · PERMANENT",
+      badge: "Embedded Hardware · Permanent",
       badgeVariant: "amber" as const,
       tagline: "Autonomous physical reader for zero-connectivity classrooms.",
       description:
@@ -109,12 +109,12 @@ export default function Projects() {
     <section
       id="hardware"
       ref={containerRef}
-      className="py-16 sm:py-28 bg-background border-t border-border relative overflow-hidden"
+      className="py-16 sm:py-28 relative overflow-hidden"
     >
       <div className="container mx-auto px-4 sm:px-6 max-w-6xl relative z-10">
         {/* Section Header */}
         <div className="max-w-3xl mb-10 sm:mb-14">
-          <div className="ecosystem-header-item inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-secondary text-primary border border-border mb-3 font-heading">
+          <div className="ecosystem-header-item inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold tracking-wide bg-secondary text-primary border border-border mb-3 font-heading">
             <Cpu className="w-3.5 h-3.5" />
             Hardware Companion &amp; Cloud Platform
           </div>
@@ -141,17 +141,17 @@ export default function Projects() {
               </div>
               <div className="space-y-1.5">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-[10px] font-mono font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-secondary text-primary border border-border">
+                  <span className="text-xs font-mono font-bold text-primary">
                     The Atlas Permanence Principle
                   </span>
-                  <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest hidden sm:inline">
+                  <span className="text-xs font-mono text-muted-foreground hidden sm:inline">
                     · Hardware is fixed · Software evolves
                   </span>
                 </div>
                 <h3 className="text-base sm:text-lg font-bold text-foreground font-heading">
                   Hardware is fixed. <span className="text-primary font-serif italic font-normal">Software evolves.</span>
                 </h3>
-                <p className="text-xs sm:text-sm text-muted-foreground font-body leading-relaxed">
+                <p className="text-xs sm:text-sm text-muted-foreground font-body leading-relaxed max-w-[60ch]">
                   The physical Atlas reader will never be artificially obsoleted. Its ESP32 microcontroller, tactile physical buttons, and non-volatile offline flash are engineered as a permanent, reliable educational tool for rural classrooms.
                 </p>
               </div>
@@ -159,11 +159,11 @@ export default function Projects() {
 
             {/* Right side: Hardware metrics badge */}
             <div className="flex items-center sm:self-auto self-stretch justify-between lg:flex-col lg:items-end gap-2.5 sm:gap-3 shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-border/60 w-full lg:w-auto">
-              <div className="flex items-center gap-2 font-mono text-xs text-foreground bg-secondary/80 px-3.5 py-2 rounded-xl border border-border">
-                <Radio className="w-4 h-4 text-primary animate-pulse" />
+              <div className="flex items-center gap-2 font-mono text-xs text-foreground">
+                <Radio className="w-3.5 h-3.5 text-primary" />
                 <span className="font-bold">0% Planned Obsolescence</span>
               </div>
-              <div className="text-[11px] font-mono text-muted-foreground flex items-center gap-1.5">
+              <div className="text-xs font-mono text-muted-foreground flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                 Permanent Open Hardware
               </div>
@@ -186,15 +186,15 @@ export default function Projects() {
                   <img
                     src={item.imageUrl}
                     alt={item.name}
-                    className="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                    className="w-full h-full object-cover object-top"
                     loading="lazy"
                   />
                   <div className="absolute top-3 right-3 z-10">
                     <span
-                      className={`text-[10px] font-bold px-2.5 py-1 rounded-full font-mono uppercase tracking-wider ${
+                      className={`text-xs font-bold font-mono tracking-wider ${
                         isAtlas
-                          ? "bg-[var(--pomelli-gold)]/15 text-[var(--pomelli-gold)] border border-[var(--pomelli-gold)]/40"
-                          : "bg-primary text-primary-foreground"
+                          ? "text-[var(--pomelli-gold)]"
+                          : "text-primary"
                       }`}
                     >
                       {item.badge}
@@ -222,7 +222,7 @@ export default function Projects() {
                     <div className="grid grid-cols-2 gap-3 py-4 border-y border-border mb-6">
                       {item.specs.map((spec) => (
                         <div key={spec.label} className="text-xs">
-                          <span className="text-muted-foreground block text-[10px] uppercase font-mono tracking-wider">
+                          <span className="text-muted-foreground block text-xs font-mono tracking-wider">
                             {spec.label}
                           </span>
                           <span className="font-semibold text-foreground font-mono">

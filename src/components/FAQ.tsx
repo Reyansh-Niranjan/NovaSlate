@@ -109,12 +109,12 @@ export default function FAQ() {
     <section
       id="faq"
       ref={containerRef}
-      className="py-16 sm:py-28 bg-background border-t border-border relative overflow-hidden"
+      className="py-16 sm:py-28 relative overflow-hidden"
     >
       <div className="container mx-auto px-4 sm:px-6 max-w-4xl relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-          <div className="faq-header-item inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-secondary text-primary border border-border mb-3 font-heading">
+          <div className="faq-header-item inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold tracking-wide bg-secondary text-primary border border-border mb-3 font-heading">
             <HelpCircle className="w-3.5 h-3.5" />
             Frequently Asked Questions
           </div>
@@ -123,21 +123,23 @@ export default function FAQ() {
             Everything you need to know about NovaSlate.
           </h2>
 
-          <p className="faq-header-item text-sm sm:text-base text-muted-foreground leading-relaxed font-body">
+          <p className="faq-header-item text-sm sm:text-base text-muted-foreground leading-relaxed font-body max-w-[55ch] mx-auto">
             Common questions regarding our open-access student commitment, offline Atlas hardware, and institutional deployments.
           </p>
 
           {/* Trust Chips */}
-          <div className="faq-header-item flex flex-wrap items-center justify-center gap-3 pt-6 font-mono text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-card border border-border">
+          <div className="faq-header-item flex flex-wrap items-center justify-center gap-4 pt-6 font-mono text-xs text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5 text-primary" />
               NEP 2020 Aligned
             </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-card border border-border">
+            <span className="text-border hidden sm:inline">•</span>
+            <span className="inline-flex items-center gap-1.5">
               <Lock className="w-3.5 h-3.5 text-primary" />
               100% Student Privacy
             </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-card border border-border">
+            <span className="text-border hidden sm:inline">•</span>
+            <span className="inline-flex items-center gap-1.5">
               <WifiOff className="w-3.5 h-3.5 text-[var(--pomelli-gold)]" />
               Offline Hardware Resilient
             </span>
@@ -163,18 +165,12 @@ export default function FAQ() {
                   <span className="text-sm sm:text-base font-bold text-foreground font-heading">
                     {faq.question}
                   </span>
-                  <div
-                    className={`p-1.5 rounded-full border transition-transform duration-200 shrink-0 ${
-                      isOpen ? "rotate-180 bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground"
-                    }`}
-                  >
-                    <ChevronDown className="w-4 h-4" />
-                  </div>
+                  <ChevronDown className={`w-4 h-4 shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180 text-primary" : "text-muted-foreground"}`} />
                 </button>
 
                 {isOpen && (
                   <div className="px-5 sm:px-6 pb-5 sm:pb-6 pt-0">
-                    <p className="text-xs sm:text-sm text-muted-foreground font-body leading-relaxed border-t border-border pt-3">
+                    <p className="text-xs sm:text-sm text-muted-foreground font-body leading-relaxed border-t border-border pt-3 max-w-[65ch]">
                       {faq.answer}
                     </p>
                   </div>

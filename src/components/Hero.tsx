@@ -65,10 +65,10 @@ export default function Hero() {
       <div className="container mx-auto px-4 sm:px-6 max-w-6xl relative z-10">
         {/* Wide MasterClass Category Title Strip */}
         <div className="max-w-3xl mb-12">
-          <div className="hero-category-chip inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-secondary text-primary border border-border mb-3 font-heading">
-            <span>CLASS 1–12 CURRICULUM</span>
-            <span className="text-border">·</span>
-            <span>OPEN ARCHITECTURE</span>
+          <div className="hero-category-chip flex items-center gap-2 text-xs font-mono font-semibold tracking-wide text-muted-foreground mb-3 font-heading">
+            <span className="text-primary font-bold">Class 1–12 Curriculum</span>
+            <span className="text-border">/</span>
+            <span>Open Architecture</span>
           </div>
 
           <h1 className="hero-title text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-foreground font-heading leading-tight mb-3">
@@ -86,23 +86,23 @@ export default function Hero() {
           <div className="hero-pillar-card rounded-2xl border border-border bg-card p-6 sm:p-8 flex flex-col justify-between shadow-xs hover:border-primary/50 transition-fluid">
             <div className="space-y-4">
               <div className="flex items-center justify-between gap-2">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-primary">
-                  100% FREE SOFTWARE
+                <span className="text-xs font-mono font-bold tracking-wider text-primary">
+                  100% Free Software
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-secondary text-primary border border-border">
-                  INSTANT ACCESS
+                <span className="text-xs font-mono font-bold text-primary">
+                  Instant Access
                 </span>
               </div>
 
-              <h3 className="text-xl font-bold text-foreground font-heading">
+              <h2 className="text-xl font-bold text-foreground font-heading">
                 NovaSlate Web Library
-              </h3>
+              </h2>
 
               <p className="text-xs sm:text-sm text-muted-foreground font-body leading-relaxed">
                 Read Class 1–12 textbooks directly in any browser. Features PyMuPDF watermark sanitization, chapter search, and formula indexers.
               </p>
 
-              <div className="p-4 rounded-xl bg-secondary/40 border border-border font-mono text-xs space-y-1.5">
+              <div className="py-3 border-y border-border/70 font-mono text-xs space-y-2">
                 <div className="flex items-center justify-between text-foreground">
                   <span>• Subscription Cost:</span>
                   <span className="font-bold text-primary font-mono">₹0 Forever</span>
@@ -134,23 +134,23 @@ export default function Hero() {
           <div className="hero-pillar-card rounded-2xl border-2 border-[var(--pomelli-gold)]/40 bg-card p-6 sm:p-8 flex flex-col justify-between shadow-sm">
             <div className="space-y-4">
               <div className="flex items-center justify-between gap-2">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--pomelli-gold)]">
-                  OPEN HARDWARE · PERMANENT CONSTANT
+                <span className="text-xs font-mono font-bold tracking-wider text-[var(--pomelli-gold)]">
+                  Open Hardware · Permanent Constant
                 </span>
-                <span className="atlas-roadmap-badge text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[var(--pomelli-gold)]/15 text-[var(--pomelli-gold)] border border-[var(--pomelli-gold)]/40">
-                  UNIT 01 IN LAB
+                <span className="atlas-roadmap-badge text-xs font-mono font-bold text-[var(--pomelli-gold)]">
+                  Unit 01 in Lab
                 </span>
               </div>
 
-              <h3 className="text-xl font-bold text-foreground font-heading">
+              <h2 className="text-xl font-bold text-foreground font-heading">
                 Atlas ESP32 Handheld Slate
-              </h3>
+              </h2>
 
               <p className="text-xs sm:text-sm text-muted-foreground font-body leading-relaxed">
                 Unit 01 is actively running in our hardware lab. All embedded C++ drivers and schematics are fully open source on GitHub. Mass production for rural school classrooms is planned for our roadmap.
               </p>
 
-              <div className="p-4 rounded-xl bg-secondary/40 border border-border font-mono text-xs space-y-1.5">
+              <div className="py-3 border-y border-border/70 font-mono text-xs space-y-2">
                 <div className="flex items-center justify-between text-foreground">
                   <span>• Current Status:</span>
                   <span className="font-bold text-[var(--pomelli-gold)] font-mono">Prototype 01 Active</span>

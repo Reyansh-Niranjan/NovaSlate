@@ -94,8 +94,8 @@ export default function Header() {
             <span className="font-extrabold text-base tracking-tight text-foreground font-heading">
               Nova<span className="text-primary font-serif italic font-normal">Slate</span>
             </span>
-            <span className="inline-flex items-center text-[10px] font-bold font-mono px-2 py-0.5 rounded-full bg-secondary text-primary border border-border">
-              OPEN K–12
+            <span className="inline-flex items-center text-xs font-semibold font-mono px-2.5 py-1 rounded-full bg-secondary text-primary border border-border tracking-wide">
+              Open K–12
             </span>
           </div>
         </a>
