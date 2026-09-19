@@ -2,15 +2,16 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import type { ComponentType } from "react";
 import {
-  Smartphone,
-  Globe,
-  Layers,
-  Sparkles,
-  ShieldCheck,
-  Github,
-  Compass,
-} from "lucide-react";
+  MobileIcon,
+  GlobeIcon,
+  LayersIcon,
+  MagicWandIcon,
+  TargetIcon,
+  CheckCircledIcon,
+  GitHubLogoIcon,
+} from "@radix-ui/react-icons";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -21,7 +22,7 @@ interface Milestone {
   subtitle: string;
   description: string;
   tech: string[];
-  icon: typeof Smartphone;
+  icon: ComponentType<{ className?: string }>;
   badge: string;
   status: "completed" | "current" | "future";
 }
@@ -35,7 +36,7 @@ const milestones: Milestone[] = [
     description:
       "A small Android utility built manually with zero user interface. Its single mission was automating the recursive download of every NCERT textbook into raw device storage.",
     tech: ["Android Java", "HTTP Client", "Raw Storage"],
-    icon: Smartphone,
+    icon: MobileIcon,
     badge: "GENESIS",
     status: "completed",
   },
@@ -47,7 +48,7 @@ const milestones: Milestone[] = [
     description:
       "Ported the scraping logic into a Progressive Web App, introducing the first visual interface that allowed students to search, filter, and choose specific books to download.",
     tech: ["PWA", "JavaScript", "Local Cache"],
-    icon: Globe,
+    icon: GlobeIcon,
     badge: "WEB PIVOT",
     status: "completed",
   },
@@ -59,7 +60,7 @@ const milestones: Milestone[] = [
     description:
       "Introduced an in-browser PDF rendering engine, real-time database syncing with Convex, and early generative AI prompts to help students understand tricky formula derivations.",
     tech: ["Convex DB", "PDF.js", "Gemini 1.5 Flash"],
-    icon: Layers,
+    icon: LayersIcon,
     badge: "AI INGESTION",
     status: "completed",
   },
@@ -71,7 +72,7 @@ const milestones: Milestone[] = [
     description:
       "The modern production platform. Automated OpenCV watermark removal, Class 1–12 curriculum catalog, Gemini 2.0 Flash reasoning, and the autonomous Atlas ESP32 physical reader.",
     tech: ["React 19", "Supabase", "Watermark Scrubber", "Atlas ESP32-S3"],
-    icon: Sparkles,
+    icon: MagicWandIcon,
     badge: "CURRENT STANDARD",
     status: "current",
   },
@@ -83,7 +84,7 @@ const milestones: Milestone[] = [
     description:
       "Expanding to state education boards (ICSE, Maharashtra, UP Board) and local peer-to-peer classroom mesh caching, while the physical Atlas ESP32 reader remains the unchanged, reliable physical constant.",
     tech: ["Regional Boards", "Local Mesh", "Atlas Permanent Architecture"],
-    icon: Compass,
+    icon: TargetIcon,
     badge: "ROADMAP",
     status: "future",
   },
@@ -171,7 +172,7 @@ export default function Creator() {
         {/* Section Header & Founder Mission */}
         <div className="max-w-3xl mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold tracking-wider bg-secondary text-primary border border-border mb-3 font-heading">
-            <ShieldCheck className="w-3.5 h-3.5" />
+            <CheckCircledIcon className="w-3.5 h-3.5" />
             Founder's Mission &amp; Evolution
           </div>
 
@@ -211,7 +212,7 @@ export default function Creator() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-semibold font-heading border border-border bg-secondary text-foreground hover:bg-muted transition-colors shrink-0 cursor-pointer shadow-xs"
             >
-              <Github className="w-3.5 h-3.5 text-primary" />
+              <GitHubLogoIcon className="w-3.5 h-3.5 text-primary" />
               <span>GitHub Profile</span>
             </a>
           </div>

@@ -1,4 +1,4 @@
-import { Github, ArrowUpRight, BookOpen, Heart, Cpu } from "lucide-react";
+import { GitHubLogoIcon, ArrowTopRightIcon, ReaderIcon, HeartFilledIcon, Component1Icon } from "@radix-ui/react-icons";
 import Logo from "./Logo";
 import { Button } from "@/components/ui/button";
 
@@ -39,9 +39,9 @@ export default function Footer() {
               onClick={navigateToLogin}
               className="h-11 px-6 font-bold font-heading bg-primary text-primary-foreground hover:opacity-90 cursor-pointer shadow-xs gap-2"
             >
-              <BookOpen className="w-4 h-4" />
+              <ReaderIcon className="w-4 h-4" />
               <span>Launch Free Library</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
+              <ArrowTopRightIcon className="w-3.5 h-3.5" />
             </Button>
             <Button
               variant="outline"
@@ -72,7 +72,7 @@ export default function Footer() {
 
             <div className="border-l-2 border-primary/60 pl-3.5 py-1 space-y-1 max-w-[40ch]">
               <div className="flex items-center gap-1.5 text-xs font-bold text-primary font-heading">
-                <Heart className="w-3.5 h-3.5 fill-current text-[var(--pomelli-crimson)]" />
+                <HeartFilledIcon className="w-3.5 h-3.5 text-[var(--pomelli-crimson)]" />
                 <span>Student Welfare Commitment</span>
               </div>
               <p className="text-xs text-muted-foreground font-body leading-relaxed">
@@ -133,7 +133,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
                 >
-                  <Github className="w-3 h-3" />
+                  <GitHubLogoIcon className="w-3.5 h-3.5" />
                   <span>GitHub Repository</span>
                 </a>
               </li>
@@ -144,7 +144,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
                 >
-                  <Cpu className="w-3 h-3" />
+                  <Component1Icon className="w-3.5 h-3.5" />
                   <span>Atlas C++ Firmware</span>
                 </a>
               </li>
@@ -200,7 +200,7 @@ export default function Footer() {
 
           <div className="flex items-center gap-4">
             <span className="inline-flex items-center gap-1 text-[var(--pomelli-crimson)] font-semibold">
-              <Heart className="w-3 h-3 fill-current" />
+              <HeartFilledIcon className="w-3 h-3" />
               100% Ad-Free Public Welfare
             </span>
             <span className="text-muted-foreground/60">•</span>

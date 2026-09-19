@@ -2,7 +2,14 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Globe, Cpu, ArrowUpRight, Github, ShieldCheck, Radio } from "lucide-react";
+import {
+  GlobeIcon,
+  Component1Icon,
+  ArrowTopRightIcon,
+  GitHubLogoIcon,
+  CheckCircledIcon,
+  RadiobuttonIcon,
+} from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -25,7 +32,7 @@ export default function Projects() {
         { label: "Storage CDN", value: "Supabase Storage (PDF.js)" },
         { label: "AI Explainer", value: "Gemini 2.0 Flash" },
       ],
-      icon: Globe,
+      icon: GlobeIcon,
       repoUrl: "https://github.com/Reyansh-Niranjan/novaslate",
       imageUrl: "/novaslate_site.png",
       actionText: "Open Digital Library",
@@ -45,7 +52,7 @@ export default function Projects() {
         { label: "Display Driver", value: "Custom Embedded C++" },
         { label: "Battery Life", value: "18+ Hours Active Reading" },
       ],
-      icon: Cpu,
+      icon: Component1Icon,
       repoUrl: "https://github.com/Reyansh-Niranjan/novaslate",
       imageUrl: "/esp32_device.jpeg",
       actionText: "Order Atlas Device",
@@ -115,7 +122,7 @@ export default function Projects() {
         {/* Section Header */}
         <div className="max-w-3xl mb-10 sm:mb-14">
           <div className="ecosystem-header-item inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold tracking-wide bg-secondary text-primary border border-border mb-3 font-heading">
-            <Cpu className="w-3.5 h-3.5" />
+            <Component1Icon className="w-3.5 h-3.5" />
             Hardware Companion &amp; Cloud Platform
           </div>
 
@@ -137,7 +144,7 @@ export default function Projects() {
             {/* Left side: Icon + Content */}
             <div className="flex items-start gap-3.5 sm:gap-4 max-w-2xl">
               <div className="p-2.5 sm:p-3 rounded-xl bg-primary text-primary-foreground shrink-0 mt-0.5">
-                <ShieldCheck className="w-5 h-5" />
+                <CheckCircledIcon className="w-5 h-5" />
               </div>
               <div className="space-y-1.5">
                 <div className="flex flex-wrap items-center gap-2">
@@ -160,7 +167,7 @@ export default function Projects() {
             {/* Right side: Hardware metrics badge */}
             <div className="flex items-center sm:self-auto self-stretch justify-between lg:flex-col lg:items-end gap-2.5 sm:gap-3 shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-border/60 w-full lg:w-auto">
               <div className="flex items-center gap-2 font-mono text-xs text-foreground">
-                <Radio className="w-3.5 h-3.5 text-primary" />
+                <RadiobuttonIcon className="w-3.5 h-3.5 text-primary" />
                 <span className="font-bold">0% Planned Obsolescence</span>
               </div>
               <div className="text-xs font-mono text-muted-foreground flex items-center gap-1.5">
@@ -240,7 +247,7 @@ export default function Projects() {
                       className="h-10 px-5 rounded-lg text-xs font-bold font-heading bg-primary text-primary-foreground hover:opacity-90 gap-1.5 shadow-xs"
                     >
                       <span>{item.actionText}</span>
-                      <ArrowUpRight className="w-3.5 h-3.5" />
+                      <ArrowTopRightIcon className="w-3.5 h-3.5" />
                     </Button>
                     <a
                       href={item.repoUrl}
@@ -248,7 +255,7 @@ export default function Projects() {
                       rel="noopener noreferrer"
                       className="h-10 px-4 rounded-lg text-xs font-semibold font-heading border border-border text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors inline-flex items-center gap-1.5"
                     >
-                      <Github className="w-3.5 h-3.5" />
+                      <GitHubLogoIcon className="w-3.5 h-3.5" />
                       <span>Source</span>
                     </a>
                   </div>

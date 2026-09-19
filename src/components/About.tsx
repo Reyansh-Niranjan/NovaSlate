@@ -3,11 +3,11 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
-  FileCheck2,
-  Layers,
-  Cpu,
-  Zap,
-} from "lucide-react";
+  FileTextIcon,
+  LayersIcon,
+  Component1Icon,
+  LightningBoltIcon,
+} from "@radix-ui/react-icons";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -71,7 +71,7 @@ export default function About() {
         {/* Centered Compact Header */}
         <div className="text-center max-w-2xl mx-auto mb-8">
           <div className="study-header-item inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold tracking-wide bg-secondary text-primary border border-border mb-3 font-heading">
-            <Layers className="w-3.5 h-3.5" />
+            <LayersIcon className="w-3.5 h-3.5" />
             Three-Stage Pipeline
           </div>
           <h2 className="study-header-item text-3xl sm:text-4xl font-black tracking-tight text-foreground font-heading">
@@ -108,7 +108,7 @@ export default function About() {
                 <span className="text-xs font-mono font-bold text-primary">
                   Stage 01
                 </span>
-                <FileCheck2 className="w-4 h-4 text-primary" />
+                <FileTextIcon className="w-4 h-4 text-primary" />
               </div>
               <h3 className="font-bold text-base text-foreground font-heading">Watermark Stripping</h3>
               <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-body">
@@ -126,7 +126,7 @@ export default function About() {
                 <span className="text-xs font-mono font-bold text-primary">
                   Stage 02
                 </span>
-                <Zap className="w-4 h-4 text-primary" />
+                <LightningBoltIcon className="w-4 h-4 text-primary" />
               </div>
               <h3 className="font-bold text-base text-foreground font-heading">Lossless Compression</h3>
               <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-body">
@@ -144,7 +144,7 @@ export default function About() {
                 <span className="text-xs font-mono font-bold text-[var(--pomelli-gold)]">
                   Stage 03
                 </span>
-                <Cpu className="w-4 h-4 text-[var(--pomelli-gold)]" />
+                <Component1Icon className="w-4 h-4 text-[var(--pomelli-gold)]" />
               </div>
               <h3 className="font-bold text-base text-foreground font-heading">Universal Access</h3>
               <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-body">

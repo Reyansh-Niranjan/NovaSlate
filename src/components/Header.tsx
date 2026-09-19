@@ -4,16 +4,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import {
-  Menu,
-  X,
-  ArrowUpRight,
-  BookOpen,
-  Sparkles,
-  Cpu,
-  ShieldCheck,
-  History,
-  HelpCircle,
-} from "lucide-react";
+  HamburgerMenuIcon,
+  Cross2Icon,
+  ArrowTopRightIcon,
+  ReaderIcon,
+  MagicWandIcon,
+  Component1Icon,
+  CheckCircledIcon,
+  CounterClockwiseClockIcon,
+  QuestionMarkCircledIcon,
+} from "@radix-ui/react-icons";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/Logo";
@@ -50,12 +50,12 @@ export default function Header() {
   }, []);
 
   const navLinks = [
-    { label: "Overview",       href: "#home",      icon: BookOpen },
-    { label: "Study Tools",    href: "#features",  icon: Sparkles },
-    { label: "Atlas Hardware", href: "#hardware",  icon: Cpu },
-    { label: "Pricing",        href: "#pricing",   icon: ShieldCheck },
-    { label: "Evolution",      href: "#timeline",  icon: History },
-    { label: "FAQ",            href: "#faq",       icon: HelpCircle },
+    { label: "Overview",       href: "#home",      icon: ReaderIcon },
+    { label: "Study Tools",    href: "#features",  icon: MagicWandIcon },
+    { label: "Atlas Hardware", href: "#hardware",  icon: Component1Icon },
+    { label: "Pricing",        href: "#pricing",   icon: CheckCircledIcon },
+    { label: "Evolution",      href: "#timeline",  icon: CounterClockwiseClockIcon },
+    { label: "FAQ",            href: "#faq",       icon: QuestionMarkCircledIcon },
   ];
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -129,7 +129,7 @@ export default function Header() {
             className="text-xs h-8 px-4 gap-1.5 font-bold cursor-pointer rounded-lg font-heading bg-primary text-primary-foreground hover:opacity-90 shadow-xs"
           >
             <span>Start Free</span>
-            <ArrowUpRight className="w-3.5 h-3.5" />
+            <ArrowTopRightIcon className="w-3.5 h-3.5" />
           </Button>
         </div>
 
@@ -142,7 +142,7 @@ export default function Header() {
             aria-label="Toggle Navigation Menu"
             aria-expanded={mobileMenuOpen}
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? <Cross2Icon className="w-5 h-5" /> : <HamburgerMenuIcon className="w-5 h-5" />}
           </button>
         </div>
       </div>
@@ -179,7 +179,7 @@ export default function Header() {
                       onClick={() => setMobileMenuOpen(false)}
                       className="p-1.5 rounded-md text-muted-foreground hover:text-foreground cursor-pointer"
                     >
-                      <X className="w-5 h-5" />
+                      <Cross2Icon className="w-5 h-5" />
                     </button>
                   </div>
 
@@ -211,7 +211,7 @@ export default function Header() {
                       className="w-full h-10 font-bold font-heading bg-primary text-primary-foreground hover:opacity-90"
                     >
                       <span>Start Reading Free</span>
-                      <ArrowUpRight className="w-4 h-4" />
+                      <ArrowTopRightIcon className="w-4 h-4" />
                     </Button>
                   </div>
                 </motion.div>

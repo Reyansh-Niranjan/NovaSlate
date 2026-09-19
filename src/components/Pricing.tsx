@@ -2,7 +2,14 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Check, Heart, BookOpen, ArrowRight, Cpu, ShieldCheck } from "lucide-react";
+import {
+  CheckIcon,
+  HeartFilledIcon,
+  ReaderIcon,
+  ArrowRightIcon,
+  Component1Icon,
+  CheckCircledIcon,
+} from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -26,7 +33,7 @@ export default function Pricing() {
             y: 0,
             autoAlpha: 1,
             duration: 0.4,
-            stagger: 0.07,
+            stagger: 0.06,
             ease: "power3.out",
             clearProps: "all",
           }
@@ -43,8 +50,8 @@ export default function Pricing() {
             },
             y: 0,
             autoAlpha: 1,
-            duration: 0.42,
             stagger: 0.09,
+            duration: 0.42,
             ease: "power3.out",
             clearProps: "all",
           }
@@ -71,7 +78,7 @@ export default function Pricing() {
         {/* Section Header */}
         <div className="max-w-3xl mb-10 sm:mb-12">
           <div className="pricing-header-item inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold tracking-wide bg-secondary text-primary border border-border mb-3 font-heading">
-            <ShieldCheck className="w-3.5 h-3.5" />
+            <CheckCircledIcon className="w-3.5 h-3.5" />
             Transparent Open-Access Model
           </div>
 
@@ -91,7 +98,7 @@ export default function Pricing() {
         <div className="pricing-header-item p-5 sm:p-6 rounded-2xl border border-[var(--pomelli-crimson)]/20 bg-[var(--pomelli-crimson)]/5 mb-12 sm:mb-16">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="p-2 text-[var(--pomelli-crimson)] shrink-0">
-              <Heart className="w-6 h-6 fill-current" />
+              <HeartFilledIcon className="w-6 h-6" />
             </div>
             <div className="space-y-1">
               <div className="flex flex-wrap items-center gap-2">
@@ -142,23 +149,23 @@ export default function Pricing() {
 
               <ul className="space-y-3 mb-8">
                 <li className="flex items-start gap-2.5 text-xs text-foreground font-body">
-                  <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <CheckIcon className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                   <span>Class 1–12 complete NCERT &amp; State Board catalog</span>
                 </li>
                 <li className="flex items-start gap-2.5 text-xs text-foreground font-body">
-                  <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <CheckIcon className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                   <span>Watermark-sanitized high-DPI in-browser reader</span>
                 </li>
                 <li className="flex items-start gap-2.5 text-xs text-foreground font-body">
-                  <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <CheckIcon className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                   <span>Interactive chapter notes &amp; formula indexes</span>
                 </li>
                 <li className="flex items-start gap-2.5 text-xs text-foreground font-body">
-                  <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <CheckIcon className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                   <span>Chapter PDF downloads &amp; offline browser caching</span>
                 </li>
                 <li className="flex items-start gap-2.5 text-xs text-foreground font-body">
-                  <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <CheckIcon className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                   <span><strong>100% ad-free, zero trackers, zero paywalls</strong></span>
                 </li>
               </ul>
@@ -169,7 +176,7 @@ export default function Pricing() {
               onClick={navigateToLogin}
               className="w-full h-11 font-bold font-heading border-border text-foreground hover:bg-secondary hover:border-primary/50 transition-fluid cursor-pointer rounded-lg"
             >
-              <BookOpen className="w-4 h-4 text-primary" />
+              <ReaderIcon className="w-4 h-4 text-primary" />
               <span>Launch Free Library</span>
             </Button>
           </div>
@@ -218,23 +225,23 @@ export default function Pricing() {
 
               <ul className="space-y-3 mb-8">
                 <li className="flex items-start gap-2.5 text-xs text-foreground font-body">
-                  <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <CheckIcon className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                   <span>ESP-WROOM-32 Dual-Core embedded hardware unit</span>
                 </li>
                 <li className="flex items-start gap-2.5 text-xs text-foreground font-body">
-                  <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <CheckIcon className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                   <span>32GB MicroSD pre-flashed with complete Class 1–12 library</span>
                 </li>
                 <li className="flex items-start gap-2.5 text-xs text-foreground font-body">
-                  <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <CheckIcon className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                   <span>High-contrast monochrome e-paper display (zero eye strain)</span>
                 </li>
                 <li className="flex items-start gap-2.5 text-xs text-foreground font-body">
-                  <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <CheckIcon className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                   <span>Tactile physical D-pad for rapid page navigation</span>
                 </li>
                 <li className="flex items-start gap-2.5 text-xs text-foreground font-body">
-                  <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <CheckIcon className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                   <span>Zero internet, zero SIM card, 30-day battery endurance</span>
                 </li>
               </ul>
@@ -246,9 +253,9 @@ export default function Pricing() {
               }}
               className="w-full h-11 font-bold font-heading bg-primary text-primary-foreground hover:opacity-90 transition-fluid cursor-pointer shadow-xs gap-2 rounded-lg"
             >
-              <Cpu className="w-4 h-4" />
+              <Component1Icon className="w-4 h-4" />
               <span>Order Atlas Device</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRightIcon className="w-3.5 h-3.5" />
             </Button>
           </div>
 

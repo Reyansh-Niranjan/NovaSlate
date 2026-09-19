@@ -2,7 +2,34 @@ import { useState, useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ChevronDown, HelpCircle, ShieldCheck, Lock, WifiOff } from "lucide-react";
+import {
+  ChevronDownIcon,
+  QuestionMarkCircledIcon,
+  CheckCircledIcon,
+  LockClosedIcon,
+} from "@radix-ui/react-icons";
+
+function WifiOffIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      width="15"
+      height="15"
+      viewBox="0 0 15 15"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      aria-hidden="true"
+    >
+      <path
+        d="M1.5 1.5L13.5 13.5M3.2 4.2C1.9 5.3 1 6.8 0.8 7.5C1.8 9.5 4.5 11 7.5 11C8.6 11 9.6 10.8 10.5 10.3M5.5 2.5C6.1 2.4 6.8 2.3 7.5 2.3C10.5 2.3 13.2 3.8 14.2 5.8C13.8 6.6 13 7.5 12 8.3M7.5 7.5A1.5 1.5 0 016 6"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -115,7 +142,7 @@ export default function FAQ() {
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
           <div className="faq-header-item inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold tracking-wide bg-secondary text-primary border border-border mb-3 font-heading">
-            <HelpCircle className="w-3.5 h-3.5" />
+            <QuestionMarkCircledIcon className="w-3.5 h-3.5" />
             Frequently Asked Questions
           </div>
 
@@ -130,17 +157,17 @@ export default function FAQ() {
           {/* Trust Chips */}
           <div className="faq-header-item flex flex-wrap items-center justify-center gap-4 pt-6 font-mono text-xs text-muted-foreground">
             <span className="inline-flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-primary" />
+              <CheckCircledIcon className="w-3.5 h-3.5 text-primary" />
               NEP 2020 Aligned
             </span>
             <span className="text-border hidden sm:inline">•</span>
             <span className="inline-flex items-center gap-1.5">
-              <Lock className="w-3.5 h-3.5 text-primary" />
+              <LockClosedIcon className="w-3.5 h-3.5 text-primary" />
               100% Student Privacy
             </span>
             <span className="text-border hidden sm:inline">•</span>
             <span className="inline-flex items-center gap-1.5">
-              <WifiOff className="w-3.5 h-3.5 text-[var(--pomelli-gold)]" />
+              <WifiOffIcon className="w-3.5 h-3.5 text-[var(--pomelli-gold)]" />
               Offline Hardware Resilient
             </span>
           </div>
@@ -165,7 +192,7 @@ export default function FAQ() {
                   <span className="text-sm sm:text-base font-bold text-foreground font-heading">
                     {faq.question}
                   </span>
-                  <ChevronDown className={`w-4 h-4 shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180 text-primary" : "text-muted-foreground"}`} />
+                  <ChevronDownIcon className={`w-4 h-4 shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180 text-primary" : "text-muted-foreground"}`} />
                 </button>
 
                 {isOpen && (

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Moon, Sun } from "lucide-react";
+import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { motion, AnimatePresence } from "framer-motion";
 
 const getTheme = () => {
@@ -63,7 +63,7 @@ export default function ThemeToggle() {
             transition={{ duration: 0.15 }}
             className="flex items-center justify-center"
           >
-            <Sun className="h-3.5 w-3.5" />
+            <SunIcon className="h-3.5 w-3.5" />
           </motion.span>
         ) : (
           <motion.span
@@ -74,7 +74,7 @@ export default function ThemeToggle() {
             transition={{ duration: 0.15 }}
             className="flex items-center justify-center"
           >
-            <Moon className="h-3.5 w-3.5" />
+            <MoonIcon className="h-3.5 w-3.5" />
           </motion.span>
         )}
       </AnimatePresence>
