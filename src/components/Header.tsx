@@ -2,38 +2,33 @@ import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import {
   Menu,
   X,
   ArrowUpRight,
-  Sparkles,
   BookOpen,
-  Terminal,
+  Sparkles,
   Cpu,
-  User,
-  ExternalLink,
   ShieldCheck,
+  History,
+  HelpCircle,
 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/Logo";
 
-gsap.registerPlugin(useGSAP, ScrollTrigger, ScrollToPlugin);
+gsap.registerPlugin(ScrollToPlugin);
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const progressBarRef = useRef<HTMLDivElement>(null);
+  const [scrolled, setScrolled] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
 
-  // Close mobile menu on Escape & lock body scroll on mobile
+  // Close mobile drawer on ESC
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && mobileMenuOpen) {
-        setMobileMenuOpen(false);
-      }
+      if (e.key === "Escape" && mobileMenuOpen) setMobileMenuOpen(false);
     };
     document.addEventListener("keydown", handleKeyDown);
     if (mobileMenuOpen) {
@@ -47,46 +42,33 @@ export default function Header() {
     };
   }, [mobileMenuOpen]);
 
-  // GSAP Scroll Progress Indicator
-  useGSAP(
-    () => {
-      if (progressBarRef.current) {
-        gsap.to(progressBarRef.current, {
-          scaleX: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: document.body,
-            start: "top top",
-            end: "bottom bottom",
-            scrub: 0.1,
-          },
-        });
-      }
-    },
-    { scope: headerRef }
-  );
+  // Track scroll state for elevation shadow
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const navLinks = [
-    { label: "Overview", href: "#home", icon: Sparkles },
-    { label: "Architecture", href: "#about", icon: Terminal },
-    { label: "Ecosystem", href: "#ecosystem", icon: Cpu },
-    { label: "Creator", href: "#creator", icon: User },
+    { label: "Overview",       href: "#home",      icon: BookOpen },
+    { label: "Study Tools",    href: "#features",  icon: Sparkles },
+    { label: "Atlas Hardware", href: "#hardware",  icon: Cpu },
+    { label: "Pricing",        href: "#pricing",   icon: ShieldCheck },
+    { label: "Evolution",      href: "#timeline",  icon: History },
+    { label: "FAQ",            href: "#faq",       icon: HelpCircle },
   ];
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
-
     gsap.to(window, {
-      duration: 0.85,
-      scrollTo: { y: href, offsetY: 56 },
+      duration: 0.8,
+      scrollTo: { y: href, offsetY: 64 },
       ease: "power2.inOut",
-      overwrite: "auto",
     });
   };
 
   const navigateToLogin = () => {
-    setMobileMenuOpen(false);
     window.history.pushState({}, "", "#login");
     window.dispatchEvent(new Event("hashchange"));
   };
@@ -94,130 +76,114 @@ export default function Header() {
   return (
     <header
       ref={headerRef}
-      className="fixed top-0 left-0 right-0 z-50 h-14 border-b border-border bg-background/90 backdrop-blur-md transition-colors"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
+        scrolled
+          ? "bg-background/90 backdrop-blur-md border-b border-border shadow-xs"
+          : "bg-background/70 backdrop-blur-xs border-b border-border/50"
+      }`}
     >
-      {/* GSAP Scroll Progress Scrubber */}
-      <div
-        ref={progressBarRef}
-        className="absolute top-0 left-0 right-0 h-[2px] bg-foreground origin-left scale-x-0 z-50 pointer-events-none"
-      />
-
-      <div className="container mx-auto px-4 sm:px-6 h-full max-w-6xl flex items-center justify-between">
-        {/* Brand Lockup */}
+      <div className="container mx-auto px-4 sm:px-6 max-w-6xl h-16 flex items-center justify-between">
+        {/* Brand Logo & Tag */}
         <a
           href="#home"
           onClick={(e) => handleNavClick(e, "#home")}
-          className="flex items-center gap-2.5 text-foreground hover:opacity-85 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground rounded-sm touch-manipulation active:scale-[0.97]"
+          className="flex items-center gap-2.5 group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md"
         >
-          <Logo className="h-7 w-7" />
-          <div className="flex items-baseline gap-1.5">
-            <span className="font-bold text-sm tracking-tight text-foreground">
-              NovaSlate
+          <Logo className="h-7 w-auto transition-transform group-hover:scale-105" />
+          <div className="flex items-center gap-2">
+            <span className="font-extrabold text-base tracking-tight text-foreground font-heading">
+              Nova<span className="text-primary font-serif italic font-normal">Slate</span>
+            </span>
+            <span className="inline-flex items-center text-[10px] font-bold font-mono px-2 py-0.5 rounded-full bg-secondary text-primary border border-border">
+              OPEN K–12
             </span>
           </div>
         </a>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-5 text-xs font-medium text-muted-foreground">
+        <nav className="hidden lg:flex items-center gap-6">
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
               onClick={(e) => handleNavClick(e, link.href)}
-              className="hover:text-foreground transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground rounded-sm py-1"
+              className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors cursor-pointer py-1 font-heading hover:scale-[1.02] active:scale-[0.98]"
             >
               {link.label}
             </a>
           ))}
         </nav>
 
-        {/* Desktop Action Controls */}
+        {/* Desktop Conversion CTAs & Theme Toggle */}
         <div className="hidden md:flex items-center gap-3">
           <ThemeToggle />
+          <button
+            onClick={navigateToLogin}
+            className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors px-2 py-1.5 cursor-pointer font-heading"
+          >
+            Log In
+          </button>
           <Button
             size="sm"
             onClick={navigateToLogin}
-            className="text-xs h-8 px-3 py-1.5 gap-1.5 font-medium cursor-pointer"
+            className="text-xs h-8 px-4 gap-1.5 font-bold cursor-pointer rounded-lg font-heading bg-primary text-primary-foreground hover:opacity-90 shadow-xs"
           >
-            <span>Sign In</span>
-            <ArrowUpRight className="w-3 h-3 opacity-70" />
+            <span>Start Free</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
           </Button>
         </div>
 
-        {/* Mobile Action Controls & Hamburger Trigger */}
-        <div className="flex items-center gap-1.5 md:hidden">
+        {/* Mobile Menu Hamburger */}
+        <div className="flex md:hidden items-center gap-2">
           <ThemeToggle />
-          
-          <Button
-            size="sm"
-            onClick={navigateToLogin}
-            className="h-8 px-2.5 text-xs font-medium gap-1 touch-manipulation active:scale-[0.97]"
-          >
-            <span>Sign In</span>
-            <ArrowUpRight className="w-3 h-3" />
-          </Button>
-
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="h-8 w-8 flex items-center justify-center rounded-md border border-border text-foreground hover:bg-secondary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground touch-manipulation active:scale-[0.95]"
+            className="p-2 rounded-lg border border-border text-foreground hover:bg-secondary transition-colors cursor-pointer"
             aria-label="Toggle Navigation Menu"
             aria-expanded={mobileMenuOpen}
-            aria-controls="mobile-nav-menu"
           >
-            {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Drawer Bottom Sheet Portal with Emil Kowalski Spring Physics */}
+      {/* Mobile Drawer Navigation (Portal) */}
       {typeof document !== "undefined" &&
         createPortal(
           <AnimatePresence>
             {mobileMenuOpen && (
-              <div className="fixed inset-0 z-50 md:hidden flex flex-col justify-end">
-                {/* Backdrop */}
+              <>
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: 0.18 }}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="absolute inset-0 bg-black/60 backdrop-blur-xs"
+                  className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 lg:hidden"
                 />
-
-                {/* Bottom Sheet Modal */}
                 <motion.div
-                  id="mobile-nav-menu"
-                  role="navigation"
-                  aria-label="Mobile navigation"
-                  initial={{ y: "100%" }}
+                  initial={{ y: "-100%" }}
                   animate={{ y: 0 }}
-                  exit={{ y: "100%" }}
-                  transition={{ type: "spring", damping: 30, stiffness: 350 }}
-                  className="relative z-10 w-full max-h-[85dvh] overflow-y-auto rounded-t-2xl border-t border-border bg-card p-5 safe-bottom shadow-2xl space-y-4"
+                  exit={{ y: "-100%" }}
+                  transition={{ type: "spring", damping: 28, stiffness: 280 }}
+                  className="fixed top-0 left-0 right-0 bg-card border-b border-border z-50 p-6 shadow-xl lg:hidden flex flex-col gap-4"
                 >
-                  {/* Sheet Drag Handle */}
-                  <div className="flex justify-center -mt-2 pb-1">
-                    <div className="w-10 h-1 rounded-full bg-border" />
-                  </div>
-
-                  {/* Sheet Header */}
-                  <div className="flex items-center justify-between border-b border-border pb-3">
+                  <div className="flex items-center justify-between pb-3 border-b border-border">
                     <div className="flex items-center gap-2">
-                      <Logo className="h-6 w-6" />
-                      <span className="font-bold text-sm text-foreground">NovaSlate</span>
+                      <Logo className="h-6 w-auto" />
+                      <span className="font-bold text-sm text-foreground font-heading">
+                        NovaSlate
+                      </span>
                     </div>
                     <button
                       onClick={() => setMobileMenuOpen(false)}
-                      className="p-1 rounded-md text-muted-foreground hover:text-foreground transition-colors touch-manipulation active:scale-95 cursor-pointer"
-                      aria-label="Close navigation"
+                      className="p-1.5 rounded-md text-muted-foreground hover:text-foreground cursor-pointer"
                     >
                       <X className="w-5 h-5" />
                     </button>
                   </div>
 
-                  {/* Nav Items List with 48px touch targets */}
-                  <div className="space-y-1">
+                  <div className="flex flex-col gap-1 py-1">
                     {navLinks.map((link) => {
                       const Icon = link.icon;
                       return (
@@ -225,48 +191,31 @@ export default function Header() {
                           key={link.href}
                           href={link.href}
                           onClick={(e) => handleNavClick(e, link.href)}
-                          className="flex items-center justify-between px-3.5 py-3 rounded-lg text-sm font-medium text-foreground hover:bg-secondary transition-colors touch-manipulation active:scale-[0.98] cursor-pointer"
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-foreground hover:bg-secondary transition-colors font-heading"
                         >
-                          <div className="flex items-center gap-3">
-                            <div className="p-1.5 rounded-md bg-secondary text-foreground">
-                              <Icon className="w-4 h-4" />
-                            </div>
-                            <span>{link.label}</span>
+                          <div className="p-1 rounded-md bg-primary/10 text-primary">
+                            <Icon className="w-4 h-4" />
                           </div>
-                          <ArrowUpRight className="w-4 h-4 text-muted-foreground" />
+                          <span>{link.label}</span>
                         </a>
                       );
                     })}
                   </div>
 
-                  {/* Primary Mobile Action */}
-                  <div className="pt-2 border-t border-border space-y-2">
+                  <div className="flex flex-col gap-2 pt-3 border-t border-border">
                     <Button
-                      size="lg"
-                      onClick={navigateToLogin}
-                      className="w-full h-11 text-xs font-semibold justify-center gap-2 touch-manipulation active:scale-[0.98] shadow-xs"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        navigateToLogin();
+                      }}
+                      className="w-full h-10 font-bold font-heading bg-primary text-primary-foreground hover:opacity-90"
                     >
-                      <BookOpen className="w-4 h-4" />
-                      <span>Launch Digital Library</span>
+                      <span>Start Reading Free</span>
+                      <ArrowUpRight className="w-4 h-4" />
                     </Button>
-
-                    <div className="pt-2 flex items-center justify-between text-xs font-mono text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <ShieldCheck className="w-3.5 h-3.5 text-foreground" />
-                        Class 1–12 Open Access
-                      </span>
-                      <a
-                        href="https://github.com/Reyansh-Niranjan/novaslate"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-foreground hover:underline"
-                      >
-                        GitHub <ExternalLink className="w-3 h-3" />
-                      </a>
-                    </div>
                   </div>
                 </motion.div>
-              </div>
+              </>
             )}
           </AnimatePresence>,
           document.body

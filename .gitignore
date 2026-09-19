@@ -34,3 +34,4 @@ failures.json
 *.njsproj
 *.sln
 *.sw?
+.impeccable/

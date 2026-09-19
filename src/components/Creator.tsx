@@ -1,120 +1,156 @@
-import { useEffect, useState, useRef } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Github, MapPin, ShieldCheck, Terminal, Code2, Cpu, Database, ArrowUpRight } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import {
+  Smartphone,
+  Globe,
+  Layers,
+  Sparkles,
+  ShieldCheck,
+  Github,
+  Compass,
+} from "lucide-react";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-interface CreatorProfile {
-  login: string;
-  name: string | null;
-  avatar_url: string | null;
-  html_url: string;
-  bio: string | null;
-  followers: number;
-  following: number;
-  public_repos: number;
-  location: string | null;
+interface Milestone {
+  id: string;
+  stage: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  tech: string[];
+  icon: typeof Smartphone;
+  badge: string;
+  status: "completed" | "current" | "future";
 }
+
+const milestones: Milestone[] = [
+  {
+    id: "genesis",
+    stage: "Starting Point · 2024",
+    title: "EduScrapeApp",
+    subtitle: "Manual Android Scraper · Zero UI",
+    description:
+      "A small Android utility built manually with zero user interface. Its single mission was automating the recursive download of every NCERT textbook into raw device storage.",
+    tech: ["Android Java", "HTTP Client", "Raw Storage"],
+    icon: Smartphone,
+    badge: "GENESIS",
+    status: "completed",
+  },
+  {
+    id: "pwa",
+    stage: "Phase Two · Early 2025",
+    title: "Lightweight PWA",
+    subtitle: "Web Interface & Book Selector",
+    description:
+      "Ported the scraping logic into a Progressive Web App, introducing the first visual interface that allowed students to search, filter, and choose specific books to download.",
+    tech: ["PWA", "JavaScript", "Local Cache"],
+    icon: Globe,
+    badge: "WEB PIVOT",
+    status: "completed",
+  },
+  {
+    id: "chef-convex",
+    stage: "Phase Three · Mid 2025",
+    title: "Chef + Convex Architecture",
+    subtitle: "In-Browser Viewer & Early AI Assistant",
+    description:
+      "Introduced an in-browser PDF rendering engine, real-time database syncing with Convex, and early generative AI prompts to help students understand tricky formula derivations.",
+    tech: ["Convex DB", "PDF.js", "Gemini 1.5 Flash"],
+    icon: Layers,
+    badge: "AI INGESTION",
+    status: "completed",
+  },
+  {
+    id: "novaslate-present",
+    stage: "The Present · 2026",
+    title: "NovaSlate & Atlas Ecosystem",
+    subtitle: "React 19 + Supabase + Sanitizer + Atlas Hardware",
+    description:
+      "The modern production platform. Automated OpenCV watermark removal, Class 1–12 curriculum catalog, Gemini 2.0 Flash reasoning, and the autonomous Atlas ESP32 physical reader.",
+    tech: ["React 19", "Supabase", "Watermark Scrubber", "Atlas ESP32-S3"],
+    icon: Sparkles,
+    badge: "CURRENT STANDARD",
+    status: "current",
+  },
+  {
+    id: "future-horizon",
+    stage: "Future Horizon · Roadmap",
+    title: "Regional State Boards & Offline Mesh",
+    subtitle: "Atlas Hardware Remains the Permanent Constant",
+    description:
+      "Expanding to state education boards (ICSE, Maharashtra, UP Board) and local peer-to-peer classroom mesh caching, while the physical Atlas ESP32 reader remains the unchanged, reliable physical constant.",
+    tech: ["Regional Boards", "Local Mesh", "Atlas Permanent Architecture"],
+    icon: Compass,
+    badge: "ROADMAP",
+    status: "future",
+  },
+];
 
 export default function Creator() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [creator, setCreator] = useState<CreatorProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const fallbackAvatar = "https://github.com/Reyansh-Niranjan.png";
-
-  useEffect(() => {
-    const controller = new AbortController();
-    const loadCreator = async () => {
-      try {
-        const response = await fetch("https://api.github.com/users/Reyansh-Niranjan", {
-          signal: controller.signal,
-          headers: { Accept: "application/vnd.github+json" },
-        });
-        if (!response.ok) {
-          throw new Error("GitHub profile request failed");
-        }
-        const data = (await response.json()) as CreatorProfile;
-        setCreator(data);
-      } catch (error) {
-        if ((error as Error).name !== "AbortError") {
-          setCreator(null);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadCreator();
-    return () => controller.abort();
-  }, []);
+  const timelineLineRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        // Header reveal
-        gsap.from(".creator-header-item", {
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top 85%",
-            once: true,
-          },
-          y: 16,
-          autoAlpha: 0,
-          duration: 0.35,
-          stagger: 0.05,
-          ease: "power3.out",
-          immediateRender: false,
-        });
+        gsap.fromTo(
+          ".creator-header-item",
+          { y: 18, autoAlpha: 0 },
+          {
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: "top 85%",
+              once: true,
+            },
+            y: 0,
+            autoAlpha: 1,
+            duration: 0.38,
+            stagger: 0.06,
+            ease: "power3.out",
+            clearProps: "all",
+          }
+        );
 
-        // Creator cards Glide reveal
-        gsap.from(".gsap-creator-card", {
+        // Timeline animated line progress
+        const tl = gsap.timeline({
           scrollTrigger: {
-            trigger: containerRef.current,
+            trigger: ".timeline-container",
             start: "top 80%",
-            once: true,
+            end: "bottom 70%",
+            scrub: 0.4,
           },
-          y: 20,
-          autoAlpha: 0,
-          stagger: 0.08,
-          duration: 0.35,
-          ease: "power3.out",
-          immediateRender: false,
         });
 
-        // QuickTo tilt physics & spotlight coordination on creator cards
-        const cards = gsap.utils.toArray<HTMLElement>(".gsap-creator-card", containerRef.current);
-        cards.forEach((card) => {
-          const setRotX = gsap.quickTo(card, "rotationX", { duration: 0.4, ease: "power3.out" });
-          const setRotY = gsap.quickTo(card, "rotationY", { duration: 0.4, ease: "power3.out" });
+        if (timelineLineRef.current) {
+          tl.to(timelineLineRef.current, {
+            scaleY: 1,
+            ease: "none",
+          });
+        }
 
-          const onMove = (e: MouseEvent) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            // Track cursor for spotlight illumination
-            card.style.setProperty("--mouse-x", `${x}px`);
-            card.style.setProperty("--mouse-y", `${y}px`);
-
-            const rotY = gsap.utils.mapRange(0, rect.width, -2.5, 2.5)(x);
-            const rotX = gsap.utils.mapRange(0, rect.height, 2.5, -2.5)(y);
-            setRotX(rotX);
-            setRotY(rotY);
-          };
-
-          const onLeave = () => {
-            setRotX(0);
-            setRotY(0);
-          };
-
-          card.addEventListener("mousemove", onMove);
-          card.addEventListener("mouseleave", onLeave);
-        });
+        // Timeline cards staggered reveal
+        gsap.fromTo(
+          ".timeline-card",
+          { y: 24, autoAlpha: 0 },
+          {
+            scrollTrigger: {
+              trigger: ".timeline-container",
+              start: "top 80%",
+              once: true,
+            },
+            y: 0,
+            autoAlpha: 1,
+            duration: 0.4,
+            stagger: 0.1,
+            ease: "power3.out",
+            clearProps: "all",
+          }
+        );
       });
 
       return () => mm.revert();
@@ -122,172 +158,160 @@ export default function Creator() {
     { scope: containerRef }
   );
 
-  const corePillars = [
-    {
-      title: "Web Platform Architecture",
-      desc: "Built the React 19 + Vite digital library, in-browser PDF rendering engine, and Supabase auth.",
-      icon: Code2,
-      tag: "FRONTEND & DB",
-    },
-    {
-      title: "Scraper & Ingestion Pipeline",
-      desc: "Developed Python automation for recursive NCERT crawling, PDF watermark removal, and taxonomy syncing.",
-      icon: Database,
-      tag: "AUTOMATION & OCR",
-    },
-    {
-      title: "ESP32 Embedded System",
-      desc: "Engineered physical prototype with C++ display drivers and FAT32 SD card reader for offline classrooms.",
-      icon: Cpu,
-      tag: "EMBEDDED C++",
-    },
-  ];
-
   return (
     <section
-      id="creator"
+      id="timeline"
       ref={containerRef}
-      className="py-14 sm:py-24 bg-background relative [perspective:1200px]"
+      className="py-16 sm:py-28 bg-background relative border-t border-border overflow-hidden"
     >
-      <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
-        {/* Section Header */}
-        <div className="max-w-3xl mb-8 sm:mb-16">
-          <div className="creator-header-item text-[11px] sm:text-xs font-mono uppercase tracking-wider text-muted-foreground mb-2 will-change-transform">
-            ENGINEERING &amp; AUTHORSHIP
+      <div id="creator" className="absolute -top-14" />
+      <div id="evolution" className="absolute -top-14" />
+
+      <div className="container mx-auto px-4 sm:px-6 max-w-5xl relative z-10">
+        {/* Section Header & Founder Mission */}
+        <div className="max-w-3xl mb-12 sm:mb-16">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-secondary text-primary border border-border mb-3 font-heading">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            Founder's Mission &amp; Evolution
           </div>
-          <h2 className="creator-header-item text-2xl sm:text-4xl font-bold tracking-tight text-foreground mb-3 sm:mb-4 will-change-transform">
-            Designed &amp; engineered by Reyansh Niranjan.
+
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-foreground mb-4 font-heading leading-tight">
+            Built with integrity.{" "}
+            <span className="text-primary font-serif italic font-normal text-2xl sm:text-3xl md:text-4xl">
+              Engineered for public student welfare.
+            </span>
           </h2>
-          <p className="creator-header-item text-xs sm:text-base text-muted-foreground leading-relaxed max-w-[50ch] will-change-transform">
-            NovaSlate is an independent open-source software and hardware engineering project created to democratize access to K–12 educational materials across India.
+
+          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-[55ch] font-body mb-6">
+            NovaSlate was conceived and built solely by <strong className="text-foreground font-heading">Reyansh Niranjan</strong> as an independent, non-corporate initiative to bridge the educational divide across India.
           </p>
+
+          {/* Founder Quote Card */}
+          <div className="p-5 sm:p-6 rounded-2xl border border-border bg-card shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-bold text-base text-foreground font-heading">
+                  Reyansh Niranjan
+                </span>
+                <span className="text-[11px] font-mono text-primary font-bold px-2 py-0.5 rounded-full bg-secondary border border-border">
+                  Sole Architect
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground font-body">
+                India · Creator of NovaSlate &amp; Atlas Hardware
+              </p>
+              <blockquote className="text-xs sm:text-sm text-foreground/90 font-serif italic pt-2 max-w-[60ch] leading-relaxed">
+                "Education shouldn't depend on whether you have a 5G connection or whether you can afford an expensive subscription. NovaSlate pairs open-access software with the permanent Atlas offline reader so every student can study distraction-free."
+              </blockquote>
+            </div>
+
+            <a
+              href="https://github.com/Reyansh-Niranjan/novaslate"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-semibold font-heading border border-border bg-secondary text-foreground hover:bg-muted transition-colors shrink-0 cursor-pointer shadow-xs"
+            >
+              <Github className="w-3.5 h-3.5 text-primary" />
+              <span>GitHub Profile</span>
+            </a>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 items-start">
-          {/* Left Column: Creator Profile (7 cols) */}
-          <div className="gsap-creator-card spotlight-card lg:col-span-7 rounded-md border border-border bg-card p-4 sm:p-8 transition-colors hover:border-muted-foreground will-change-transform [transform-style:preserve-3d]">
-            {/* Top Telemetry Line */}
-            <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-border mb-4 sm:mb-6 relative z-10">
-              <div className="flex items-center gap-2 text-[10px] sm:text-xs font-mono text-muted-foreground truncate mr-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
-                <span className="truncate">api.github.com/users/Reyansh-Niranjan</span>
-              </div>
-              <Badge variant="green" className="gap-1 shrink-0">
-                <ShieldCheck className="w-3 h-3" />
-                <span>AUTHOR</span>
-              </Badge>
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 mb-6 sm:mb-8 text-center sm:text-left relative z-10">
-              {/* Avatar Image */}
-              <img
-                src={creator?.avatar_url || fallbackAvatar}
-                alt="Reyansh Niranjan"
-                className="h-16 w-16 sm:h-20 sm:w-20 rounded-md object-cover border border-border bg-secondary shrink-0 shadow-xs"
-              />
-
-              {/* Bio Details */}
-              <div className="flex-1 min-w-0">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-1">
-                  <h3 className="text-lg sm:text-xl font-bold text-foreground">
-                    {creator?.name || "Reyansh Niranjan"}
-                  </h3>
-                  {creator?.login && (
-                    <a
-                      href={creator.html_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs font-mono text-muted-foreground hover:text-foreground inline-flex items-center justify-center sm:justify-start gap-1 touch-manipulation"
-                    >
-                      <Github className="w-3.5 h-3.5" />
-                      @{creator.login}
-                      <ArrowUpRight className="w-3 h-3 opacity-60" />
-                    </a>
-                  )}
-                </div>
-
-                <div className="text-[11px] sm:text-xs font-mono text-muted-foreground mb-2">
-                  Solo Creator · Full-Stack &amp; Embedded Systems
-                </div>
-
-                <p className="text-xs text-muted-foreground leading-relaxed max-w-[48ch]">
-                  {creator?.bio ||
-                    "Architect of NovaSlate and the Atlas ESP32 offline educational ecosystem. Focused on automated data extraction pipelines, modern web applications, and offline-first physical hardware."}
-                </p>
-
-                {creator?.location && (
-                  <div className="mt-2.5 sm:mt-3 flex items-center justify-center sm:justify-start gap-1.5 text-[11px] sm:text-xs text-muted-foreground font-mono">
-                    <MapPin className="w-3 h-3" />
-                    <span>{creator.location}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Live Metrics Grid */}
-            <ul className="grid grid-cols-3 gap-0 pt-4 sm:pt-6 border-t border-border font-mono text-center relative z-10 list-none p-0 m-0">
-              <li className="flex flex-col py-2 px-1 sm:py-2.5 sm:px-3">
-                <span className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider">Repos</span>
-                <span className="text-lg sm:text-xl font-bold text-foreground mt-0.5">
-                  {isLoading ? "–" : creator?.public_repos ?? "14"}
-                </span>
-              </li>
-              <li className="flex flex-col py-2 px-1 sm:py-2.5 sm:px-3 border-x border-border">
-                <span className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider">Followers</span>
-                <span className="text-lg sm:text-xl font-bold text-foreground mt-0.5">
-                  {isLoading ? "–" : creator?.followers ?? "8"}
-                </span>
-              </li>
-              <li className="flex flex-col py-2 px-1 sm:py-2.5 sm:px-3">
-                <span className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider">Following</span>
-                <span className="text-lg sm:text-xl font-bold text-foreground mt-0.5">
-                  {isLoading ? "–" : creator?.following ?? "12"}
-                </span>
-              </li>
-            </ul>
+        {/* Alternating Spine Header */}
+        <div className="flex items-center justify-between pb-6 border-b border-border mb-12">
+          <div>
+            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-primary">
+              GSAP DUAL-RAIL SPINE
+            </span>
+            <h3 className="text-xl sm:text-2xl font-bold text-foreground font-heading mt-1">
+              How NovaSlate Evolved
+            </h3>
           </div>
+          <span className="text-xs font-mono text-muted-foreground hidden sm:inline-block">
+            Atlas Hardware Constant · NovaSlate Software Evolves
+          </span>
+        </div>
 
-          {/* Right Column: Engineering Pillars (5 cols) */}
-          <div className="gsap-creator-card spotlight-card lg:col-span-5 rounded-md border border-border bg-card p-4 sm:p-8 space-y-3 sm:space-y-4 transition-colors hover:border-muted-foreground will-change-transform [transform-style:preserve-3d]">
-            <div className="pb-2.5 sm:pb-3 border-b border-border flex items-center justify-between relative z-10">
-              <h4 className="text-xs sm:text-sm font-semibold text-foreground flex items-center gap-2">
-                <Terminal className="w-4 h-4 text-muted-foreground" />
-                Technical Scope
-              </h4>
-              <Badge variant="mono">
-                SOLO AUTHOR
-              </Badge>
-            </div>
+        {/* Alternating Two-Column Timeline with Central Spine */}
+        <div className="relative">
+          {/* Central Spine Line (desktop center, mobile left) */}
+          <div className="absolute left-4 md:left-1/2 top-4 bottom-4 w-[2px] -translate-x-1/2 bg-border timeline-spine-line" />
 
-            <ul className="space-y-2.5 sm:space-y-3 relative z-10 list-none p-0 m-0">
-              {corePillars.map((pillar, pIdx) => {
-                const Icon = pillar.icon;
-                return (
-                  <li key={pIdx} className="p-3 sm:p-3.5 rounded-md bg-secondary/50">
-                    <div className="flex items-center justify-between gap-2 mb-1">
-                      <div className="flex items-center gap-2 text-xs font-semibold text-foreground">
-                        <Icon className="w-3.5 h-3.5 text-muted-foreground" />
-                        <span>{pillar.title}</span>
+          <div className="space-y-10 sm:space-y-12">
+            {milestones.map((milestone, idx) => {
+              const Icon = milestone.icon;
+              const isCurrent = milestone.status === "current";
+              const isFuture = milestone.status === "future";
+              const isEven = idx % 2 === 1;
+
+              return (
+                <div
+                  key={milestone.id}
+                  className={`relative flex flex-col md:flex-row items-center ${
+                    isEven ? "md:flex-row-reverse" : ""
+                  }`}
+                >
+                  {/* Central Spine Node */}
+                  <div className={`absolute left-4 md:left-1/2 -translate-x-1/2 top-6 w-7 h-7 rounded-full border-2 flex items-center justify-center z-10 transition-colors ${
+                    isCurrent
+                      ? "bg-primary border-primary text-primary-foreground timeline-node-active"
+                      : isFuture
+                      ? "bg-background border-muted-foreground/40 text-muted-foreground"
+                      : "bg-card border-primary text-primary"
+                  }`}>
+                    <span className="text-[10px] font-mono font-bold">{idx + 1}</span>
+                  </div>
+
+                  {/* Card container with alternating offset */}
+                  <div className={`w-full md:w-[calc(50%-2.5rem)] pl-12 md:pl-0 ${
+                    isEven ? "md:text-left" : "md:text-left"
+                  }`}>
+                    <div className={`timeline-card-v2 rounded-2xl border p-5 transition-fluid bg-card ${
+                      isCurrent ? "border-primary/60 shadow-md ring-1 ring-primary/20" : "border-border shadow-xs hover:border-border/90"
+                    }`}>
+                      <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <span className="text-[11px] font-mono font-bold text-muted-foreground">
+                          {milestone.stage}
+                        </span>
+                        <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
+                          isCurrent
+                            ? "bg-primary text-primary-foreground"
+                            : isFuture
+                            ? "bg-secondary text-muted-foreground border border-border"
+                            : "bg-secondary text-primary border border-border"
+                        }`}>
+                          {milestone.badge}
+                        </span>
                       </div>
-                      <span className="text-[10px] font-mono text-muted-foreground uppercase">{pillar.tag}</span>
-                    </div>
-                    <p className="text-[11px] sm:text-xs text-muted-foreground leading-relaxed">{pillar.desc}</p>
-                  </li>
-                );
-              })}
-            </ul>
 
-            <div className="pt-2.5 sm:pt-3 flex items-center justify-between text-xs font-mono text-muted-foreground relative z-10">
-              <span>Open Source Codebase</span>
-              <a
-                href="https://github.com/Reyansh-Niranjan"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-foreground hover:underline inline-flex items-center gap-1 cursor-pointer touch-manipulation"
-              >
-                GitHub Profile <ArrowUpRight className="w-3 h-3 opacity-60" />
-              </a>
-            </div>
+                      <h4 className="text-lg sm:text-xl font-bold text-foreground font-heading flex items-center gap-2 mb-1.5 leading-snug">
+                        <Icon className={`w-4 h-4 ${isCurrent ? "text-primary" : "text-muted-foreground"}`} />
+                        <span>{milestone.title}</span>
+                      </h4>
+
+                      <div className="text-xs font-semibold text-primary font-heading mb-3">
+                        {milestone.subtitle}
+                      </div>
+
+                      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-body mb-5">
+                        {milestone.description}
+                      </p>
+
+                      <div className="flex flex-wrap gap-1.5 pt-3 border-t border-border/70">
+                        {milestone.tech.map((t) => (
+                          <span
+                            key={t}
+                            className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-secondary text-foreground/80 border border-border"
+                          >
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

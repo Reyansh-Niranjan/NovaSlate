@@ -8,13 +8,32 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Geist Sans', 'Geist Variable', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        serif: ['Instrument Serif', 'Newsreader', 'Georgia', 'serif'],
-        mono: ['Geist Mono', 'SF Mono', 'JetBrains Mono', 'monospace'],
+        sans: ['Lexend', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['Work Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        heading: ['Work Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        body: ['Lexend', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        serif: ['Newsreader', 'Georgia', 'serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
       colors: {
         border: 'var(--border)',
         input: 'var(--input)',
+        // Pomelli Brand Palette (Google Labs)
+        pomelli: {
+          primary: '#1883B1',
+          secondary: '#88A9B6',
+          surface: '#DEE4E6',
+          gold: '#E4B34C',
+          crimson: '#D2475F',
+        },
+        'ns-navy':        '#1883B1',
+        'ns-navy-light':  '#2197C9',
+        'ns-blue':        '#1883B1',
+        'ns-blue-light':  '#88A9B6',
+        'ns-orange':      '#E4B34C',
+        'ns-orange-light':'#F7E5B5',
+        'ns-crimson':     '#D2475F',
+        'ns-slate':       '#DEE4E6',
         ring: 'var(--ring)',
         background: 'var(--background)',
         foreground: 'var(--foreground)',

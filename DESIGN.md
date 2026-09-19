@@ -2,63 +2,50 @@
 name: NovaSlate
 description: Utilitarian Minimalist Curriculum Platform with High-Craft GSAP Motion
 colors:
-  primary: "#141413"
-  primary-dark: "#EDEDED"
-  neutral-bg: "#FBFBFA"
-  neutral-bg-dark: "#0E0E10"
-  card-bg: "#FFFFFF"
-  card-bg-dark: "#151518"
-  border: "#E5E4DE"
-  border-dark: "rgba(255, 255, 255, 0.08)"
-  muted: "#706F6A"
-  muted-dark: "#8A8A93"
-  pastel-green: "#2D5A34"
-  pastel-green-bg: "#EDF3EC"
-  pastel-blue: "#1E5C8A"
-  pastel-blue-bg: "#E3EFFB"
-  pastel-amber: "#8A5B00"
-  pastel-amber-bg: "#FBF3DB"
-  pastel-red: "#9F2F2D"
-  pastel-red-bg: "#FDEBEC"
+  primary: "#1883B1"
+  secondary: "#88A9B6"
+  surface: "#DEE4E6"
+  gold: "#E4B34C"
+  crimson: "#D2475F"
 typography:
   display:
-    fontFamily: "Geist Sans, -apple-system, BlinkMacSystemFont, sans-serif"
+    fontFamily: "Work Sans, -apple-system, BlinkMacSystemFont, sans-serif"
     fontSize: "clamp(2.25rem, 5vw, 3.75rem)"
     fontWeight: 700
     lineHeight: 1.08
     letterSpacing: "-0.035em"
   display-serif:
-    fontFamily: "Instrument Serif, Newsreader, Georgia, serif"
+    fontFamily: "Newsreader, Georgia, serif"
     fontSize: "clamp(2rem, 4.5vw, 3.5rem)"
     fontWeight: 400
     lineHeight: 1.15
     letterSpacing: "-0.01em"
   headline:
-    fontFamily: "Geist Sans, -apple-system, BlinkMacSystemFont, sans-serif"
+    fontFamily: "Work Sans, -apple-system, BlinkMacSystemFont, sans-serif"
     fontSize: "clamp(1.5rem, 3vw, 2.25rem)"
     fontWeight: 700
     lineHeight: 1.2
     letterSpacing: "-0.03em"
   body:
-    fontFamily: "Geist Sans, -apple-system, BlinkMacSystemFont, sans-serif"
+    fontFamily: "Lexend, -apple-system, BlinkMacSystemFont, sans-serif"
     fontSize: "0.875rem"
     fontWeight: 400
     lineHeight: 1.6
     letterSpacing: "-0.012em"
   mono:
-    fontFamily: "Geist Mono, SF Mono, JetBrains Mono, monospace"
+    fontFamily: "JetBrains Mono, SF Mono, monospace"
     fontSize: "0.75rem"
     fontWeight: 500
     lineHeight: 1.4
     letterSpacing: "0em"
   caption:
-    fontFamily: "Geist Sans, -apple-system, BlinkMacSystemFont, sans-serif"
+    fontFamily: "Lexend, -apple-system, BlinkMacSystemFont, sans-serif"
     fontSize: "11px"
     fontWeight: 500
     lineHeight: 1.4
     letterSpacing: "0.02em"
   micro:
-    fontFamily: "Geist Mono, SF Mono, JetBrains Mono, monospace"
+    fontFamily: "JetBrains Mono, SF Mono, monospace"
     fontSize: "10px"
     fontWeight: 500
     lineHeight: 1.3
@@ -68,6 +55,7 @@ rounded:
   md: "6px"
   lg: "8px"
   full: "9999px"
+  curvature: "G2" # Continuous curvature / squircle (corner-smoothing: 60%)
 spacing:
   xs: "4px"
   sm: "8px"
@@ -80,13 +68,8 @@ components:
     textColor: "#FFFFFF"
     rounded: "{rounded.md}"
     padding: "8px 16px"
-  button-primary-dark:
-    backgroundColor: "{colors.primary-dark}"
-    textColor: "#0E0E10"
-    rounded: "{rounded.md}"
-    padding: "8px 16px"
   bento-card:
-    backgroundColor: "{colors.card-bg}"
+    backgroundColor: "{colors.surface}"
     textColor: "{colors.primary}"
     rounded: "{rounded.md}"
     padding: "24px 28px"
@@ -103,40 +86,32 @@ NovaSlate embodies the disciplined restraint of precision scientific instrumenta
 Every component feels machined and tactile: hairline 1px borders, subtle millimeter dot-matrix grids, Faux-OS window chrome, and spot pastels reserved strictly for telemetry and semantic status. Motion is purposeful, fluid, and non-blocking, orchestrated through GSAP timelines, ScrollTrigger batch reveals, and quickTo 3D cursor physics.
 
 **Key Characteristics:**
-- Warm bone (#FBFBFA) and deep obsidian (#0E0E10) canvas architecture.
-- Dual typographic pairing: ultra-tight Geist Sans display with dramatic Instrument Serif italic accents.
+- 5-color palette: Cerulean (#1883B1), Slate (#88A9B6), Mist (#DEE4E6), Amber (#E4B34C), and Crimson (#D2475F).
+- Dual typographic pairing: crisp Work Sans headings with Lexend reading body, accented by Newsreader italic.
 - Monospace telemetry bands for high-density curriculum stats and hardware specs.
 - Zero AI-slop: banned purple/teal gradients, neon glow blobs, and heavy blurred drop shadows.
 - Micro-interactions powered by GSAP with 60fps GPU acceleration.
 
 ## Colors
 
-The color palette is strictly restrained warm monochrome with semantic muted spot pastels.
+The design system is strictly anchored on a 5-color palette:
 
-### Primary
-- **Obsidian Black / Crisp Bone** (`#141413` in light / `#EDEDED` in dark): Carries primary typography, primary action fills, and active states.
-
-### Neutral
-- **Bone Canvas** (`#FBFBFA` / `#0E0E10`): Warm off-white light background avoiding harsh `#FFFFFF`, and pure obsidian dark background avoiding murky blues.
-- **Card Surface** (`#FFFFFF` / `#151518`): Crisp, elevated card surfaces with hairline structural boundaries.
-- **Hairline Border** (`#E5E4DE` / `rgba(255, 255, 255, 0.08)`): Precise 1px structural dividing lines.
-- **Muted Slate** (`#706F6A` / `#8A8A93`): Secondary descriptive copy and technical labels.
-
-### Spot Pastels
-- **Pale Sage Green** (`#EDF3EC` bg, `#2D5A34` text): Semantic indicators for live sync, clean OCR status, and verified author badges.
-- **Pale Glacier Blue** (`#E3EFFB` bg, `#1E5C8A` text): Web platform, Python automation, and curriculum grade tags.
-- **Pale Honey Amber** (`#FBF3DB` bg, `#8A5B00` text): ESP32 hardware, offline badges, and AI vision highlights.
-- **Pale Crimson** (`#FDEBEC` bg, `#9F2F2D` text): Error states and raw watermarked artifact warnings.
+- **Primary (`#1883B1`)**: Deep Cerulean Ocean — primary brand typography, action buttons, active tabs, and focus rings.
+- **Secondary (`#88A9B6`)**: Slate Glaze — secondary labels, muted controls, and subheadings.
+- **Surface (`#DEE4E6`)**: Clean Mist — hairline borders, card frames, structural dividing lines, and light fills.
+- **Warm (`#E4B34C`)**: Amber Honey — Atlas ESP32 hardware highlights, battery telemetry, and offline tags.
+- **Impact (`#D2475F`)**: Welfare Crimson — student-first pledge highlights, destructive alerts, and watermark flags.
 
 ### Named Rules
-**The Rarity Rule.** Color accents occupy ≤5% of screen real estate. The monochrome canvas provides clarity; color exists exclusively for functional meaning.  
+**The Rarity Rule.** Color accents occupy ≤5% of screen real estate. The clean canvas provides clarity; color exists exclusively for functional meaning.  
 **The No-Gradient Rule.** Gradients across card surfaces, backgrounds, or text fills are prohibited. Depth is established through 1px border contrast, architectural dot grids, and Faux-OS elevation.
 
 ## Typography
 
-**Display Font:** Geist Sans (with -apple-system, BlinkMacSystemFont fallback)  
-**Editorial Serif Accent:** Instrument Serif / Newsreader (with Georgia fallback)  
-**Telemetry / Code Font:** Geist Mono (with SF Mono, JetBrains Mono fallback)
+**Display Font:** Work Sans (with -apple-system, BlinkMacSystemFont fallback)  
+**Editorial Serif Accent:** Newsreader (with Georgia fallback)  
+**Body Font:** Lexend (with -apple-system, BlinkMacSystemFont fallback)  
+**Telemetry / Code Font:** JetBrains Mono (with monospace fallback)
 
 **Character:** Technical, confident, and editorial. The juxtaposition of modern geometric grotesque with classical italic serif creates an immediate visual distinction between utilitarian data and human craftsmanship.
 
@@ -166,15 +141,21 @@ A modular 12-column asymmetric grid with unified container constraints (`max-wid
 
 ## Shapes
 
-- **Corner Radius:** Standardized 6px (`--radius: 0.375rem`) for buttons, cards, and modal dialogs.
-- **Micro-Pills:** 4px (`rounded-sm`) for keystroke `<kbd>` elements and badge tags.
-- **Borders:** Consistent `1px solid var(--border)` across all cards, inputs, and containers.
+**The G2 Continuous Curvature Rule.** All rounded corners strictly enforce **G2 continuous curvature** (superellipse / squircle with smooth curvature acceleration) rather than standard G1 circular fillets. The transition from straight edge to curve accelerates smoothly with zero abrupt curvature step-jump, eliminating perceptible corner seams and creating organic, machined hardware-grade surfaces.
+
+- **Curvature Continuity:** G2 continuous curvature (`corner-shape: squircle`, `-webkit-corner-smoothing: 0.6`).
+- **Corner Scale:**
+  - **Cards & Bento Cells:** 8px to 12px (`rounded-lg` / `rounded-xl`, G2 squircle).
+  - **Buttons & Inputs:** 6px (`--radius: 0.375rem`, G2 continuous curve).
+  - **Micro-Pills & Badges:** 4px (`rounded-sm`, G2 continuous curve).
+  - **Full Pills:** 9999px (`rounded-full`).
+- **Borders:** Consistent `1px solid var(--border)` tracing the G2 perimeter contour.
 
 ## Components
 
 ### Buttons
 - **Shape:** 6px radius (`0.375rem`).
-- **Primary:** Dark obsidian fill (`#141413`) with white text (`#FFFFFF`) in light mode; crisp bone fill (`#EDEDED`) with dark text (`#0E0E10`) in dark mode.
+- **Primary:** Cerulean fill (`#1883B1`) with white text (`#FFFFFF`).
 - **Outline / Secondary:** Transparent background, `1px solid var(--border)`, text `var(--muted-foreground)` transitioning to `var(--foreground)` on hover.
 - **State Transitions:** 150ms transform scale (`0.98`) on active press.
 
@@ -194,13 +175,15 @@ A modular 12-column asymmetric grid with unified container constraints (`max-wid
 ## Do's and Don'ts
 
 ### Do:
-- **Do** maintain strict 1px hair-thin borders (`#E5E4DE` / `rgba(255,255,255,0.08)`) on all containers.
-- **Do** pair Geist Sans with Instrument Serif italics for primary headline statements.
+- **Do** maintain strict 1px hair-thin borders (`#DEE4E6`) on all containers.
+- **Do** apply G2 continuous curvature (squircle corner smoothing) to all rounded containers, cards, and interactive elements.
+- **Do** pair Work Sans with Newsreader italics for primary headline statements.
 - **Do** use `gsap.quickTo()` for cursor tracking to ensure 60fps compositor performance without layout reflow.
 - **Do** use `ScrollToPlugin` for all anchor navigation links with automatic 56px header offset compensation.
 - **Do** credit exclusively **Reyansh Niranjan** as the solo architect and creator.
 
 ### Don't:
+- **Don't** use abrupt G1 circular filleting on cards or button surfaces.
 - **Don't** add purple/teal radial glow blobs, blur bubbles, or generic AI-slop gradients.
 - **Don't** use emojis in technical UI elements; use crisp Lucide icons.
 - **Don't** use heavy multi-stop drop shadows.

@@ -2,8 +2,7 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Globe, Cpu, ArrowUpRight, Github, ExternalLink, Terminal } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Globe, Cpu, ArrowUpRight, Github, ShieldCheck, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -14,41 +13,43 @@ export default function Projects() {
   const ecosystemItems = [
     {
       id: "web-hub",
-      name: "NovaSlate Web Platform",
-      badge: "CLOUD PLATFORM",
+      name: "NovaSlate Cloud Web Platform",
+      badge: "CLOUD PLATFORM · EVOLVING",
       badgeVariant: "blue" as const,
+      tagline: "Universal access for every connected browser.",
       description:
-        "High-performance browser application providing instant high-DPI textbook reading, Class 1–12 catalog search, and offline chapter downloads.",
+        "High-performance web application providing instant high-DPI textbook rendering, Class 1–12 search, chapter bookmarking, and zero-distraction student workflows.",
       specs: [
         { label: "Frontend", value: "React 19 · Vite 8" },
-        { label: "Auth & Database", value: "Supabase PostgreSQL" },
+        { label: "Auth & DB", value: "Supabase PostgreSQL" },
         { label: "Storage CDN", value: "Supabase Storage (PDF.js)" },
         { label: "AI Explainer", value: "Gemini 2.0 Flash" },
       ],
       icon: Globe,
       repoUrl: "https://github.com/Reyansh-Niranjan/novaslate",
-      imageUrl: "/novaslate_web_banner.svg",
+      imageUrl: "/novaslate_site.png",
       actionText: "Open Digital Library",
       actionHash: "#login",
     },
     {
       id: "hardware-device",
-      name: "Atlas ESP32 Hardware Device",
-      badge: "EMBEDDED HARDWARE",
+      name: "Atlas ESP32 Physical Reader",
+      badge: "EMBEDDED HARDWARE · PERMANENT",
       badgeVariant: "amber" as const,
+      tagline: "Autonomous physical reader for zero-connectivity classrooms.",
       description:
-        "Autonomous physical reading device with tactile D-pad navigation, high-contrast monochrome display, and MicroSD card storage for zero-connectivity classrooms.",
+        "Engineered as a fixed physical constant: tactile D-pad navigation, high-contrast monochrome display, and MicroSD card storage pre-flashed with 12 years of textbooks.",
       specs: [
-        { label: "Processor", value: "ESP-WROOM-32 Dual Core" },
+        { label: "Microcontroller", value: "ESP-WROOM-32 Dual Core" },
         { label: "Storage Bus", value: "MicroSD FAT32 (SPI)" },
         { label: "Display Driver", value: "Custom Embedded C++" },
-        { label: "Page Latency", value: "<12ms Instant Render" },
+        { label: "Battery Life", value: "18+ Hours Active Reading" },
       ],
       icon: Cpu,
       repoUrl: "https://github.com/Reyansh-Niranjan/novaslate",
       imageUrl: "/esp32_device.jpeg",
-      actionText: "View Hardware Firmware",
-      actionLink: "https://github.com/Reyansh-Niranjan/novaslate",
+      actionText: "Order Atlas Device",
+      actionHash: "#pricing",
     },
   ];
 
@@ -57,85 +58,41 @@ export default function Projects() {
       const mm = gsap.matchMedia();
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        // Header reveal
-        gsap.from(".projects-header-item", {
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top 85%",
-            once: true,
-          },
-          y: 16,
-          autoAlpha: 0,
-          duration: 0.35,
-          stagger: 0.05,
-          ease: "power3.out",
-          immediateRender: false,
-        });
+        gsap.fromTo(
+          ".ecosystem-header-item",
+          { y: 18, autoAlpha: 0 },
+          {
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: "top 85%",
+              once: true,
+            },
+            y: 0,
+            autoAlpha: 1,
+            duration: 0.4,
+            stagger: 0.06,
+            ease: "power3.out",
+            clearProps: "all",
+          }
+        );
 
-        // Cards Glide entrance
-        gsap.from(".gsap-ecosystem-card", {
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top 75%",
-            once: true,
-          },
-          y: 20,
-          autoAlpha: 0,
-          stagger: 0.08,
-          duration: 0.35,
-          ease: "power3.out",
-          immediateRender: false,
-        });
-
-        // Parallax image scrub inside media frames
-        const parallaxImages = gsap.utils.toArray<HTMLElement>(".parallax-media-img", containerRef.current);
-        parallaxImages.forEach((img) => {
-          gsap.fromTo(
-            img,
-            { yPercent: -7, scale: 1.08 },
-            {
-              yPercent: 7,
-              scale: 1.08,
-              ease: "none",
-              scrollTrigger: {
-                trigger: img.parentElement,
-                start: "top bottom",
-                end: "bottom top",
-                scrub: 1.2,
-              },
-            }
-          );
-        });
-
-        // QuickTo tilt physics & spotlight coordination on ecosystem cards
-        const cards = gsap.utils.toArray<HTMLElement>(".gsap-ecosystem-card", containerRef.current);
-        cards.forEach((card) => {
-          const setRotX = gsap.quickTo(card, "rotationX", { duration: 0.4, ease: "power3.out" });
-          const setRotY = gsap.quickTo(card, "rotationY", { duration: 0.4, ease: "power3.out" });
-
-          const onMove = (e: MouseEvent) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            // Track cursor for spotlight illumination
-            card.style.setProperty("--mouse-x", `${x}px`);
-            card.style.setProperty("--mouse-y", `${y}px`);
-
-            const rotY = gsap.utils.mapRange(0, rect.width, -2.5, 2.5)(x);
-            const rotX = gsap.utils.mapRange(0, rect.height, 2.5, -2.5)(y);
-            setRotX(rotX);
-            setRotY(rotY);
-          };
-
-          const onLeave = () => {
-            setRotX(0);
-            setRotY(0);
-          };
-
-          card.addEventListener("mousemove", onMove);
-          card.addEventListener("mouseleave", onLeave);
-        });
+        gsap.fromTo(
+          ".gsap-ecosystem-card",
+          { y: 24, autoAlpha: 0 },
+          {
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: "top 75%",
+              once: true,
+            },
+            y: 0,
+            autoAlpha: 1,
+            stagger: 0.09,
+            duration: 0.42,
+            ease: "power3.out",
+            clearProps: "all",
+          }
+        );
       });
 
       return () => mm.revert();
@@ -143,114 +100,153 @@ export default function Projects() {
     { scope: containerRef }
   );
 
+  const navigateTo = (hash: string) => {
+    window.history.pushState({}, "", hash);
+    window.dispatchEvent(new Event("hashchange"));
+  };
+
   return (
     <section
-      id="ecosystem"
+      id="hardware"
       ref={containerRef}
-      className="py-14 sm:py-24 bg-background relative [perspective:1200px]"
+      className="py-16 sm:py-28 bg-background border-t border-border relative overflow-hidden"
     >
-      <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
+      <div className="container mx-auto px-4 sm:px-6 max-w-6xl relative z-10">
         {/* Section Header */}
-        <div className="max-w-3xl mb-8 sm:mb-16">
-          <div className="projects-header-item text-[11px] sm:text-xs font-mono uppercase tracking-wider text-muted-foreground mb-2 will-change-transform">
-            DUAL PLATFORM ECOSYSTEM
+        <div className="max-w-3xl mb-10 sm:mb-14">
+          <div className="ecosystem-header-item inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-secondary text-primary border border-border mb-3 font-heading">
+            <Cpu className="w-3.5 h-3.5" />
+            Hardware Companion &amp; Cloud Platform
           </div>
-          <h2 className="projects-header-item text-2xl sm:text-4xl font-bold tracking-tight text-foreground mb-3 sm:mb-4 will-change-transform">
-            Cloud web hub &amp; offline hardware.
+
+          <h2 className="ecosystem-header-item text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-foreground mb-4 font-heading leading-tight">
+            Dual ecosystem:{" "}
+            <span className="text-primary font-serif italic font-normal text-2xl sm:text-3xl md:text-4xl">
+              Evolving software, permanent hardware.
+            </span>
           </h2>
-          <p className="projects-header-item text-xs sm:text-base text-muted-foreground leading-relaxed max-w-[50ch] will-change-transform">
-            A single, unified content pipeline engineered to serve both high-bandwidth connected environments and remote regions with zero network infrastructure.
+
+          <p className="ecosystem-header-item text-sm sm:text-base text-muted-foreground leading-relaxed max-w-[55ch] font-body">
+            NovaSlate delivers curriculum everywhere: a fast, evolving web application for connected devices, paired with the fixed, dependable <strong className="text-foreground font-heading">Atlas ESP32</strong> hardware reader for zero-connectivity rural classrooms.
           </p>
         </div>
 
-        {/* 2-Column Showcase with Parallax Scrub and Spotlight */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-8">
+        {/* The Permanence Philosophy Callout Banner */}
+        <div className="ecosystem-header-item p-4 sm:p-5 rounded-2xl border border-border bg-card relative overflow-hidden shadow-xs mb-10 sm:mb-12">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 sm:gap-5 relative z-10">
+            {/* Left side: Icon + Content */}
+            <div className="flex items-start gap-3.5 sm:gap-4 max-w-2xl">
+              <div className="p-2.5 sm:p-3 rounded-xl bg-primary text-primary-foreground shrink-0 mt-0.5">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <div className="space-y-1.5">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[10px] font-mono font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-secondary text-primary border border-border">
+                    The Atlas Permanence Principle
+                  </span>
+                  <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest hidden sm:inline">
+                    · Hardware is fixed · Software evolves
+                  </span>
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-foreground font-heading">
+                  Hardware is fixed. <span className="text-primary font-serif italic font-normal">Software evolves.</span>
+                </h3>
+                <p className="text-xs sm:text-sm text-muted-foreground font-body leading-relaxed">
+                  The physical Atlas reader will never be artificially obsoleted. Its ESP32 microcontroller, tactile physical buttons, and non-volatile offline flash are engineered as a permanent, reliable educational tool for rural classrooms.
+                </p>
+              </div>
+            </div>
+
+            {/* Right side: Hardware metrics badge */}
+            <div className="flex items-center sm:self-auto self-stretch justify-between lg:flex-col lg:items-end gap-2.5 sm:gap-3 shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-border/60 w-full lg:w-auto">
+              <div className="flex items-center gap-2 font-mono text-xs text-foreground bg-secondary/80 px-3.5 py-2 rounded-xl border border-border">
+                <Radio className="w-4 h-4 text-primary animate-pulse" />
+                <span className="font-bold">0% Planned Obsolescence</span>
+              </div>
+              <div className="text-[11px] font-mono text-muted-foreground flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                Permanent Open Hardware
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 2-Column Showcase */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
           {ecosystemItems.map((item) => {
             const Icon = item.icon;
+            const isAtlas = item.id === "hardware-device";
             return (
               <div
                 key={item.id}
-                className="gsap-ecosystem-card spotlight-card rounded-md border border-border bg-card overflow-hidden flex flex-col justify-between transition-colors hover:border-muted-foreground will-change-transform [transform-style:preserve-3d]"
+                className="gsap-ecosystem-card rounded-2xl border border-border bg-card overflow-hidden flex flex-col justify-between transition-colors hover:border-primary/50 shadow-xs"
               >
-                {/* Visual Preview Frame with Parallax Image Scrub */}
-                <div className="relative aspect-[16/10] w-full border-b border-border overflow-hidden bg-secondary/50">
+                {/* Visual Preview Frame */}
+                <div className="relative aspect-[16/10] w-full border-b border-border overflow-hidden bg-secondary/40">
                   <img
                     src={item.imageUrl}
                     alt={item.name}
-                    className="parallax-media-img w-full h-full object-cover object-top will-change-transform"
+                    className="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
                     loading="lazy"
                   />
                   <div className="absolute top-3 right-3 z-10">
-                    <Badge variant={item.badgeVariant}>
+                    <span
+                      className={`text-[10px] font-bold px-2.5 py-1 rounded-full font-mono uppercase tracking-wider ${
+                        isAtlas
+                          ? "bg-[var(--pomelli-gold)]/15 text-[var(--pomelli-gold)] border border-[var(--pomelli-gold)]/40"
+                          : "bg-primary text-primary-foreground"
+                      }`}
+                    >
                       {item.badge}
-                    </Badge>
+                    </span>
                   </div>
                 </div>
 
                 {/* Content Body */}
-                <div className="p-4 sm:p-8 flex-1 flex flex-col justify-between relative z-10">
+                <div className="p-6 sm:p-8 flex-1 flex flex-col justify-between">
                   <div>
-                    <h3 className="text-lg sm:text-xl font-bold tracking-tight text-foreground mb-2 sm:mb-3 flex items-center gap-2">
-                      <Icon className="w-5 h-5 text-foreground shrink-0" />
+                    <h3 className="text-lg sm:text-xl font-bold tracking-tight text-foreground mb-1 flex items-center gap-2 font-heading">
+                      <Icon className="w-5 h-5 text-primary shrink-0" />
                       <span>{item.name}</span>
                     </h3>
 
-                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed mb-4 sm:mb-6 max-w-[48ch]">
+                    <p className="text-xs font-semibold text-primary font-heading mb-3">
+                      {item.tagline}
+                    </p>
+
+                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed mb-6 font-body">
                       {item.description}
                     </p>
 
-                    {/* Technical Specs Table */}
-                    <div className="pt-3 sm:pt-4 pb-2 border-t border-border mb-4 sm:mb-6 font-mono text-[11px] sm:text-xs">
-                      <div className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider mb-2.5 sm:mb-3 flex items-center justify-between">
-                        <span>Architecture Specifications</span>
-                        <Terminal className="w-3 h-3 text-muted-foreground" />
-                      </div>
-                      <ul className="grid grid-cols-2 gap-y-2.5 gap-x-3 sm:gap-y-3 sm:gap-x-4 list-none p-0 m-0">
-                        {item.specs.map((spec, sIdx) => (
-                          <li key={sIdx} className="flex flex-col">
-                            <span className="text-[10px] sm:text-xs text-muted-foreground">{spec.label}</span>
-                            <span className="font-semibold text-foreground text-[11px] sm:text-xs truncate mt-0.5">
-                              {spec.value}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
+                    {/* Spec Grid */}
+                    <div className="grid grid-cols-2 gap-3 py-4 border-y border-border mb-6">
+                      {item.specs.map((spec) => (
+                        <div key={spec.label} className="text-xs">
+                          <span className="text-muted-foreground block text-[10px] uppercase font-mono tracking-wider">
+                            {spec.label}
+                          </span>
+                          <span className="font-semibold text-foreground font-mono">
+                            {spec.value}
+                          </span>
+                        </div>
+                      ))}
                     </div>
                   </div>
 
                   {/* Actions */}
-                  <div className="flex items-center gap-2.5 sm:gap-3 pt-2">
-                    {item.actionHash ? (
-                      <Button
-                        size="sm"
-                        onClick={() => {
-                          window.history.pushState({}, "", item.actionHash!);
-                          window.dispatchEvent(new Event("hashchange"));
-                        }}
-                        className="flex-1 justify-center h-10 sm:h-9 text-xs sm:text-sm py-1.5 gap-1.5 cursor-pointer shadow-xs hover:shadow-sm touch-manipulation active:scale-[0.97]"
-                      >
-                        <span>{item.actionText}</span>
-                        <ArrowUpRight className="w-3.5 h-3.5" />
-                      </Button>
-                    ) : (
-                      <a
-                        href={item.actionLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-1"
-                      >
-                        <Button size="sm" className="w-full justify-center h-10 sm:h-9 text-xs sm:text-sm py-1.5 gap-1.5 cursor-pointer shadow-xs hover:shadow-sm touch-manipulation active:scale-[0.97]">
-                          <span>{item.actionText}</span>
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </Button>
-                      </a>
-                    )}
-
+                  <div className="flex items-center gap-3 pt-2">
+                    <Button
+                      onClick={() => navigateTo(item.actionHash)}
+                      className="h-10 px-5 rounded-lg text-xs font-bold font-heading bg-primary text-primary-foreground hover:opacity-90 gap-1.5 shadow-xs"
+                    >
+                      <span>{item.actionText}</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </Button>
                     <a
                       href={item.repoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-3 h-10 sm:h-9 rounded-md border border-border text-muted-foreground hover:text-foreground text-xs font-mono inline-flex items-center justify-center gap-1.5 transition-colors hover:border-muted-foreground touch-manipulation active:scale-[0.97]"
+                      className="h-10 px-4 rounded-lg text-xs font-semibold font-heading border border-border text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors inline-flex items-center gap-1.5"
                     >
                       <Github className="w-3.5 h-3.5" />
                       <span>Source</span>

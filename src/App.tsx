@@ -9,6 +9,8 @@ import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import Projects from "./components/Projects";
+import Pricing from "./components/Pricing";
+import FAQ from "./components/FAQ";
 import Creator from "./components/Creator";
 import BackgroundCanvas from "./components/BackgroundCanvas";
 import { supabase } from "./lib/supabaseClient";
@@ -214,7 +216,11 @@ export default function App() {
               <hr className="border-border m-0" />
               <Projects />
               <hr className="border-border m-0" />
+              <Pricing />
+              <hr className="border-border m-0" />
               <Creator />
+              <hr className="border-border m-0" />
+              <FAQ />
             </main>
             <Footer />
           </>
