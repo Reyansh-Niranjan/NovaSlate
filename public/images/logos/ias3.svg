@@ -1,0 +1,9 @@
+<svg width="170" height="28" viewBox="0 0 170 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0.5" y="0.5" width="27" height="27" rx="6" stroke="#88A9B6" stroke-width="1.5" fill="#EBF1F3"/>
+  <rect x="6" y="8" width="15" height="3" fill="#1883B1"/>
+  <rect x="8" y="12" width="2" height="6" fill="#1883B1"/>
+  <rect x="12.5" y="12" width="2" height="6" fill="#1883B1"/>
+  <rect x="17" y="12" width="2" height="6" fill="#1883B1"/>
+  <rect x="6" y="19" width="15" height="2" fill="#1883B1"/>
+  <text x="36" y="18" fill="#10222B" font-family="'Proxima Nova', 'Lato', sans-serif" font-size="11" font-weight="700" letter-spacing="0.08em">INTERNET ARCHIVE</text>
+</svg>

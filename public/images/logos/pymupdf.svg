@@ -1,0 +1,8 @@
+<svg width="160" height="28" viewBox="0 0 160 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0.5" y="0.5" width="27" height="27" rx="6" stroke="#88A9B6" stroke-width="1.5" fill="#EBF1F3"/>
+  <path d="M7 11C7 9.34315 8.34315 8 10 8H14V14H8C7.44772 14 7 13.5523 7 13V11Z" fill="#1883B1"/>
+  <path d="M20 17C20 18.6569 18.6569 20 17 20H13V14H19C19.5523 14 20 14.4477 20 15V17Z" fill="#E4B34C"/>
+  <circle cx="10" cy="11" r="1.2" fill="#FFFFFF"/>
+  <circle cx="17" cy="17" r="1.2" fill="#FFFFFF"/>
+  <text x="36" y="18" fill="#10222B" font-family="'Proxima Nova', 'Lato', sans-serif" font-size="11" font-weight="700" letter-spacing="0.08em">PYTHON &amp; PYMUPDF</text>
+</svg>

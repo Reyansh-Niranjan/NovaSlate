@@ -1,21 +1,10 @@
 import { Suspense, lazy, useEffect, useState } from "react";
 import { Analytics } from "@vercel/analytics/react";
-import Lenis from "lenis";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import About from "./components/About";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
-import Hero from "./components/Hero";
-import Projects from "./components/Projects";
-import CurriculumBento from "./components/CurriculumBento";
-import Pricing from "./components/Pricing";
-import FAQ from "./components/FAQ";
-import Creator from "./components/Creator";
+import LandingPage from "./components/landing/LandingPage";
 import { supabase } from "./lib/supabaseClient";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const Login = lazy(() => import("./components/Login"));
 const Dashboard = lazy(() => import("./components/Dashboard"));
@@ -53,33 +42,7 @@ const getViewFromURL = (): View => {
 
 export default function App() {
   const [currentView, setCurrentView] = useState<View>(getViewFromURL);
-
-  // Initialize Lenis physics smooth scroll hooked to GSAP ticker (Inspired by subscrr.app & walaszczyk.studio)
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) return;
-
-    const lenis = new Lenis({
-      lerp: 0.12,
-      smoothWheel: true,
-      wheelMultiplier: 1.1,
-      touchMultiplier: 1.4,
-    });
-
-    lenis.on("scroll", ScrollTrigger.update);
-
-    const handleTicker = (time: number) => {
-      lenis.raf(time * 1000);
-    };
-
-    gsap.ticker.add(handleTicker);
-    gsap.ticker.lagSmoothing(0);
-
-    return () => {
-      gsap.ticker.remove(handleTicker);
-      lenis.destroy();
-    };
-  }, []);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -122,20 +85,30 @@ export default function App() {
     };
 
     const checkSession = async () => {
-      if (currentView !== "home" && currentView !== "login") return;
       const { data } = await supabase.auth.getSession();
       if (!isMounted) return;
       if (data.session) {
-        goToDashboard();
+        setIsLoggedIn(true);
+        if (currentView === "login") {
+          goToDashboard();
+        }
+      } else {
+        setIsLoggedIn(false);
       }
     };
 
     checkSession();
 
     const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_OUT") return;
-      if (session && (currentView === "home" || currentView === "login")) {
-        goToDashboard();
+      if (event === "SIGNED_OUT") {
+        setIsLoggedIn(false);
+        return;
+      }
+      if (session) {
+        setIsLoggedIn(true);
+        if (currentView === "login") {
+          goToDashboard();
+        }
       }
     });
 
@@ -203,25 +176,27 @@ export default function App() {
             <Footer />
           </>
         ) : (
-          <>
-            <Header />
-            <main className="relative z-10">
-              <Hero />
-              <hr className="border-border m-0" />
-              <About />
-              <hr className="border-border m-0" />
-              <Projects />
-              <hr className="border-border m-0" />
-              <CurriculumBento />
-              <hr className="border-border m-0" />
-              <Pricing />
-              <hr className="border-border m-0" />
-              <Creator />
-              <hr className="border-border m-0" />
-              <FAQ />
-            </main>
-            <Footer />
-          </>
+          <LandingPage
+            isLoggedIn={isLoggedIn}
+            onNavigateToLogin={() => {
+              try {
+                window.history.pushState({}, "", "/#login");
+              } catch {
+                // noop
+              }
+              window.location.hash = "#login";
+              setCurrentView("login");
+            }}
+            onNavigateToDashboard={() => {
+              try {
+                window.history.pushState({}, "", "/#dashboard");
+              } catch {
+                // noop
+              }
+              window.location.hash = "#dashboard";
+              setCurrentView("dashboard");
+            }}
+          />
         )}
       </div>
     </ErrorBoundary>

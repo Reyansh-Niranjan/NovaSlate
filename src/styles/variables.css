@@ -1,0 +1,333 @@
+:root {
+  --color-black: #0E1B22;
+  --color-primary: #1883B1;
+  --color-secondary: #88A9B6;
+  --color-accent: #1883B1;
+  --color-accent-gold: #E4B34C;
+  --color-accent-ruby: #D2475F;
+  --color-white: #ffffff;
+  --color-white-dark: #F5F8F9;
+  --color-white-darker: #EBF1F3;
+  --color-white-darkest: #DEE4E6;
+  --color-gray-lighter: #DEE4E6;
+  --color-gray-light: #C4D2D7;
+  --color-gray: #88A9B6;
+  --color-gray-dark: #55717D;
+  --color-heading: #0E1B22;
+  --color-text: #1B313C;
+
+  --font-family-proxima: 'Proxima Nova', 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-lato: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-frama: var(--font-family-proxima);
+  --font-family-neue-montreal: var(--font-family-lato);
+  --font-family-supply-mono: 'PPSupplyMono', monospace;
+  --font-family-sans: var(--font-family-lato);
+  --font-family-heading: var(--font-family-proxima);
+  --font-family-text: var(--font-family-lato);
+  --font-family-mono: var(--font-family-supply-mono);
+
+  --font-size-base: 16px;
+  --font-weight-base: 300;
+  --font-height-base: 1.3;
+  --font-family-base: var(--font-family-text);
+  --font-spacing-base: 0;
+
+  --font-size-h-3xl: 8.5rem;
+  --font-weight-h-3xl: 400;
+  --font-height-h-3xl: 0.86;
+  --font-family-h-3xl: var(--font-family-frama);
+  --font-spacing-h-3xl: -0.05em;
+
+  --font-size-h-2xl: 5.5rem;
+  --font-weight-h-2xl: 400;
+  --font-height-h-2xl: 0.86;
+  --font-family-h-2xl: var(--font-family-frama);
+  --font-spacing-h-2xl: -0.05em;
+
+  --font-size-h-xl: 5rem;
+  --font-weight-h-xl: 400;
+  --font-height-h-xl: 0.86;
+  --font-family-h-xl: var(--font-family-frama);
+  --font-spacing-h-xl: -0.05em;
+
+  --font-size-h-lg: 2.5rem;
+  --font-weight-h-lg: 400;
+  --font-height-h-lg: 0.86;
+  --font-family-h-lg: var(--font-family-frama);
+  --font-spacing-h-lg: -0.05em;
+
+  --font-size-h-md: 2.5rem;
+  --font-weight-h-md: 500;
+  --font-height-h-md: 0.86;
+  --font-family-h-md: var(--font-family-neue-montreal);
+  --font-spacing-h-md: -0.02em;
+
+  --font-size-h-sm: 2rem;
+  --font-weight-h-sm: 500;
+  --font-height-h-sm: 0.86;
+  --font-family-h-sm: var(--font-family-neue-montreal);
+  --font-spacing-h-sm: -0.02em;
+
+  --font-size-h-xs: 1.5rem;
+  --font-weight-h-xs: 500;
+  --font-height-h-xs: 0.86;
+  --font-family-h-xs: var(--font-family-neue-montreal);
+  --font-spacing-h-xs: -0.02em;
+
+  --font-size-t-lg: 1.25rem;
+  --font-weight-t-lg: 400;
+  --font-height-t-lg: 1.3;
+  --font-family-t-lg: var(--font-family-neue-montreal);
+  --font-spacing-t-lg: 0;
+
+  --font-size-t-md: 1.125rem;
+  --font-weight-t-md: 400;
+  --font-height-t-md: 1.3;
+  --font-family-t-md: var(--font-family-neue-montreal);
+  --font-spacing-t-md: 0;
+
+  --font-size-t-sm: 1.0625rem;
+  --font-weight-t-sm: 400;
+  --font-height-t-sm: 1.3;
+  --font-family-t-sm: var(--font-family-neue-montreal);
+  --font-spacing-t-sm: 0;
+
+  --font-size-t-xs: 1rem;
+  --font-weight-t-xs: 400;
+  --font-height-t-xs: 1.3;
+  --font-family-t-xs: var(--font-family-neue-montreal);
+  --font-spacing-t-xs: 0;
+
+  --font-size-t-2xs: 0.875rem;
+  --font-weight-t-2xs: 400;
+  --font-height-t-2xs: 1.3;
+  --font-family-t-2xs: var(--font-family-neue-montreal);
+  --font-spacing-t-2xs: 0;
+
+  --font-size-t-3xs: 0.8125rem;
+  --font-weight-t-3xs: 400;
+  --font-height-t-3xs: 1.3;
+  --font-family-t-3xs: var(--font-family-neue-montreal);
+  --font-spacing-t-3xs: 0;
+
+  --font-size-t-4xs: 0.75rem;
+  --font-weight-t-4xs: 400;
+  --font-height-t-4xs: 1.3;
+  --font-family-t-4xs: var(--font-family-neue-montreal);
+  --font-spacing-t-4xs: 0;
+
+  --font-size-l-lg: 0.875rem;
+  --font-weight-l-lg: 500;
+  --font-height-l-lg: 1.3;
+  --font-family-l-lg: var(--font-family-supply-mono);
+  --font-spacing-l-lg: 0;
+
+  --font-size-l-md: 0.75rem;
+  --font-weight-l-md: 400;
+  --font-height-l-md: 1.3;
+  --font-family-l-md: var(--font-family-supply-mono);
+  --font-spacing-l-md: 0;
+
+  --font-size-l-sm: 0.75rem;
+  --font-weight-l-sm: 400;
+  --font-height-l-sm: 1.3;
+  --font-family-l-sm: var(--font-family-frama);
+  --font-spacing-l-sm: 0.0225rem;
+
+  --layout-padding-top: 8rem;
+  --section-spacing: 4.6875rem;
+
+  --grid-container-max-width: 1920px;
+  --grid-offset: 48px;
+  --grid-columns-count: 12;
+  --grid-column-abs-width: 130px;
+
+  --scrollbar-width: 0px;
+  --grid-container-max-width-rem: 120rem;
+  --grid-container-half: min(50vw, calc(var(--grid-container-max-width-rem) / 2));
+  --grid-scrollbar-offset: min(max(calc(var(--grid-container-max-width-rem) / 2 - 50vw + var(--scrollbar-width) / 2), 0px), calc(var(--scrollbar-width) / 2));
+  --grid-abs-offset: calc(50% - var(--grid-container-half) + var(--grid-offset) + var(--grid-scrollbar-offset));
+  --grid-width: min(calc(100vw - var(--grid-offset) * 2 - var(--scrollbar-width)), calc(var(--grid-container-max-width-rem) - var(--grid-offset) * 2));
+  --grid-column-width: calc(var(--grid-width) * 0.07127);
+  --grid-gutter-width: calc(var(--grid-width) * 0.01316);
+}
+
+@media only screen and (max-width: 1680px) {
+  :root {
+    --font-size-t-xs: 0.9375rem;
+  }
+}
+
+@media only screen and (max-width: 1536px) {
+  :root {
+    --font-size-h-3xl: 7.65rem;
+    --font-size-h-2xl: 4.95rem;
+    --font-size-h-xl: 4rem;
+    --font-size-h-lg: 2rem;
+    --font-size-h-md: 2rem;
+  }
+}
+
+@media only screen and (max-width: 1280px) {
+  :root {
+    --font-size-h-3xl: 6.8rem;
+    --font-size-h-2xl: 4.4rem;
+    --font-size-h-xl: 3.5rem;
+  }
+}
+
+@media only screen and (max-width: 1080px) {
+  :root {
+    --section-spacing: 3rem;
+  }
+}
+
+@media only screen and (max-width: 987px) {
+  :root {
+    --font-size-h-3xl: 5.6rem;
+    --font-size-h-2xl: 3.575rem;
+    --font-size-h-xl: 3.575rem;
+    --font-size-h-lg: 2rem;
+    --font-size-h-md: 2rem;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  :root {
+    --grid-offset: 32px;
+    --font-size-h-3xl: min(6.5rem, 13vw);
+    --font-size-h-2xl: min(6.5rem, 13vw);
+    --font-size-t-lg: 1.125rem;
+  }
+}
+
+@media only screen and (max-width: 576px) {
+  :root {
+    --grid-offset: 24px;
+    --font-size-h-xl: 2.75rem;
+    --font-size-t-md: 1.0125rem;
+  }
+}
+
+/* Typography Utility Classes */
+.t-h-3xl {
+  margin: 0;
+  font: var(--font-weight-h-3xl) var(--font-size-h-3xl)/var(--font-height-h-3xl) var(--font-family-h-3xl);
+  letter-spacing: var(--font-spacing-h-3xl, 0);
+}
+.t-h-2xl {
+  margin: 0;
+  font: var(--font-weight-h-2xl) var(--font-size-h-2xl)/var(--font-height-h-2xl) var(--font-family-h-2xl);
+  letter-spacing: var(--font-spacing-h-2xl, 0);
+}
+.t-h-xl {
+  margin: 0;
+  font: var(--font-weight-h-xl) var(--font-size-h-xl)/var(--font-height-h-xl) var(--font-family-h-xl);
+  letter-spacing: var(--font-spacing-h-xl, 0);
+}
+.t-h-lg {
+  margin: 0;
+  font: var(--font-weight-h-lg) var(--font-size-h-lg)/var(--font-height-h-lg) var(--font-family-h-lg);
+  letter-spacing: var(--font-spacing-h-lg, 0);
+}
+.t-h-md {
+  margin: 0;
+  font: var(--font-weight-h-md) var(--font-size-h-md)/var(--font-height-h-md) var(--font-family-h-md);
+  letter-spacing: var(--font-spacing-h-md, 0);
+}
+.t-h-sm {
+  margin: 0;
+  font: var(--font-weight-h-sm) var(--font-size-h-sm)/var(--font-height-h-sm) var(--font-family-h-sm);
+  letter-spacing: var(--font-spacing-h-sm, 0);
+}
+.t-h-xs {
+  margin: 0;
+  font: var(--font-weight-h-xs) var(--font-size-h-xs)/var(--font-height-h-xs) var(--font-family-h-xs);
+  letter-spacing: var(--font-spacing-h-xs, 0);
+}
+.t-t-lg {
+  margin: 0;
+  font: var(--font-weight-t-lg) var(--font-size-t-lg)/var(--font-height-t-lg) var(--font-family-t-lg);
+  letter-spacing: var(--font-spacing-t-lg, 0);
+}
+.t-t-md {
+  margin: 0;
+  font: var(--font-weight-t-md) var(--font-size-t-md)/var(--font-height-t-md) var(--font-family-t-md);
+  letter-spacing: var(--font-spacing-t-md, 0);
+}
+.t-t-sm {
+  margin: 0;
+  font: var(--font-weight-t-sm) var(--font-size-t-sm)/var(--font-height-t-sm) var(--font-family-t-sm);
+  letter-spacing: var(--font-spacing-t-sm, 0);
+}
+.t-t-xs {
+  margin: 0;
+  font: var(--font-weight-t-xs) var(--font-size-t-xs)/var(--font-height-t-xs) var(--font-family-t-xs);
+  letter-spacing: var(--font-spacing-t-xs, 0);
+}
+.t-t-2xs {
+  margin: 0;
+  font: var(--font-weight-t-2xs) var(--font-size-t-2xs)/var(--font-height-t-2xs) var(--font-family-t-2xs);
+  letter-spacing: var(--font-spacing-t-2xs, 0);
+}
+.t-t-3xs {
+  margin: 0;
+  font: var(--font-weight-t-3xs) var(--font-size-t-3xs)/var(--font-height-t-3xs) var(--font-family-t-3xs);
+  letter-spacing: var(--font-spacing-t-3xs, 0);
+}
+.t-t-4xs {
+  margin: 0;
+  font: var(--font-weight-t-4xs) var(--font-size-t-4xs)/var(--font-height-t-4xs) var(--font-family-t-4xs);
+  letter-spacing: var(--font-spacing-t-4xs, 0);
+}
+.t-l-lg {
+  font: var(--font-weight-l-lg) var(--font-size-l-lg)/var(--font-height-l-lg) var(--font-family-l-lg);
+  letter-spacing: var(--font-spacing-l-lg, 0);
+  margin: 0;
+  text-transform: uppercase;
+}
+.t-l-md {
+  font: var(--font-weight-l-md) var(--font-size-l-md)/var(--font-height-l-md) var(--font-family-l-md);
+  letter-spacing: var(--font-spacing-l-md, 0);
+  margin: 0;
+  text-transform: uppercase;
+}
+.t-l-sm {
+  margin: 0;
+  font: var(--font-weight-l-sm) var(--font-size-l-sm)/var(--font-height-l-sm) var(--font-family-l-sm);
+  letter-spacing: var(--font-spacing-l-sm, 0);
+  text-transform: uppercase;
+}
+
+/* Layout Utilities */
+.u-container {
+  margin-right: auto;
+  margin-left: auto;
+  width: calc(100% - var(--grid-offset) * 2);
+  max-width: calc(var(--grid-container-max-width-rem) - var(--grid-offset) * 2);
+}
+.u-section {
+  margin: var(--section-spacing) 0;
+}
+.u-white-box {
+  padding: 3rem;
+  background-color: var(--color-white);
+  border-radius: 1.5rem;
+}
+@media only screen and (max-width: 1280px) {
+  .u-white-box {
+    padding: 2rem;
+    border-radius: 1rem;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .u-white-box {
+    padding: 1.5rem;
+  }
+}
+
+.u-height-fix {
+  display: block;
+  height: 1em;
+  line-height: 0.9;
+}

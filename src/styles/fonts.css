@@ -1,0 +1,53 @@
+@font-face {
+  font-family: 'Supply Mono';
+  font-style: normal;
+  font-weight: 500;
+  src: url('/fonts/supply-mono/PPSupplyMono-Medium.woff2') format('woff2'),
+       url('/fonts/supply-mono/PPSupplyMono-Medium.woff') format('woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Frama';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/frama/PPFrama-Regular-RD.woff2') format('woff2'),
+       url('/fonts/frama/PPFrama-Regular-RD.woff') format('woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Frama';
+  font-style: normal;
+  font-weight: 500;
+  src: url('/fonts/frama/PPFrama-Medium-RD.woff2') format('woff2'),
+       url('/fonts/frama/PPFrama-Medium-RD.woff') format('woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Montreal';
+  font-style: normal;
+  font-weight: 300;
+  src: url('/fonts/neue-montreal/PPNeueMontreal-Book-RD.woff2') format('woff2'),
+       url('/fonts/neue-montreal/PPNeueMontreal-Book-RD.woff') format('woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Montreal';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/neue-montreal/PPNeueMontreal-Regular-RD.woff2') format('woff2'),
+       url('/fonts/neue-montreal/PPNeueMontreal-Regular-RD.woff') format('woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Montreal';
+  font-style: normal;
+  font-weight: 500;
+  src: url('/fonts/neue-montreal/PPNeueMontreal-Medium-RD.woff2') format('woff2'),
+       url('/fonts/neue-montreal/PPNeueMontreal-Medium-RD.woff') format('woff');
+  font-display: swap;
+}

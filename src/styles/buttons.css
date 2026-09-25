@@ -1,0 +1,259 @@
+/* Button styles cloned from incredibles.dev */
+.btn-main {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-family-supply-mono);
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: transform 0.15s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.btn-main:active {
+  transform: scale(0.975);
+  transition: transform 0.08s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.btn-main__outer {
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+}
+
+.btn-main__outer:after,
+.btn-main__outer:before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border-radius: inherit;
+  content: "";
+}
+
+.btn-main__outer:before {
+  clip-path: inset(0);
+}
+
+.btn-main__outer:after {
+  z-index: 5;
+  border: 1px solid rgba(43, 43, 43, 0.169);
+}
+
+.btn-main__hover,
+.btn-main__inner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-main__inner {
+  position: relative;
+  z-index: 2;
+}
+
+.btn-main__inner .btn-main__icon,
+.btn-main__inner .btn-main__text {
+  transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
+}
+
+.btn-main__hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  clip-path: ellipse(80% 50% at 50% 152%);
+  transition: clip-path 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+  will-change: clip-path;
+}
+
+.btn-main__hover .btn-main__icon,
+.btn-main__hover .btn-main__text {
+  transform: translate3d(0, 0.5em, 0);
+  transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
+}
+
+.btn-main__hover .btn-main__text:after,
+.btn-main__hover .btn-main__text:before {
+  display: block;
+  transition: clip-path 1s cubic-bezier(0.23, 1, 0.32, 1) 0s;
+  content: attr(data-text);
+}
+
+.btn-main__hover .btn-main__text:before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  clip-path: inset(0 0 0);
+  color: var(--color-accent);
+}
+
+.btn-main__hover .btn-main__text:after {
+  position: relative;
+  clip-path: inset(100% 0 0);
+}
+
+.btn-main__icon {
+  display: block;
+  width: 0.75em;
+  height: 0.75em;
+  background: currentColor;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+@media (hover: hover) {
+  .btn-main:hover .btn-main__outer:before {
+    clip-path: inset(0 0 110%);
+    transition: clip-path 0.8s cubic-bezier(0.86, 0, 0.07, 1);
+  }
+  .btn-main:hover .btn-main__inner .btn-main__icon,
+  .btn-main:hover .btn-main__inner .btn-main__text {
+    transform: translate3d(0, -0.75em, 0);
+    transition: transform 0.4s cubic-bezier(0.55, -0.61, 0.73, 0.04);
+  }
+  .btn-main:hover .btn-main__hover {
+    clip-path: ellipse(100% 70% at 50% 50%);
+    transition: clip-path 0.8s cubic-bezier(0.86, 0, 0.07, 1);
+  }
+  .btn-main:hover .btn-main__hover .btn-main__icon,
+  .btn-main:hover .btn-main__hover .btn-main__text {
+    transform: translateZ(0);
+    transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1) 0.35s;
+  }
+  .btn-main:hover .btn-main__hover .btn-main__text:before {
+    clip-path: inset(0 0 100%);
+    transition: clip-path 0.6s cubic-bezier(0.19, 1, 0.22, 1) 0.35s;
+  }
+  .btn-main:hover .btn-main__hover .btn-main__text:after {
+    clip-path: inset(0 0 0);
+    transition: clip-path 0.6s cubic-bezier(0.19, 1, 0.22, 1) 0.35s;
+  }
+}
+
+.btn-main--lg {
+  font-size: 1rem;
+  font-weight: 400;
+}
+.btn-main--lg .btn-main__outer {
+  padding: 1rem 3rem;
+  height: 3rem;
+  border-radius: 999rem;
+}
+
+.btn-main--md {
+  font-size: 0.875rem;
+}
+.btn-main--md .btn-main__outer {
+  padding: 0.6875rem 1rem;
+  border-radius: 0.375rem;
+}
+
+.btn-main--sm {
+  font-size: 0.75rem;
+  letter-spacing: -0.03em;
+}
+.btn-main--sm .btn-main__outer {
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.375rem;
+}
+
+.btn-main--xs {
+  font-size: 0.625rem;
+  letter-spacing: -0.03em;
+}
+.btn-main--xs .btn-main__outer {
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+/* Variant styles */
+.btn-main--primary.btn-main--black {
+  color: var(--color-white-dark);
+}
+.btn-main--primary.btn-main--black .btn-main__outer:before {
+  background: var(--color-black);
+}
+.btn-main--primary.btn-main--black .btn-main__hover {
+  background: var(--color-white-dark);
+  color: var(--color-black);
+}
+
+.btn-main--primary.btn-main--white {
+  color: var(--color-black);
+}
+.btn-main--primary.btn-main--white .btn-main__outer:before {
+  background: var(--color-white-dark);
+}
+.btn-main--primary.btn-main--white .btn-main__outer:after {
+  border-color: var(--color-white-dark);
+}
+.btn-main--primary.btn-main--white .btn-main__hover {
+  background: var(--color-black);
+  border: 1px solid var(--color-white-dark);
+  color: var(--color-white-dark);
+}
+
+.btn-main--primary.btn-main--accent {
+  color: var(--color-white);
+}
+.btn-main--primary.btn-main--accent .btn-main__outer:before {
+  background: var(--color-accent);
+}
+.btn-main--primary.btn-main--accent .btn-main__outer:after {
+  border-color: var(--color-accent);
+}
+.btn-main--primary.btn-main--accent .btn-main__hover {
+  background: var(--color-white);
+  color: var(--color-accent);
+}
+
+.btn-main--secondary {
+  background: transparent;
+}
+.btn-main--secondary .btn-main__outer:after {
+  display: block;
+  border: 1px solid;
+}
+.btn-main--secondary.btn-main--black {
+  color: var(--color-black);
+}
+.btn-main--secondary.btn-main--black .btn-main__hover {
+  background: var(--color-black);
+  color: var(--color-white-dark);
+}
+
+.btn-main--secondary.btn-main--white {
+  border-color: var(--color-white-dark);
+  color: var(--color-white-dark);
+}
+.btn-main--secondary.btn-main--white .btn-main__hover {
+  background: var(--color-white-dark);
+  color: var(--color-black);
+}
