@@ -2,8 +2,11 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowRightIcon, ReaderIcon } from "@radix-ui/react-icons";
+import { ArrowRightIcon, ChevronDownIcon } from "@radix-ui/react-icons";
+import { Cpu, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SubjectShelf } from "./hero/SubjectShelf";
+import { SlateSimulator } from "./hero/SlateSimulator";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -14,176 +17,195 @@ export default function Hero() {
     () => {
       const mm = gsap.matchMedia();
 
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
-        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      mm.add(
+        {
+          hasMotion: "(prefers-reduced-motion: no-preference)",
+          reduceMotion: "(prefers-reduced-motion: reduce)",
+        },
+        (context) => {
+          const { hasMotion } = context.conditions as { hasMotion: boolean; reduceMotion: boolean };
 
-        tl.fromTo(
-          ".hero-category-chip",
-          { y: -10, autoAlpha: 0 },
-          { y: 0, autoAlpha: 1, duration: 0.35, clearProps: "all" }
-        )
-          .fromTo(
-            ".hero-title",
-            { y: 20, autoAlpha: 0 },
-            { y: 0, autoAlpha: 1, duration: 0.45, stagger: 0.08 },
-            "-=0.1"
-          )
-          .fromTo(
-            ".hero-subtext",
-            { y: 15, autoAlpha: 0 },
-            { y: 0, autoAlpha: 1, duration: 0.4 },
-            "-=0.2"
-          )
-          .fromTo(
-            ".hero-pillar-card",
-            { y: 24, autoAlpha: 0 },
-            { y: 0, autoAlpha: 1, duration: 0.45, stagger: 0.1, clearProps: "all" },
-            "-=0.15"
-          );
-      });
+          if (hasMotion) {
+            const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+            tl.fromTo(
+              ".hero-eyebrow-item",
+              { y: -12, autoAlpha: 0 },
+              { y: 0, autoAlpha: 1, duration: 0.35, clearProps: "all" }
+            )
+              .fromTo(
+                ".hero-title-line",
+                { y: 32, autoAlpha: 0 },
+                { y: 0, autoAlpha: 1, duration: 0.5, stagger: 0.1, clearProps: "all" },
+                "-=0.15"
+              )
+              .fromTo(
+                ".hero-subtext-el",
+                { y: 16, autoAlpha: 0 },
+                { y: 0, autoAlpha: 1, duration: 0.38, clearProps: "all" },
+                "-=0.2"
+              )
+              .fromTo(
+                ".hero-cta-wrap",
+                { y: 16, autoAlpha: 0 },
+                { y: 0, autoAlpha: 1, duration: 0.38, clearProps: "all" },
+                "-=0.2"
+              )
+              .fromTo(
+                ".hero-simulator-wrap",
+                { scale: 0.95, autoAlpha: 0, y: 20 },
+                { scale: 1, autoAlpha: 1, y: 0, duration: 0.55, ease: "power3.out", clearProps: "all" },
+                "-=0.3"
+              )
+              .fromTo(
+                ".hero-curriculum-dock",
+                { y: 20, autoAlpha: 0 },
+                { y: 0, autoAlpha: 1, duration: 0.45, clearProps: "all" },
+                "-=0.2"
+              );
+          } else {
+            gsap.set(
+              [
+                ".hero-eyebrow-item",
+                ".hero-title-line",
+                ".hero-subtext-el",
+                ".hero-cta-wrap",
+                ".hero-simulator-wrap",
+                ".hero-curriculum-dock",
+              ],
+              { autoAlpha: 1, y: 0, scale: 1, clearProps: "all" }
+            );
+          }
+        }
+      );
 
       return () => mm.revert();
     },
     { scope: containerRef }
   );
 
-
   const navigateToLogin = () => {
     window.history.pushState({}, "", "#login");
     window.dispatchEvent(new Event("hashchange"));
+  };
+
+  const scrollToNext = () => {
+    const el = document.getElementById("sanitizer");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <section
       id="home"
       ref={containerRef}
-      className="pt-28 sm:pt-36 pb-16 sm:pb-24 overflow-hidden relative border-b border-border/40"
+      className="min-h-[100dvh] pt-16 sm:pt-20 pb-0 flex flex-col justify-between relative overflow-hidden bg-background border-b border-border/70"
     >
-      <div className="container mx-auto px-4 sm:px-6 max-w-6xl relative z-10">
-        {/* Editorial Eyebrow & Kicker */}
-        <div className="max-w-4xl mb-12 sm:mb-16">
-          <div className="hero-category-chip flex items-center gap-2 text-xs font-mono text-muted-foreground mb-4">
-            <span className="text-primary font-bold">01 / ARCHITECTURE</span>
-            <span>·</span>
-            <span>OPEN K–12 PUBLIC REPOSITORY</span>
-          </div>
+      {/* Subtle Architectural Grid & Radial Glow */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.035] dark:opacity-[0.06]"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)",
+          backgroundSize: "28px 28px",
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-primary/10 blur-[130px] pointer-events-none"
+        aria-hidden="true"
+      />
 
-          <h1 className="hero-title text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-foreground leading-[1.08] font-heading mb-6">
-            Educational equity,{" "}
-            <span className="text-primary font-serif italic font-normal text-3xl sm:text-5xl md:text-6xl">
-              online or offline.
-            </span>
-          </h1>
-
-          <p className="hero-subtext text-sm sm:text-base text-muted-foreground max-w-[50ch] font-body leading-relaxed">
-            NovaSlate pairs an ad-free open digital library with dedicated <strong className="text-foreground font-heading">Atlas ESP32 hardware</strong>, ensuring curriculum access reaches every student regardless of connectivity.
-          </p>
-        </div>
-
-        {/* 2-Column Side-by-Side Cinematic Stage */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          {/* Pillar 1: NovaSlate Cloud Web */}
-          <div className="hero-pillar-card rounded-2xl border border-border bg-card p-6 sm:p-8 flex flex-col justify-between shadow-xs hover:border-primary/50 transition-fluid">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-xs font-mono font-bold tracking-wider text-primary">
-                  100% Free Software
-                </span>
-                <span className="text-xs font-mono font-bold text-primary">
-                  Instant Access
-                </span>
-              </div>
-
-              <h2 className="text-xl font-bold text-foreground font-heading">
-                NovaSlate Web Library
-              </h2>
-
-              <p className="text-xs sm:text-sm text-muted-foreground font-body leading-relaxed">
-                Read Class 1–12 textbooks directly in any browser. Features PyMuPDF watermark sanitization, chapter search, and formula indexers.
-              </p>
-
-              <div className="py-3 border-y border-border/70 font-mono text-xs space-y-2">
-                <div className="flex items-center justify-between text-foreground">
-                  <span>• Subscription Cost:</span>
-                  <span className="font-bold text-primary font-mono">₹0 Forever</span>
-                </div>
-                <div className="flex items-center justify-between text-muted-foreground">
-                  <span>• Commercial Ads:</span>
-                  <span className="font-bold text-foreground font-mono">Zero Ads Guaranteed</span>
-                </div>
-                <div className="flex items-center justify-between text-muted-foreground">
-                  <span>• Delivery Mechanism:</span>
-                  <span className="font-bold text-foreground font-mono">Instant Cloud CDN</span>
-                </div>
-              </div>
+      {/* Main 12-Column Hero Stage */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl flex-1 flex flex-col justify-center relative z-10 py-6 sm:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          {/* Left Column: Value Proposition & High-Agency CTAs (7 Cols) */}
+          <div className="lg:col-span-7 space-y-5 text-left">
+            {/* Eyebrow (Restrained: Exactly 1 for the hero) */}
+            <div className="hero-eyebrow-item inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium tracking-wide bg-secondary text-primary border border-border">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              <span className="font-bold tracking-tight">01 / ARCHITECTURE</span>
+              <span className="text-border">·</span>
+              <span className="text-muted-foreground">OPEN K–12 REPOSITORY</span>
             </div>
 
-            <div className="pt-6 border-t border-border mt-6">
+            {/* Display Headline */}
+            <div className="space-y-1">
+              <h1 className="hero-title-line font-heading font-black text-4xl sm:text-6xl lg:text-[4.75rem] tracking-tight leading-[1.03] text-foreground">
+                Learn{" "}
+                <span className="font-serif italic font-normal text-primary">
+                  without limits.
+                </span>
+              </h1>
+            </div>
+
+            {/* Disciplined Subtext (Under 20 Words) */}
+            <p className="hero-subtext-el text-sm sm:text-base text-muted-foreground font-body max-w-xl leading-relaxed">
+              Curated K–12 textbooks, byte-level sanitized notes, and offline e-ink hardware. 100% free forever.
+            </p>
+
+            {/* High-Agency CTAs with Tactile Feedback */}
+            <div className="hero-cta-wrap flex flex-wrap items-center gap-3 pt-1">
               <Button
                 onClick={navigateToLogin}
-                className="w-full h-11 font-bold font-heading bg-primary text-primary-foreground hover:opacity-90 gap-2 cursor-pointer shadow-xs rounded-lg"
+                size="lg"
+                className="h-11 px-6 rounded-full font-heading font-bold text-sm bg-primary text-primary-foreground hover:bg-primary/90 shadow-md hover:shadow-lg transition-all active:scale-[0.97] cursor-pointer gap-2 interactive-tap"
               >
-                <ReaderIcon className="w-4 h-4" />
-                <span>Launch Free Web Library</span>
+                <span>Launch Free Library</span>
                 <ArrowRightIcon className="w-4 h-4" />
               </Button>
-            </div>
-          </div>
 
-          {/* Pillar 2: Atlas Physical Reader */}
-          <div className="hero-pillar-card rounded-2xl border-2 border-[var(--pomelli-gold)]/40 bg-card p-6 sm:p-8 flex flex-col justify-between shadow-sm">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-xs font-mono font-bold tracking-wider text-[var(--pomelli-gold)]">
-                  Open Hardware · Permanent Constant
-                </span>
-                <span className="atlas-roadmap-badge text-xs font-mono font-bold text-[var(--pomelli-gold)]">
-                  Unit 01 in Lab
-                </span>
-              </div>
-
-              <h2 className="text-xl font-bold text-foreground font-heading">
-                Atlas ESP32 Handheld Slate
-              </h2>
-
-              <p className="text-xs sm:text-sm text-muted-foreground font-body leading-relaxed">
-                Unit 01 is actively running in our hardware lab. All embedded C++ drivers and schematics are fully open source on GitHub. Mass production for rural school classrooms is planned for our roadmap.
-              </p>
-
-              <div className="py-3 border-y border-border/70 font-mono text-xs space-y-2">
-                <div className="flex items-center justify-between text-foreground">
-                  <span>• Current Status:</span>
-                  <span className="font-bold text-[var(--pomelli-gold)] font-mono">Prototype 01 Active</span>
-                </div>
-                <div className="flex items-center justify-between text-muted-foreground">
-                  <span>• Future Horizon:</span>
-                  <span className="font-bold text-foreground font-mono">Mass Classroom Production</span>
-                </div>
-                <div className="flex items-center justify-between text-muted-foreground">
-                  <span>• Source Code:</span>
-                  <span className="font-bold text-primary font-mono">100% Open Embedded C++</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-6 border-t border-border mt-6">
               <a
-                href="https://github.com/Reyansh-Niranjan/novaslate"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full h-11 rounded-lg border border-border bg-secondary hover:bg-muted text-xs sm:text-sm font-bold font-heading text-foreground cursor-pointer inline-flex items-center justify-center gap-1.5"
+                href="#hardware"
+                className="h-11 px-5 rounded-full font-heading font-semibold text-xs sm:text-sm border border-border bg-card hover:bg-secondary text-foreground transition-all active:scale-[0.97] cursor-pointer inline-flex items-center justify-center gap-2 backdrop-blur-xs interactive-tap shadow-2xs"
               >
-                <span>View C++ Firmware on GitHub</span>
-                <ArrowRightIcon className="w-3.5 h-3.5 text-primary" />
+                <Cpu className="w-4 h-4 text-primary" />
+                <span>Atlas Hardware Spec</span>
+                <span className="text-xs font-mono text-primary font-bold">(ESP32)</span>
               </a>
             </div>
+
+            {/* Micro Proof Badges */}
+            <div className="hero-subtext-el pt-3 flex flex-wrap items-center gap-y-2 gap-x-5 text-xs text-muted-foreground font-mono">
+              <span className="flex items-center gap-1.5">
+                <Check className="w-3.5 h-3.5 text-emerald-500" />
+                <span>100% Ad-Free Pledge</span>
+              </span>
+              <span className="text-border hidden sm:inline">•</span>
+              <span className="flex items-center gap-1.5">
+                <Check className="w-3.5 h-3.5 text-primary" />
+                <span>12,800+ NCERT Pages</span>
+              </span>
+              <span className="text-border hidden sm:inline">•</span>
+              <span className="flex items-center gap-1.5">
+                <Check className="w-3.5 h-3.5 text-[var(--pomelli-gold)]" />
+                <span>Offline E-Ink Ready</span>
+              </span>
+            </div>
+          </div>
+
+          {/* Right Column: Live Interactive Slate Simulator (5 Cols) */}
+          <div className="hero-simulator-wrap lg:col-span-5">
+            <SlateSimulator />
           </div>
         </div>
 
-        {/* Trust Footer */}
-        <div className="text-center font-mono text-xs text-muted-foreground pt-4 border-t border-border/60">
-          Architected by <strong>Reyansh Niranjan</strong> · Public Student Welfare Initiative
+        {/* Scroll cue button */}
+        <div className="flex justify-center pt-4 sm:pt-6">
+          <button
+            onClick={scrollToNext}
+            className="group flex flex-col items-center text-muted-foreground hover:text-primary transition-colors cursor-pointer interactive-tap"
+            aria-label="Scroll to curriculum sanitizer engine"
+          >
+            <div className="w-6 h-6 rounded-full bg-secondary/80 border border-border flex items-center justify-center transition-transform group-hover:translate-y-0.5 shadow-2xs">
+              <ChevronDownIcon className="w-3.5 h-3.5 text-primary" />
+            </div>
+          </button>
         </div>
+      </div>
+
+      {/* ── Bottom Docked Curriculum Bar ── */}
+      <div className="hero-curriculum-dock w-full mt-auto">
+        <SubjectShelf onSelectSubject={() => navigateToLogin()} />
       </div>
     </section>
   );

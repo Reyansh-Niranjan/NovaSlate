@@ -113,6 +113,9 @@ html.lenis body {
     --font-mono:    'JetBrains Mono', monospace;
 
     /* Easing curves (Emil Kowalski) */
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+    --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
     --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
     --ease-in-out-expo: cubic-bezier(0.77, 0, 0.175, 1);
   }
@@ -193,29 +196,23 @@ html.lenis body {
     color: #0B1120;
   }
 
-  /* Minimalist Custom Scrollbar */
+  /* Hide scrollbar globally across all browsers while preserving full scrolling functionality */
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  *::-webkit-scrollbar,
   ::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
+    display: none;
+    width: 0;
+    height: 0;
   }
 
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: var(--ns-navy);
-    border-radius: 9999px;
-    opacity: 0.3;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--ns-blue);
-  }
-
-  html {
-    scrollbar-width: thin;
-    scrollbar-color: var(--ns-navy) transparent;
+  html,
+  body {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 
   body {
@@ -694,4 +691,155 @@ input[type="range"].mobile-slider:active::-moz-range-thumb {
 /* ── Scroll-reveal base state (GSAP sets these) ── */
 .gsap-reveal {
   will-change: transform, opacity;
+}
+
+/* ── Brilliant-Inspired Hero Kinetic Widget Animations ── */
+@keyframes barBreathe {
+  0% { transform: scaleY(0.88); opacity: 0.7; }
+  100% { transform: scaleY(1.08); opacity: 0.95; }
+}
+
+@keyframes particleJitter {
+  0% { transform: translate(0, 0); }
+  33% { transform: translate(2px, -2px); }
+  66% { transform: translate(-1.5px, 2px); }
+  100% { transform: translate(1px, 1px); }
+}
+
+@keyframes waveNodeTravel {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-18px, 14px); }
+}
+
+@keyframes floatSubtle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes bounceSubtle {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -4px); }
+}
+
+.animate-float-subtle {
+  animation: floatSubtle 4.5s ease-in-out infinite;
+}
+
+.animate-bounce-subtle {
+  animation: bounceSubtle 2.8s ease-in-out infinite;
+}
+
+.animate-wave-node {
+  animation: waveNodeTravel 5s ease-in-out infinite alternate;
+}
+
+.animate-ping-slow {
+  animation: ping 3s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* ── Emil Kowalski Smooth Accordion Expansion (Grid 0fr -> 1fr) ── */
+.accordion-content-grid {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 260ms var(--ease-out);
+}
+
+.accordion-content-grid[data-state="open"] {
+  grid-template-rows: 1fr;
+}
+
+.accordion-content-inner {
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 220ms ease-out, transform 240ms var(--ease-out);
+}
+
+.accordion-content-grid[data-state="open"] .accordion-content-inner {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Tactile Press & Hover Micro-Physics ── */
+@media (hover: hover) and (pointer: fine) {
+  .interactive-tap {
+    transition: transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
+  }
+  .interactive-tap:hover {
+    transform: translateY(-1px);
+  }
+}
+
+.interactive-tap:active {
+  transform: scale(0.97) !important;
+  transition: transform 100ms var(--ease-out) !important;
+}
+
+/* ── Respect Prefers-Reduced-Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-subtle,
+  .animate-bounce-subtle,
+  .animate-wave-node,
+  .animate-ping-slow,
+  .animate-shimmer,
+  .animate-pulse-ring {
+    animation: none !important;
+  }
+  .accordion-content-grid {
+    transition-duration: 0.01ms !important;
+  }
+  .interactive-tap {
+    transition-duration: 0.01ms !important;
+    transform: none !important;
+  }
+}
+
+/* ── 3D & Transition Utilities ── */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+@keyframes pulseRing {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.4); opacity: 0.2; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+.animate-pulse-ring {
+  animation: pulseRing 2.4s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes shimmerSweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+.animate-shimmer {
+  animation: shimmerSweep 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-cursor-blink {
+  animation: cursorBlink 0.9s infinite;
+}
+
+/* ── Emil Kowalski Smooth Crossfade Blur Mask ── */
+.blur-bridge-entering {
+  filter: blur(2px);
+  opacity: 0.7;
+  transition: filter 220ms ease-out, opacity 200ms ease-out;
+}
+
+.blur-bridge-settled {
+  filter: blur(0px);
+  opacity: 1;
+  transition: filter 220ms ease-out, opacity 200ms ease-out;
 }

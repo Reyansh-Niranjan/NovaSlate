@@ -8,7 +8,6 @@ import {
   ReaderIcon,
   ArrowRightIcon,
   Component1Icon,
-  CheckCircledIcon,
 } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 
@@ -20,43 +19,60 @@ export default function Pricing() {
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.fromTo(
-          ".pricing-header-item",
-          { y: 18, autoAlpha: 0 },
-          {
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: "top 85%",
-              once: true,
-            },
-            y: 0,
-            autoAlpha: 1,
-            duration: 0.4,
-            stagger: 0.06,
-            ease: "power3.out",
-            clearProps: "all",
-          }
-        );
 
-        gsap.fromTo(
-          ".pricing-card-item",
-          { y: 24, autoAlpha: 0 },
-          {
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: "top 75%",
-              once: true,
-            },
-            y: 0,
-            autoAlpha: 1,
-            stagger: 0.09,
-            duration: 0.42,
-            ease: "power3.out",
-            clearProps: "all",
+      mm.add(
+        {
+          hasMotion: "(prefers-reduced-motion: no-preference)",
+          reduceMotion: "(prefers-reduced-motion: reduce)",
+        },
+        (context) => {
+          const { hasMotion } = context.conditions as { hasMotion: boolean; reduceMotion: boolean };
+
+          if (hasMotion) {
+            gsap.fromTo(
+              ".pricing-header-item",
+              { y: 18, autoAlpha: 0 },
+              {
+                scrollTrigger: {
+                  trigger: containerRef.current,
+                  start: "top 85%",
+                  once: true,
+                },
+                y: 0,
+                autoAlpha: 1,
+                duration: 0.4,
+                stagger: 0.06,
+                ease: "power3.out",
+                clearProps: "all",
+              }
+            );
+
+            gsap.fromTo(
+              ".pricing-card-item",
+              { y: 24, autoAlpha: 0 },
+              {
+                scrollTrigger: {
+                  trigger: containerRef.current,
+                  start: "top 75%",
+                  once: true,
+                },
+                y: 0,
+                autoAlpha: 1,
+                stagger: 0.09,
+                duration: 0.42,
+                ease: "power3.out",
+                clearProps: "all",
+              }
+            );
+          } else {
+            gsap.set([".pricing-header-item", ".pricing-card-item"], {
+              autoAlpha: 1,
+              y: 0,
+              clearProps: "all",
+            });
           }
-        );
-      });
+        }
+      );
 
       return () => mm.revert();
     },
@@ -72,16 +88,11 @@ export default function Pricing() {
     <section
       id="pricing"
       ref={containerRef}
-      className="py-16 sm:py-28 relative overflow-hidden"
+      className="py-16 sm:py-24 relative overflow-hidden bg-background"
     >
       <div className="container mx-auto px-4 sm:px-6 max-w-6xl relative z-10">
-        {/* Section Header */}
+        {/* Section Header (Restrained: No redundant eyebrow) */}
         <div className="max-w-3xl mb-10 sm:mb-12">
-          <div className="pricing-header-item inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold tracking-wide bg-secondary text-primary border border-border mb-3 font-heading">
-            <CheckCircledIcon className="w-3.5 h-3.5" />
-            Transparent Open-Access Model
-          </div>
-
           <h2 className="pricing-header-item text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-foreground mb-4 font-heading leading-tight">
             100% Free Software.{" "}
             <span className="text-primary font-serif italic font-normal text-2xl sm:text-3xl md:text-4xl">
@@ -174,7 +185,7 @@ export default function Pricing() {
             <Button
               variant="outline"
               onClick={navigateToLogin}
-              className="w-full h-11 font-bold font-heading border-border text-foreground hover:bg-secondary hover:border-primary/50 transition-fluid cursor-pointer rounded-lg"
+              className="w-full h-11 font-bold font-heading border-border text-foreground hover:bg-secondary hover:border-primary/50 transition-fluid cursor-pointer rounded-lg interactive-tap active:scale-[0.97]"
             >
               <ReaderIcon className="w-4 h-4 text-primary" />
               <span>Launch Free Library</span>
@@ -182,8 +193,8 @@ export default function Pricing() {
           </div>
 
           {/* Tier 2: Atlas ESP32 Reader (Featured Tier) */}
-          <div className="pricing-card-item rounded-2xl border-2 border-primary bg-card p-6 sm:p-8 flex flex-col justify-between shadow-md relative hover:shadow-lg transition-fluid">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold font-mono px-3 py-1 rounded-full">
+          <div className="pricing-card-item rounded-2xl border-2 border-primary bg-card p-6 sm:p-8 pt-8 sm:pt-10 flex flex-col justify-between shadow-md relative hover:shadow-lg transition-fluid">
+            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold font-mono px-3.5 py-1 rounded-full shadow-md">
               ★ Physical Hardware · At-Cost
             </div>
 
@@ -251,7 +262,7 @@ export default function Pricing() {
               onClick={() => {
                 window.location.href = "mailto:deployments@novaslate.org?subject=Atlas%20Hardware%20Inquiry";
               }}
-              className="w-full h-11 font-bold font-heading bg-primary text-primary-foreground hover:opacity-90 transition-fluid cursor-pointer shadow-xs gap-2 rounded-lg"
+              className="w-full h-11 font-bold font-heading bg-primary text-primary-foreground hover:opacity-90 transition-fluid cursor-pointer shadow-xs gap-2 rounded-lg interactive-tap active:scale-[0.97]"
             >
               <Component1Icon className="w-4 h-4" />
               <span>Order Atlas Device</span>

@@ -9,10 +9,10 @@ import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import Projects from "./components/Projects";
+import CurriculumBento from "./components/CurriculumBento";
 import Pricing from "./components/Pricing";
 import FAQ from "./components/FAQ";
 import Creator from "./components/Creator";
-import BackgroundCanvas from "./components/BackgroundCanvas";
 import { supabase } from "./lib/supabaseClient";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -155,9 +155,6 @@ export default function App() {
     <ErrorBoundary>
       <Analytics />
       <div className="min-h-[100dvh] relative bg-background text-foreground">
-        {/* Ambient GPU Constellation Canvas (home view only) */}
-        {currentView === "home" && <BackgroundCanvas />}
-
         {currentView === "login" ? (
           <Suspense fallback={<FullPageLoader />}>
             <Login
@@ -214,6 +211,8 @@ export default function App() {
               <About />
               <hr className="border-border m-0" />
               <Projects />
+              <hr className="border-border m-0" />
+              <CurriculumBento />
               <hr className="border-border m-0" />
               <Pricing />
               <hr className="border-border m-0" />

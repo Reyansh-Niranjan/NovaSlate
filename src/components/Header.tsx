@@ -61,11 +61,16 @@ export default function Header() {
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
-    gsap.to(window, {
-      duration: 0.8,
-      scrollTo: { y: href, offsetY: 64 },
-      ease: "power2.inOut",
-    });
+    const target = document.querySelector(href);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth" });
+    } else {
+      gsap.to(window, {
+        duration: 0.6,
+        scrollTo: { y: href, offsetY: 64 },
+        ease: "power2.out",
+      });
+    }
   };
 
   const navigateToLogin = () => {
@@ -87,7 +92,7 @@ export default function Header() {
         <a
           href="#home"
           onClick={(e) => handleNavClick(e, "#home")}
-          className="flex items-center gap-2.5 group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md"
+          className="flex items-center gap-2.5 group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md interactive-tap"
         >
           <Logo className="h-7 w-auto transition-transform group-hover:scale-105" />
           <div className="flex items-center gap-2">
@@ -101,32 +106,34 @@ export default function Header() {
         </a>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-6">
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={(e) => handleNavClick(e, link.href)}
-              className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors cursor-pointer py-1 font-heading hover:scale-[1.02] active:scale-[0.98]"
-            >
-              {link.label}
-            </a>
-          ))}
+        <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
+          {navLinks.map((link) => {
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
+                className="px-3 py-1.5 rounded-lg text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors cursor-pointer font-heading"
+              >
+                {link.label}
+              </a>
+            );
+          })}
         </nav>
 
-        {/* Desktop Conversion CTAs & Theme Toggle */}
+        {/* Right CTA Actions */}
         <div className="hidden md:flex items-center gap-3">
           <ThemeToggle />
           <button
             onClick={navigateToLogin}
-            className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors px-2 py-1.5 cursor-pointer font-heading"
+            className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors px-2 py-1.5 cursor-pointer font-heading interactive-tap active:scale-[0.97]"
           >
             Log In
           </button>
           <Button
             size="sm"
             onClick={navigateToLogin}
-            className="text-xs h-8 px-4 gap-1.5 font-bold cursor-pointer rounded-lg font-heading bg-primary text-primary-foreground hover:opacity-90 shadow-xs"
+            className="text-xs h-8 px-4 gap-1.5 font-bold cursor-pointer rounded-lg font-heading bg-primary text-primary-foreground hover:opacity-90 shadow-xs interactive-tap active:scale-[0.97]"
           >
             <span>Start Free</span>
             <ArrowTopRightIcon className="w-3.5 h-3.5" />
@@ -138,7 +145,7 @@ export default function Header() {
           <ThemeToggle />
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-lg border border-border text-foreground hover:bg-secondary transition-colors cursor-pointer"
+            className="p-2 rounded-lg border border-border text-foreground hover:bg-secondary transition-colors cursor-pointer interactive-tap active:scale-[0.97]"
             aria-label="Toggle Navigation Menu"
             aria-expanded={mobileMenuOpen}
           >

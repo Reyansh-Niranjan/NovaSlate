@@ -4,7 +4,6 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   ChevronDownIcon,
-  QuestionMarkCircledIcon,
   CheckCircledIcon,
   LockClosedIcon,
 } from "@radix-ui/react-icons";
@@ -85,43 +84,60 @@ export default function FAQ() {
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.fromTo(
-          ".faq-header-item",
-          { y: 20, autoAlpha: 0 },
-          {
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: "top 85%",
-              once: true,
-            },
-            y: 0,
-            autoAlpha: 1,
-            duration: 0.4,
-            stagger: 0.08,
-            ease: "power3.out",
-            clearProps: "all",
-          }
-        );
 
-        gsap.fromTo(
-          ".faq-accordion-item",
-          { y: 20, autoAlpha: 0 },
-          {
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: "top 80%",
-              once: true,
-            },
-            y: 0,
-            autoAlpha: 1,
-            duration: 0.35,
-            stagger: 0.06,
-            ease: "power3.out",
-            clearProps: "all",
+      mm.add(
+        {
+          hasMotion: "(prefers-reduced-motion: no-preference)",
+          reduceMotion: "(prefers-reduced-motion: reduce)",
+        },
+        (context) => {
+          const { hasMotion } = context.conditions as { hasMotion: boolean; reduceMotion: boolean };
+
+          if (hasMotion) {
+            gsap.fromTo(
+              ".faq-header-item",
+              { y: 20, autoAlpha: 0 },
+              {
+                scrollTrigger: {
+                  trigger: containerRef.current,
+                  start: "top 85%",
+                  once: true,
+                },
+                y: 0,
+                autoAlpha: 1,
+                duration: 0.4,
+                stagger: 0.08,
+                ease: "power3.out",
+                clearProps: "all",
+              }
+            );
+
+            gsap.fromTo(
+              ".faq-accordion-item",
+              { y: 20, autoAlpha: 0 },
+              {
+                scrollTrigger: {
+                  trigger: containerRef.current,
+                  start: "top 80%",
+                  once: true,
+                },
+                y: 0,
+                autoAlpha: 1,
+                duration: 0.35,
+                stagger: 0.06,
+                ease: "power3.out",
+                clearProps: "all",
+              }
+            );
+          } else {
+            gsap.set([".faq-header-item", ".faq-accordion-item"], {
+              autoAlpha: 1,
+              y: 0,
+              clearProps: "all",
+            });
           }
-        );
-      });
+        }
+      );
 
       return () => mm.revert();
     },
@@ -136,16 +152,11 @@ export default function FAQ() {
     <section
       id="faq"
       ref={containerRef}
-      className="py-16 sm:py-28 relative overflow-hidden"
+      className="py-16 sm:py-24 relative overflow-hidden bg-background"
     >
       <div className="container mx-auto px-4 sm:px-6 max-w-4xl relative z-10">
-        {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-          <div className="faq-header-item inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold tracking-wide bg-secondary text-primary border border-border mb-3 font-heading">
-            <QuestionMarkCircledIcon className="w-3.5 h-3.5" />
-            Frequently Asked Questions
-          </div>
-
+        {/* Section Header (Restrained: No redundant eyebrow) */}
+        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
           <h2 className="faq-header-item text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-foreground mb-4 font-heading leading-tight">
             Everything you need to know about NovaSlate.
           </h2>
@@ -173,35 +184,47 @@ export default function FAQ() {
           </div>
         </div>
 
-        {/* Accordion List */}
+        {/* Accordion List with Smooth CSS Grid Height Expansion */}
         <div className="space-y-3">
           {faqs.map((faq) => {
             const isOpen = openId === faq.id;
             return (
               <div
                 key={faq.id}
-                className={`faq-accordion-item rounded-2xl border transition-colors ${
-                  isOpen ? "bg-card border-primary/40 shadow-xs" : "bg-card/70 border-border hover:border-border/80"
+                className={`faq-accordion-item rounded-2xl border transition-colors duration-200 ${
+                  isOpen
+                    ? "bg-card border-primary/40 shadow-xs"
+                    : "bg-card/70 border-border hover:border-border/80"
                 }`}
               >
                 <button
                   onClick={() => toggleItem(faq.id)}
-                  className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer"
+                  className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer interactive-tap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-2xl"
                   aria-expanded={isOpen}
                 >
                   <span className="text-sm sm:text-base font-bold text-foreground font-heading">
                     {faq.question}
                   </span>
-                  <ChevronDownIcon className={`w-4 h-4 shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180 text-primary" : "text-muted-foreground"}`} />
+                  <ChevronDownIcon
+                    className={`w-4 h-4 shrink-0 transition-transform duration-250 ease-out ${
+                      isOpen ? "rotate-180 text-primary" : "text-muted-foreground"
+                    }`}
+                  />
                 </button>
 
-                {isOpen && (
-                  <div className="px-5 sm:px-6 pb-5 sm:pb-6 pt-0">
-                    <p className="text-xs sm:text-sm text-muted-foreground font-body leading-relaxed border-t border-border pt-3 max-w-[65ch]">
-                      {faq.answer}
-                    </p>
+                {/* CSS Grid zero-jank expand/collapse */}
+                <div
+                  className="accordion-content-grid"
+                  data-state={isOpen ? "open" : "closed"}
+                >
+                  <div className="accordion-content-inner">
+                    <div className="px-5 sm:px-6 pb-5 sm:pb-6 pt-0">
+                      <p className="text-xs sm:text-sm text-muted-foreground font-body leading-relaxed border-t border-border pt-3 max-w-[65ch]">
+                        {faq.answer}
+                      </p>
+                    </div>
                   </div>
-                )}
+                </div>
               </div>
             );
           })}
