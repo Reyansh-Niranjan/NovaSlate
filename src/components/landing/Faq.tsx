@@ -13,7 +13,7 @@ export const Faq: React.FC<FaqProps> = ({ onOpenContact }) => {
   };
 
   return (
-    <section className="s-faq u-container">
+    <section className="s-faq u-container relative z-10 bg-[var(--color-bg)]">
       <div className="s__inner">
         <div className="s__top">
           <h2 className="s__title t-h-lg">{siteContent.faq.title}</h2>

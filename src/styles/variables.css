@@ -16,15 +16,16 @@
   --color-heading: #0E1B22;
   --color-text: #1B313C;
 
-  --font-family-proxima: 'Proxima Nova', 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-family-lato: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-family-frama: var(--font-family-proxima);
-  --font-family-neue-montreal: var(--font-family-lato);
-  --font-family-supply-mono: 'PPSupplyMono', monospace;
-  --font-family-sans: var(--font-family-lato);
-  --font-family-heading: var(--font-family-proxima);
-  --font-family-text: var(--font-family-lato);
-  --font-family-mono: var(--font-family-supply-mono);
+  --font-family-work-sans: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-lexend: 'Lexend', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-mono: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-family-serif: 'Newsreader', Georgia, serif;
+  --font-family-sans: var(--font-family-lexend);
+  --font-family-heading: var(--font-family-work-sans);
+  --font-family-text: var(--font-family-lexend);
+  --font-family-frama: var(--font-family-work-sans);
+  --font-family-neue-montreal: var(--font-family-lexend);
+  --font-family-supply-mono: var(--font-family-mono);
 
   --font-size-base: 16px;
   --font-weight-base: 300;
@@ -214,106 +215,106 @@
   margin: 0;
   font: var(--font-weight-h-3xl) var(--font-size-h-3xl)/var(--font-height-h-3xl) var(--font-family-h-3xl);
   letter-spacing: var(--font-spacing-h-3xl, 0);
-  color: var(--color-heading, #2b2b2b);
+  color: var(--color-heading);
 }
 .t-h-2xl {
   margin: 0;
   font: var(--font-weight-h-2xl) var(--font-size-h-2xl)/var(--font-height-h-2xl) var(--font-family-h-2xl);
   letter-spacing: var(--font-spacing-h-2xl, 0);
-  color: var(--color-heading, #2b2b2b);
+  color: var(--color-heading);
 }
 .t-h-xl {
   margin: 0;
   font: var(--font-weight-h-xl) var(--font-size-h-xl)/var(--font-height-h-xl) var(--font-family-h-xl);
   letter-spacing: var(--font-spacing-h-xl, 0);
-  color: var(--color-heading, #2b2b2b);
+  color: var(--color-heading);
 }
 .t-h-lg {
   margin: 0;
   font: var(--font-weight-h-lg) var(--font-size-h-lg)/var(--font-height-h-lg) var(--font-family-h-lg);
   letter-spacing: var(--font-spacing-h-lg, 0);
-  color: var(--color-heading, #2b2b2b);
+  color: var(--color-heading);
 }
 .t-h-md {
   margin: 0;
   font: var(--font-weight-h-md) var(--font-size-h-md)/var(--font-height-h-md) var(--font-family-h-md);
   letter-spacing: var(--font-spacing-h-md, 0);
-  color: var(--color-heading, #2b2b2b);
+  color: var(--color-heading);
 }
 .t-h-sm {
   margin: 0;
   font: var(--font-weight-h-sm) var(--font-size-h-sm)/var(--font-height-h-sm) var(--font-family-h-sm);
   letter-spacing: var(--font-spacing-h-sm, 0);
-  color: var(--color-heading, #2b2b2b);
+  color: var(--color-heading);
 }
 .t-h-xs {
   margin: 0;
   font: var(--font-weight-h-xs) var(--font-size-h-xs)/var(--font-height-h-xs) var(--font-family-h-xs);
   letter-spacing: var(--font-spacing-h-xs, 0);
-  color: var(--color-heading, #2b2b2b);
+  color: var(--color-heading);
 }
 .t-t-lg {
   margin: 0;
   font: var(--font-weight-t-lg) var(--font-size-t-lg)/var(--font-height-t-lg) var(--font-family-t-lg);
   letter-spacing: var(--font-spacing-t-lg, 0);
-  color: var(--color-text, #2b2b2b);
+  color: var(--color-text);
 }
 .t-t-md {
   margin: 0;
   font: var(--font-weight-t-md) var(--font-size-t-md)/var(--font-height-t-md) var(--font-family-t-md);
   letter-spacing: var(--font-spacing-t-md, 0);
-  color: var(--color-text, #2b2b2b);
+  color: var(--color-text);
 }
 .t-t-sm {
   margin: 0;
   font: var(--font-weight-t-sm) var(--font-size-t-sm)/var(--font-height-t-sm) var(--font-family-t-sm);
   letter-spacing: var(--font-spacing-t-sm, 0);
-  color: var(--color-text, #2b2b2b);
+  color: var(--color-text);
 }
 .t-t-xs {
   margin: 0;
   font: var(--font-weight-t-xs) var(--font-size-t-xs)/var(--font-height-t-xs) var(--font-family-t-xs);
   letter-spacing: var(--font-spacing-t-xs, 0);
-  color: var(--color-text, #2b2b2b);
+  color: var(--color-text);
 }
 .t-t-2xs {
   margin: 0;
   font: var(--font-weight-t-2xs) var(--font-size-t-2xs)/var(--font-height-t-2xs) var(--font-family-t-2xs);
   letter-spacing: var(--font-spacing-t-2xs, 0);
-  color: var(--color-text, #2b2b2b);
+  color: var(--color-text);
 }
 .t-t-3xs {
   margin: 0;
   font: var(--font-weight-t-3xs) var(--font-size-t-3xs)/var(--font-height-t-3xs) var(--font-family-t-3xs);
   letter-spacing: var(--font-spacing-t-3xs, 0);
-  color: var(--color-text, #2b2b2b);
+  color: var(--color-text);
 }
 .t-t-4xs {
   margin: 0;
   font: var(--font-weight-t-4xs) var(--font-size-t-4xs)/var(--font-height-t-4xs) var(--font-family-t-4xs);
   letter-spacing: var(--font-spacing-t-4xs, 0);
-  color: var(--color-text, #2b2b2b);
+  color: var(--color-text);
 }
 .t-l-lg {
   font: var(--font-weight-l-lg) var(--font-size-l-lg)/var(--font-height-l-lg) var(--font-family-l-lg);
   letter-spacing: var(--font-spacing-l-lg, 0);
   margin: 0;
   text-transform: uppercase;
-  color: var(--color-text, #2b2b2b);
+  color: var(--color-text);
 }
 .t-l-md {
   font: var(--font-weight-l-md) var(--font-size-l-md)/var(--font-height-l-md) var(--font-family-l-md);
   letter-spacing: var(--font-spacing-l-md, 0);
   margin: 0;
   text-transform: uppercase;
-  color: var(--color-text, #2b2b2b);
+  color: var(--color-text);
 }
 .t-l-sm {
   margin: 0;
   font: var(--font-weight-l-sm) var(--font-size-l-sm)/var(--font-height-l-sm) var(--font-family-l-sm);
   letter-spacing: var(--font-spacing-l-sm, 0);
   text-transform: uppercase;
-  color: var(--color-text, #2b2b2b);
+  color: var(--color-text);
 }
 
 /* Layout Utilities */

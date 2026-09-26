@@ -24,6 +24,7 @@ export const Catchphrase: React.FC = () => {
     window.addEventListener('resize', updateHeight);
 
     const ctx = gsap.context(() => {
+      const content = el.querySelector<HTMLElement>('.s__content');
       const titles = el.querySelectorAll<HTMLElement>('.s__title');
       titles.forEach((title) => {
         const lines = Array.from(title.querySelectorAll('.line')).reverse() as HTMLElement[];
@@ -53,7 +54,24 @@ export const Catchphrase: React.FC = () => {
             f * 0.025
           );
         });
+
+        // Clean exit fade before next section
+        tl.to(title, { opacity: 0, y: '-20%', ease: 'power2.in', duration: 0.4 });
       });
+
+      // Strict visibility gating to ensure zero ghost overlay past boundary
+      if (content) {
+        ScrollTrigger.create({
+          trigger: el,
+          start: 'top bottom',
+          end: 'bottom top',
+          onToggle: (self) => {
+            gsap.set(content, {
+              visibility: self.isActive ? 'visible' : 'hidden',
+            });
+          },
+        });
+      }
     }, el);
 
     ScrollTrigger.refresh();
@@ -66,16 +84,14 @@ export const Catchphrase: React.FC = () => {
 
   return (
     <section ref={elRef} className="s-catchphrase relative">
-
       <div className="s__content">
         <h2 className="s__title t-h-3xl">
-          <span className="line block">Curating</span>
-          <span className="line block">future-ready</span>
-          <span className="line block">learning for</span>
-          <span className="line block">every student.</span>
+          <span className="line block">Democratizing</span>
+          <span className="line block">Class 1–12</span>
+          <span className="line block">learning across</span>
+          <span className="line block">every pin code.</span>
         </h2>
       </div>
-
     </section>
   );
 };

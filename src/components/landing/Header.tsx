@@ -31,75 +31,79 @@ export const Header: React.FC<HeaderProps> = ({
       <nav className="s__nav">
 
 
-        <ul className="s__menu">
-          {siteContent.header.links.map((link) => (
-            <li key={link.label} className="s__menu-item s__menu-item--link">
-              <a href={link.href} className="btn-main btn-main--secondary btn-main--black btn-main--md s__menu-link">
-                <span className="btn-main__outer">
-                  <span className="btn-main__inner">
-                    <span className="btn-main__text u-height-fix">{link.label}</span>
-                  </span>
-                  <span className="btn-main__hover" aria-hidden="true">
-                    <span className="btn-main__text u-height-fix" data-text={link.label}></span>
-                  </span>
-                </span>
-              </a>
-            </li>
-          ))}
 
-          {isLoggedIn ? (
-            <li className="s__menu-item s__menu-item--link">
-              <button
-                type="button"
-                onClick={onNavigateToDashboard}
-                className="btn-main btn-main--secondary btn-main--black btn-main--md s__menu-link"
-              >
-                <span className="btn-main__outer">
-                  <span className="btn-main__inner">
-                    <span className="btn-main__text u-height-fix">Dashboard</span>
-                  </span>
-                  <span className="btn-main__hover" aria-hidden="true">
-                    <span className="btn-main__text u-height-fix" data-text="Dashboard"></span>
-                  </span>
-                </span>
-              </button>
-            </li>
-          ) : onNavigateToLogin ? (
-            <li className="s__menu-item s__menu-item--link">
-              <button
-                type="button"
-                onClick={onNavigateToLogin}
-                className="btn-main btn-main--secondary btn-main--black btn-main--md s__menu-link"
-              >
-                <span className="btn-main__outer">
-                  <span className="btn-main__inner">
-                    <span className="btn-main__text u-height-fix">Sign In</span>
-                  </span>
-                  <span className="btn-main__hover" aria-hidden="true">
-                    <span className="btn-main__text u-height-fix" data-text="Sign In"></span>
-                  </span>
-                </span>
-              </button>
-            </li>
-          ) : null}
 
-          <li className="s__menu-item s__menu-item--cta">
-            <button
-              type="button"
-              onClick={onOpenContact}
-              className="btn-main btn-main--primary btn-main--black btn-main--md s__menu-link s__menu-link--cta"
-            >
-              <span className="btn-main__outer">
-                <span className="btn-main__inner">
-                  <span className="btn-main__text u-height-fix">{siteContent.header.cta}</span>
-                </span>
-                <span className="btn-main__hover" aria-hidden="true">
-                  <span className="btn-main__text u-height-fix" data-text={siteContent.header.cta}></span>
-                </span>
-              </span>
-            </button>
-          </li>
-        </ul>
+                <ul className="s__menu">
+                      {siteContent.header.links.map((link) => (
+                        <li key={link.label} className="s__menu-item s__menu-item--link">
+                          <a href={link.href} className="btn-main btn-main--secondary btn-main--black btn-main--md s__menu-link">
+                            <span className="btn-main__outer">
+                              <span className="btn-main__inner">
+                                <span className="btn-main__text">{link.label}</span>
+                              </span>
+                              <span className="btn-main__hover" aria-hidden="true">
+                                <span className="btn-main__text" data-text={link.label}></span>
+                              </span>
+                            </span>
+                          </a>
+                        </li>
+                      ))}
+
+                      {isLoggedIn ? (
+                        <li className="s__menu-item s__menu-item--link">
+                          <button
+                            type="button"
+                            onClick={onNavigateToDashboard}
+                            className="btn-main btn-main--secondary btn-main--black btn-main--md s__menu-link"
+                          >
+                            <span className="btn-main__outer">
+                              <span className="btn-main__inner">
+                                <span className="btn-main__text">Dashboard</span>
+                              </span>
+                              <span className="btn-main__hover" aria-hidden="true">
+                                <span className="btn-main__text" data-text="Dashboard"></span>
+                              </span>
+                            </span>
+                          </button>
+                        </li>
+                      ) : onNavigateToLogin ? (
+                        <li className="s__menu-item s__menu-item--link">
+                          <button
+                            type="button"
+                            onClick={onNavigateToLogin}
+                            className="btn-main btn-main--secondary btn-main--black btn-main--md s__menu-link"
+                          >
+                            <span className="btn-main__outer">
+                              <span className="btn-main__inner">
+                                <span className="btn-main__text">Sign In</span>
+                              </span>
+                              <span className="btn-main__hover" aria-hidden="true">
+                                <span className="btn-main__text" data-text="Sign In"></span>
+                              </span>
+                            </span>
+                          </button>
+                        </li>
+                      ) : null}
+
+                      <li className="s__menu-item s__menu-item--cta">
+                        <button
+                          type="button"
+                          onClick={onOpenContact}
+                          className="btn-main btn-main--primary btn-main--black btn-main--md s__menu-link s__menu-link--cta"
+                        >
+                          <span className="btn-main__outer">
+                            <span className="btn-main__inner">
+                              <span className="btn-main__text">{siteContent.header.cta}</span>
+                            </span>
+                            <span className="btn-main__hover" aria-hidden="true">
+                              <span className="btn-main__text" data-text={siteContent.header.cta}></span>
+                            </span>
+                          </span>
+                        </button>
+                      </li>
+                    </ul>
+
+
 
 
       </nav>

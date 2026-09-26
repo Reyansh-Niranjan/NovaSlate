@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { siteContent } from '@/data/content';
+import { PatternCanvas } from './PatternCanvas';
 import { ContinuityAsset } from './UspAssets/Continuity';
 import { CapacityAsset } from './UspAssets/Capacity';
 import { CollaborationAsset } from './UspAssets/Collaboration';
@@ -32,6 +33,7 @@ export const Usps: React.FC = () => {
 
       // Initial card position (hidden below viewport)
       gsap.set(cards, { y: getP() });
+      gsap.set(header, { left: 0, x: 0, xPercent: 0 });
 
       // Header entrance and subtle scale down
       const iTl = gsap.timeline({
@@ -90,7 +92,7 @@ export const Usps: React.FC = () => {
         end: 'bottom -100%',
         onToggle: (self) => {
           const isVisible = self.isActive;
-          gsap.set([header, ...el.querySelectorAll('.s__usp-wrapper')], {
+          gsap.set([header, ...Array.from(el.querySelectorAll('.s__usp-wrapper'))], {
             visibility: isVisible ? 'visible' : 'hidden',
           });
         },
@@ -153,7 +155,9 @@ export const Usps: React.FC = () => {
                     <div className="b__inner">
                       <div className="b__asset">
                         {getAsset(item.key)}
-                        <div className="b-fluid bg-gradient-to-br from-white/60 via-transparent to-[var(--color-primary)]/10" aria-hidden="true" />
+                        <div className="b-fluid" aria-hidden="true">
+                          <PatternCanvas immediate={true} staticFlow={true} />
+                        </div>
                       </div>
                       <div className="b__content">
                         <h3 className="b__title t-h-md">{item.title}</h3>

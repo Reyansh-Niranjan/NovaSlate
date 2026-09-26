@@ -40,7 +40,7 @@ export const siteContent = {
       logos: [
         { name: 'NCERT & CBSE', logo: '/images/logos/ncert-cbse.svg' },
         { name: 'Internet Archive IAS3', logo: '/images/logos/ias3.svg' },
-        { name: 'Python PyMuPDF Engine', logo: '/images/logos/pymupdf.svg' },
+        { name: 'Python Ingestion Engine', logo: '/images/logos/pymupdf.svg' },
         { name: 'Atlas ESP32 Offline Hardware', logo: '/images/logos/atlas-esp32.svg' },
       ],
     },
@@ -51,8 +51,8 @@ export const siteContent = {
     items: [
       {
         key: 'continuity' as const,
-        title: 'Automated Scraping & Compression Pipeline',
-        text: 'Python crawling engine with PyMuPDF, Pillow, and pdfsizeopt that cleans raw educational resources, removes watermarks, and produces ultra-optimized, high-density PDF archives.',
+        title: 'Automated Ingestion & Compression Pipeline',
+        text: 'High-throughput processing pipeline that cleans raw educational resources, eliminates visual artifacts, and produces ultra-compressed, high-density PDF archives that load instantly even on 2G/3G mobile networks.',
       },
       {
         key: 'capacity' as const,
@@ -67,7 +67,7 @@ export const siteContent = {
       {
         key: 'experience' as const,
         title: 'Atlas ESP32: Zero-Connectivity Hardware',
-        text: 'Companion portable hardware reader engineered with ESP32 and MicroSD FAT32 storage, serving the entire digital library over local Wi-Fi to students in low-connectivity areas.',
+        text: 'Portable companion hardware reader engineered with ESP32 microcontrollers and high-speed MicroSD storage, broadcasting the complete Class 1–12 library over local Wi-Fi without needing mobile data or cellular coverage.',
       },
     ],
   },
@@ -204,8 +204,15 @@ export const siteContent = {
     ] as FaqQuestion[],
   },
   finalCTA: {
-    title: 'Curating future-ready learning<br>for every student',
+    eyebrow: 'OPEN INFRASTRUCTURE · ZERO INTERNET BARRIERS',
+    title: 'Equipping every student<br>with timeless knowledge.',
+    subtitle: 'Explore the complete Class 1–12 digital library online, or deploy the companion Atlas ESP32 reader for zero-connectivity classrooms.',
     button: 'Connect & Request Access',
+    links: [
+      { label: 'Digital Library (Class 1–12)', href: '#curriculum' },
+      { label: 'Atlas ESP32 Hardware', href: '#pricing' },
+      { label: 'Technical Pipeline', href: '#features' },
+    ],
   },
   strings: {
     projectLink: 'Open textbook',

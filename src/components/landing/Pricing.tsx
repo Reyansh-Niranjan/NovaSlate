@@ -11,7 +11,7 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenContact }) => {
   const [activeTab, setActiveTab] = useState<'single' | 'recurring'>('single');
 
   return (
-    <section id="pricing" className={`s-pricing u-container is-${activeTab}`}>
+    <section id="pricing" className={`s-pricing u-container is-${activeTab} relative z-10 bg-[var(--color-bg)]`}>
       {/* Left Column */}
       <div className="s-pricing__left">
         <h2 className="s__title t-h-2xl">{siteContent.pricing.title}</h2>
