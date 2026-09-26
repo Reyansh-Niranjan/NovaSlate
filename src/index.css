@@ -1062,3 +1062,21 @@ input[type="range"].mobile-slider:active::-moz-range-thumb {
   text-align: center !important;
   align-items: center !important;
 }
+
+/* Curriculum Work Section - Editorial Cards styling */
+.landing-page-root .s-work .b-execution {
+  position: relative;
+  overflow: hidden;
+  background: #fafaf8;
+  border: 1px solid rgba(43, 43, 43, 0.1);
+}
+.landing-page-root .s-work .b-quote {
+  background: #ffffff;
+  border: 1px solid rgba(43, 43, 43, 0.1);
+  padding: 3rem;
+}
+.landing-page-root .s-work .b-delivery,
+.landing-page-root .s-work .b-showreel {
+  background: #ffffff;
+  border: 1px solid rgba(43, 43, 43, 0.1);
+}
