@@ -17,14 +17,17 @@ const listeners = new Map<number, Callback>();
 let tickerTween: gsap.core.Tween | null = null;
 let idCounter = 0;
 
+let isPaused = false;
+
 function scheduleCycle() {
   if (tickerTween) {
     tickerTween.kill();
     tickerTween = null;
   }
-  if (durations.size === 0) return;
+  if (durations.size === 0 || isPaused) return;
   const maxDuration = Math.max(...durations.values());
   tickerTween = gsap.delayedCall(maxDuration, () => {
+    if (isPaused) return;
     listeners.forEach((callback) => {
       try {
         callback();
@@ -34,6 +37,24 @@ function scheduleCycle() {
     });
     scheduleCycle();
   });
+}
+
+export function pauseUspRunner() {
+  isPaused = true;
+  if (tickerTween) {
+    tickerTween.pause();
+  }
+}
+
+export function resumeUspRunner() {
+  if (isPaused) {
+    isPaused = false;
+    if (tickerTween) {
+      tickerTween.resume();
+    } else {
+      scheduleCycle();
+    }
+  }
 }
 
 export function registerUspAsset(initialDuration: number, onCycle: Callback) {

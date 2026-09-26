@@ -35,7 +35,6 @@ import {
   deleteLocalUserBook,
 } from "../lib/userBooks";
 import { StudyHub } from "./StudyHub/StudyHub";
-import Logo from "./Logo";
 
 interface DashboardProps {
   onLogout?: () => void;
@@ -211,16 +210,16 @@ function DashboardOverview({
       transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
     >
       {/* Distilled Welcome Banner */}
-      <div className="rounded-md border border-border bg-card p-4 sm:p-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-5 shadow-xs">
-        <div className="space-y-1 max-w-2xl">
-          <div className="flex items-center gap-2 text-[10px] sm:text-xs font-mono uppercase tracking-wider text-muted-foreground">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+      <div className="rounded-3xl border border-border/80 bg-card p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5 shadow-xs">
+        <div className="space-y-2 max-w-2xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/80 border border-border/70 text-[10px] sm:text-xs font-mono uppercase tracking-wider text-muted-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
             <span>{classLabel} Student Hub</span>
           </div>
-          <h1 className="text-lg sm:text-2xl font-bold tracking-tight text-foreground">
+          <h1 className="text-xl sm:text-3xl font-heading font-normal tracking-[-0.02em] text-foreground">
             {greeting}, {profile.name}.
           </h1>
-          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-body">
             {streak > 1
               ? `${streak}-day learning streak active. Read daily to build consistent mastery.`
               : "Explore NCERT curriculum textbooks or manage your private study files below."}
@@ -231,7 +230,7 @@ function DashboardOverview({
           <button
             type="button"
             onClick={() => onTabChange("library")}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-10 sm:h-9 px-4 py-2 rounded-md font-medium text-xs text-primary-foreground bg-primary hover:opacity-90 transition-opacity active:scale-[0.97] touch-manipulation cursor-pointer shadow-xs"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-10 px-5 rounded-full font-medium text-xs text-background bg-foreground hover:opacity-90 transition-opacity active:scale-[0.98] touch-manipulation cursor-pointer shadow-xs"
           >
             <BookOpen className="h-3.5 w-3.5" />
             <span>Browse Catalog</span>
@@ -240,12 +239,12 @@ function DashboardOverview({
       </div>
 
       {/* 4 Distilled Metric Cards (2x2 on mobile, 4-col on desktop) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* 1. Activity / Monthly Progress */}
-        <div className="rounded-md border border-border bg-card p-3 sm:p-5 flex flex-col justify-between transition-transform hover:-translate-y-px">
+        <div className="rounded-2xl border border-border/80 bg-card p-4 sm:p-5 flex flex-col justify-between transition-all hover:border-foreground/30 hover:shadow-xs">
           <div className="flex items-center justify-between mb-2 sm:mb-3">
-            <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md bg-secondary text-foreground">
-              <BarChart3 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-secondary text-foreground">
+              <BarChart3 className="h-4 w-4" />
             </div>
             <span className="text-[10px] sm:text-xs font-mono uppercase tracking-wider text-muted-foreground">
               Activity
@@ -253,30 +252,30 @@ function DashboardOverview({
           </div>
 
           <div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-xl sm:text-2xl font-bold text-foreground font-mono">
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-2xl sm:text-3xl font-medium text-foreground font-mono tracking-tight">
                 {weeklyCounts.reduce((sum, v) => sum + v, 0)}
               </span>
-              <span className="text-[10px] sm:text-xs text-muted-foreground truncate">files</span>
+              <span className="text-[10px] sm:text-xs text-muted-foreground truncate font-mono">files</span>
             </div>
 
             {/* Micro bar chart */}
-            <div className="mt-2 sm:mt-3 flex items-end gap-1 pt-1.5 sm:pt-2 border-t border-border">
+            <div className="mt-3 flex items-end gap-1.5 pt-2 border-t border-border/80">
               {weeklyCounts.map((count, index) => {
                 const isZero = count === 0;
-                const height = Math.max(5, count * 10 + (isZero ? 5 : 7));
+                const height = Math.max(6, count * 10 + (isZero ? 5 : 7));
                 return (
-                  <div key={weekLabels[index]} className="flex flex-1 flex-col items-center gap-0.5">
-                    <div className="h-8 sm:h-12 w-full flex items-end justify-center rounded-xs bg-secondary/70 p-0.5 border-b border-border/80">
+                  <div key={weekLabels[index]} className="flex flex-1 flex-col items-center gap-1">
+                    <div className="h-8 sm:h-11 w-full flex items-end justify-center rounded-sm bg-secondary/80 p-0.5 border-b border-border">
                       <div
                         className={`w-full rounded-xs transition-all duration-300 ${
-                          isZero ? "bg-muted-foreground/25" : "bg-foreground/80"
+                          isZero ? "bg-muted-foreground/20" : "bg-foreground"
                         }`}
                         style={{ height: `${height}px` }}
                         title={`${weekLabels[index]}: ${count > 0 ? `${count} files` : "No reading activity"}`}
                       />
                     </div>
-                    <span className="text-[9px] sm:text-xs font-mono text-muted-foreground">
+                    <span className="text-[9px] sm:text-[10px] font-mono text-muted-foreground">
                       W{index + 1}
                     </span>
                   </div>
@@ -287,10 +286,10 @@ function DashboardOverview({
         </div>
 
         {/* 2. Active Streak */}
-        <div className="rounded-md border border-border bg-card p-3 sm:p-5 flex flex-col justify-between transition-transform hover:-translate-y-px">
+        <div className="rounded-2xl border border-border/80 bg-card p-4 sm:p-5 flex flex-col justify-between transition-all hover:border-foreground/30 hover:shadow-xs">
           <div className="flex items-center justify-between mb-2 sm:mb-3">
-            <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md bg-[var(--pastel-amber-bg)] text-[var(--pastel-amber-text)]">
-              <Flame className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--pastel-amber-bg)] text-[var(--pastel-amber-text)]">
+              <Flame className="h-4 w-4" />
             </div>
             <span className="text-[10px] sm:text-xs font-mono uppercase tracking-wider text-[var(--pastel-amber-text)]">
               Streak
@@ -298,26 +297,26 @@ function DashboardOverview({
           </div>
 
           <div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-xl sm:text-2xl font-bold text-foreground font-mono">{streak}</span>
-              <span className="text-[10px] sm:text-xs text-muted-foreground">days</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-2xl sm:text-3xl font-medium text-foreground font-mono tracking-tight">{streak}</span>
+              <span className="text-[10px] sm:text-xs text-muted-foreground font-mono">days</span>
             </div>
-            <p className="mt-1 text-[10px] sm:text-xs text-muted-foreground line-clamp-2">
+            <p className="mt-1 text-[11px] sm:text-xs text-muted-foreground line-clamp-2 font-body">
               Read daily to keep your streak active.
             </p>
           </div>
 
-          <div className="mt-2 sm:mt-3 pt-1.5 sm:pt-2.5 border-t border-border flex items-center justify-between text-[10px] sm:text-xs font-mono text-[var(--pastel-amber-text)] font-semibold">
+          <div className="mt-3 pt-2.5 border-t border-border/80 flex items-center justify-between text-[11px] font-mono text-[var(--pastel-amber-text)] font-semibold">
             <span className="inline-flex items-center gap-1"><Flame className="h-3 w-3" /> Active</span>
-            <span className="text-[9px] sm:text-xs uppercase text-muted-foreground font-normal">Daily</span>
+            <span className="text-[10px] uppercase text-muted-foreground font-normal">Daily</span>
           </div>
         </div>
 
         {/* 3. Your Bookshelf */}
-        <div className="rounded-md border border-border bg-card p-3 sm:p-5 flex flex-col justify-between transition-transform hover:-translate-y-px">
+        <div className="rounded-2xl border border-border/80 bg-card p-4 sm:p-5 flex flex-col justify-between transition-all hover:border-foreground/30 hover:shadow-xs">
           <div className="flex items-center justify-between mb-2 sm:mb-3">
-            <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md bg-secondary text-foreground">
-              <HardDrive className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-secondary text-foreground">
+              <HardDrive className="h-4 w-4" />
             </div>
             <span className="text-[10px] sm:text-xs font-mono uppercase tracking-wider text-muted-foreground">
               Bookshelf
@@ -325,32 +324,32 @@ function DashboardOverview({
           </div>
 
           <div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-xl sm:text-2xl font-bold text-foreground font-mono">{userBooks.length}</span>
-              <span className="text-[10px] sm:text-xs text-muted-foreground">files</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-2xl sm:text-3xl font-medium text-foreground font-mono tracking-tight">{userBooks.length}</span>
+              <span className="text-[10px] sm:text-xs text-muted-foreground font-mono">files</span>
             </div>
-            <p className="mt-1 text-[10px] sm:text-xs text-muted-foreground truncate">
+            <p className="mt-1 text-[11px] sm:text-xs text-muted-foreground truncate font-body">
               {formatBytes(totalBytes)} cloud storage.
             </p>
           </div>
 
-          <div className="mt-2 sm:mt-3 pt-1.5 sm:pt-2.5 border-t border-border">
+          <div className="mt-3 pt-2.5 border-t border-border/80">
             <button
               type="button"
               onClick={() => onTabChange("books")}
-              className="text-[11px] sm:text-xs font-medium text-muted-foreground hover:text-foreground inline-flex items-center gap-1 transition-colors cursor-pointer touch-manipulation"
+              className="text-[11px] sm:text-xs font-medium text-muted-foreground hover:text-foreground inline-flex items-center gap-1 transition-colors cursor-pointer touch-manipulation font-mono uppercase tracking-wide"
             >
-              <span>Bookshelf</span>
+              <span>View Books</span>
               <ChevronRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
             </button>
           </div>
         </div>
 
         {/* 4. NCERT Library Catalog */}
-        <div className="rounded-md border border-border bg-card p-3 sm:p-5 flex flex-col justify-between transition-transform hover:-translate-y-px">
+        <div className="rounded-2xl border border-border/80 bg-card p-4 sm:p-5 flex flex-col justify-between transition-all hover:border-foreground/30 hover:shadow-xs">
           <div className="flex items-center justify-between mb-2 sm:mb-3">
-            <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-md bg-secondary text-foreground">
-              <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-secondary text-foreground">
+              <BookOpen className="h-4 w-4" />
             </div>
             <span className="text-[10px] sm:text-xs font-mono uppercase tracking-wider text-muted-foreground">
               Catalog
@@ -358,22 +357,22 @@ function DashboardOverview({
           </div>
 
           <div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-xl sm:text-2xl font-bold text-foreground font-mono">{libraryBooks.length}</span>
-              <span className="text-[10px] sm:text-xs text-muted-foreground">books</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-2xl sm:text-3xl font-medium text-foreground font-mono tracking-tight">{libraryBooks.length}</span>
+              <span className="text-[10px] sm:text-xs text-muted-foreground font-mono">books</span>
             </div>
-            <p className="mt-1 text-[10px] sm:text-xs text-muted-foreground">
+            <p className="mt-1 text-[11px] sm:text-xs text-muted-foreground font-body">
               Class 1–12 full curriculum.
             </p>
           </div>
 
-          <div className="mt-2 sm:mt-3 pt-1.5 sm:pt-2.5 border-t border-border">
+          <div className="mt-3 pt-2.5 border-t border-border/80">
             <button
               type="button"
               onClick={() => onTabChange("library")}
-              className="text-[11px] sm:text-xs font-medium text-muted-foreground hover:text-foreground inline-flex items-center gap-1 transition-colors cursor-pointer touch-manipulation"
+              className="text-[11px] sm:text-xs font-medium text-muted-foreground hover:text-foreground inline-flex items-center gap-1 transition-colors cursor-pointer touch-manipulation font-mono uppercase tracking-wide"
             >
-              <span>Library</span>
+              <span>Open Library</span>
               <ChevronRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
             </button>
           </div>
@@ -383,11 +382,11 @@ function DashboardOverview({
       {/* Main Content Split: Continue Reading & Fast Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Continue Reading (8 cols) */}
-        <div className="lg:col-span-8 rounded-md border border-border bg-card p-5 sm:p-6 space-y-4 flex flex-col justify-between">
+        <div className="lg:col-span-8 rounded-2xl border border-border/80 bg-card p-5 sm:p-6 space-y-4 flex flex-col justify-between shadow-xs">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               <Clock className="h-4 w-4 text-muted-foreground" />
-              <h2 className="text-sm font-bold text-foreground">
+              <h2 className="text-sm font-semibold text-foreground font-heading">
                 Continue Reading
               </h2>
             </div>
@@ -396,7 +395,7 @@ function DashboardOverview({
               type="button"
               onClick={onRefresh}
               aria-label="Refresh files"
-              className="p-1.5 rounded-md border border-border text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
+              className="p-2 rounded-full border border-border/80 text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
               title="Refresh files"
             >
               <RefreshCw className="h-3.5 w-3.5" />
@@ -404,16 +403,16 @@ function DashboardOverview({
           </div>
 
           {latestItem ? (
-            <div className="pt-3 border-t border-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="pt-4 border-t border-border/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div className="flex items-center gap-3.5 min-w-0">
-                <div className="flex h-10 w-10 items-center justify-center rounded-md bg-secondary text-foreground shrink-0">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-secondary text-foreground shrink-0 border border-border/60">
                   <FileText className="h-5 w-5" />
                 </div>
                 <div className="min-w-0 space-y-0.5">
-                  <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
                     Latest Activity
                   </span>
-                  <h3 className="text-sm sm:text-base font-bold text-foreground truncate">
+                  <h3 className="text-sm sm:text-base font-medium text-foreground truncate font-heading">
                     {formatTitle(latestItem.name)}
                   </h3>
                   <p className="text-xs text-muted-foreground font-mono">
@@ -432,25 +431,25 @@ function DashboardOverview({
                   }
                   onOpenPdf?.(targetUrl, formatTitle(latestItem.name), "Reading", "Recent");
                 }}
-                className="inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-md font-medium text-xs text-primary-foreground bg-primary hover:opacity-90 transition-opacity shrink-0 cursor-pointer shadow-xs"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-medium text-xs text-background bg-foreground hover:opacity-90 transition-opacity shrink-0 cursor-pointer shadow-xs active:scale-[0.98]"
               >
                 <span>Open in Reader</span>
                 <BookOpen className="h-3.5 w-3.5" />
               </button>
             </div>
           ) : (
-            <div className="pt-6 pb-2 border-t border-border text-center space-y-2">
-              <BookOpen className="mx-auto h-7 w-7 text-muted-foreground opacity-40" />
-              <p className="text-xs font-semibold text-foreground">
+            <div className="pt-8 pb-4 border-t border-border/80 text-center space-y-2">
+              <BookOpen className="mx-auto h-8 w-8 text-muted-foreground opacity-35" />
+              <p className="text-xs font-semibold text-foreground font-heading">
                 No recent reading session
               </p>
-              <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+              <p className="text-xs text-muted-foreground max-w-sm mx-auto font-body">
                 Open a chapter from the library to resume reading here anytime.
               </p>
               <button
                 type="button"
                 onClick={() => onTabChange("library")}
-                className="mt-2 inline-flex items-center px-3.5 py-1.5 rounded-md text-xs font-medium text-primary-foreground bg-primary hover:opacity-90 transition-opacity cursor-pointer"
+                className="mt-3 inline-flex items-center px-4 py-2 rounded-full text-xs font-medium text-background bg-foreground hover:opacity-90 transition-opacity cursor-pointer"
               >
                 Open NCERT Library
               </button>
@@ -459,24 +458,24 @@ function DashboardOverview({
         </div>
 
         {/* Quick Launch Hub (4 cols) */}
-        <div className="lg:col-span-4 rounded-md border border-border bg-card p-5 sm:p-6 space-y-3">
-          <h2 className="text-sm font-bold text-foreground">
+        <div className="lg:col-span-4 rounded-2xl border border-border/80 bg-card p-5 sm:p-6 space-y-3.5 shadow-xs">
+          <h2 className="text-sm font-semibold text-foreground font-heading">
             Quick Actions
           </h2>
 
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             <button
               type="button"
               onClick={() => onTabChange("library")}
-              className="w-full flex items-center justify-between p-2.5 rounded-md border border-border bg-secondary/30 text-left transition-colors hover:bg-secondary hover:border-muted-foreground group cursor-pointer"
+              className="w-full flex items-center justify-between p-3 rounded-xl border border-border/70 bg-secondary/35 text-left transition-all hover:bg-secondary hover:border-border group cursor-pointer"
             >
-              <div className="flex items-center gap-2.5">
-                <div className="p-1.5 rounded-md bg-card border border-border text-foreground">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-card border border-border/80 text-foreground">
                   <BookOpen className="h-3.5 w-3.5" />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-foreground">Browse {classLabel}</p>
-                  <p className="text-xs text-muted-foreground">Syllabus textbooks</p>
+                  <p className="text-xs font-semibold text-foreground font-body">Browse {classLabel}</p>
+                  <p className="text-[11px] text-muted-foreground font-body">Syllabus textbooks</p>
                 </div>
               </div>
               <ChevronRight className="h-3.5 w-3.5 text-muted-foreground group-hover:translate-x-0.5 transition-transform" />
@@ -485,15 +484,15 @@ function DashboardOverview({
             <button
               type="button"
               onClick={() => onTabChange("books")}
-              className="w-full flex items-center justify-between p-2.5 rounded-md border border-border bg-secondary/30 text-left transition-colors hover:bg-secondary hover:border-muted-foreground group cursor-pointer"
+              className="w-full flex items-center justify-between p-3 rounded-xl border border-border/70 bg-secondary/35 text-left transition-all hover:bg-secondary hover:border-border group cursor-pointer"
             >
-              <div className="flex items-center gap-2.5">
-                <div className="p-1.5 rounded-md bg-card border border-border text-foreground">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-card border border-border/80 text-foreground">
                   <Upload className="h-3.5 w-3.5" />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-foreground">Upload Custom PDF</p>
-                  <p className="text-xs text-muted-foreground">Save to cloud storage</p>
+                  <p className="text-xs font-semibold text-foreground font-body">Upload Custom PDF</p>
+                  <p className="text-[11px] text-muted-foreground font-body">Save to cloud storage</p>
                 </div>
               </div>
               <ChevronRight className="h-3.5 w-3.5 text-muted-foreground group-hover:translate-x-0.5 transition-transform" />
@@ -502,15 +501,15 @@ function DashboardOverview({
             <button
               type="button"
               onClick={() => onTabChange("notes")}
-              className="w-full flex items-center justify-between p-2.5 rounded-md border border-border bg-secondary/30 text-left transition-colors hover:bg-secondary hover:border-muted-foreground group cursor-pointer"
+              className="w-full flex items-center justify-between p-3 rounded-xl border border-border/70 bg-secondary/35 text-left transition-all hover:bg-secondary hover:border-border group cursor-pointer"
             >
-              <div className="flex items-center gap-2.5">
-                <div className="p-1.5 rounded-md bg-card border border-border text-foreground">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-card border border-border/80 text-foreground">
                   <FileText className="h-3.5 w-3.5" />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-foreground">New Study Note</p>
-                  <p className="text-xs text-muted-foreground">Take revision notes</p>
+                  <p className="text-xs font-semibold text-foreground font-body">New Study Note</p>
+                  <p className="text-[11px] text-muted-foreground font-body">Take revision notes</p>
                 </div>
               </div>
               <ChevronRight className="h-3.5 w-3.5 text-muted-foreground group-hover:translate-x-0.5 transition-transform" />
@@ -597,21 +596,21 @@ function BooksSection({
     >
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h2 className="text-lg sm:text-2xl font-bold tracking-tight text-foreground">Your Bookshelf</h2>
-          <p className="text-xs text-muted-foreground mt-0.5">
+          <h2 className="text-xl sm:text-2xl font-heading font-normal tracking-tight text-foreground">Your Bookshelf</h2>
+          <p className="text-xs text-muted-foreground mt-0.5 font-body">
             Private files and custom PDF study materials stored in your cloud
           </p>
         </div>
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
           <div className="relative w-full sm:w-64">
-            <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               type="text"
               placeholder="Search your books..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="auth-input-field pl-9 text-xs sm:text-sm"
+              className="auth-input-field !rounded-full pl-10 text-xs sm:text-sm bg-card border-border/80"
             />
           </div>
 
@@ -622,7 +621,7 @@ function BooksSection({
               setErrorMessage(null);
               setSuccessMessage(null);
             }}
-            className="flex-shrink-0 inline-flex items-center justify-center gap-2 h-11 sm:h-10 px-4 py-2 rounded-md text-xs sm:text-sm font-medium text-primary-foreground bg-primary hover:opacity-90 transition-opacity cursor-pointer touch-manipulation active:scale-[0.97] shadow-xs"
+            className="flex-shrink-0 inline-flex items-center justify-center gap-2 h-10 px-5 rounded-full text-xs font-medium text-background bg-foreground hover:opacity-90 transition-opacity cursor-pointer touch-manipulation active:scale-[0.98] shadow-xs"
           >
             <UploadCloud className="h-4 w-4" />
             <span>Upload PDF</span>
@@ -644,7 +643,7 @@ function BooksSection({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 350 }}
-              className="w-full max-w-lg rounded-t-2xl sm:rounded-md border-t sm:border border-border bg-card p-5 sm:p-8 space-y-4 sm:space-y-5 shadow-2xl safe-bottom max-h-[90dvh] overflow-y-auto"
+              className="w-full max-w-lg rounded-t-3xl sm:rounded-3xl border-t sm:border border-border/80 bg-card p-6 sm:p-8 space-y-5 shadow-2xl safe-bottom max-h-[90dvh] overflow-y-auto"
             >
               {/* Sheet Drag Handle for Mobile */}
               <div className="flex justify-center -mt-2 pb-1 sm:hidden">
@@ -652,34 +651,34 @@ function BooksSection({
               </div>
 
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-md bg-secondary text-foreground">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-xl bg-secondary text-foreground">
                     <UploadCloud className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-foreground">Upload Study PDF</h3>
-                    <p className="text-xs text-muted-foreground">Save private textbook or notes to cloud</p>
+                    <h3 className="text-base font-semibold text-foreground font-heading">Upload Study PDF</h3>
+                    <p className="text-xs text-muted-foreground font-body">Save private textbook or notes to cloud</p>
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
                   aria-label="Close upload dialog"
-                  className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer touch-manipulation active:scale-95"
+                  className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer touch-manipulation active:scale-95"
                 >
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
               {errorMessage && (
-                <div className="p-2.5 rounded-md bg-[var(--pastel-red-bg)] border border-destructive/30 text-[var(--pastel-red-text)] text-xs flex items-center gap-2">
+                <div className="p-3 rounded-xl bg-[var(--pastel-red-bg)] border border-destructive/30 text-[var(--pastel-red-text)] text-xs flex items-center gap-2 font-mono">
                   <AlertCircle className="h-4 w-4 flex-shrink-0" />
                   <span>{errorMessage}</span>
                 </div>
               )}
 
               {successMessage && (
-                <div className="p-2.5 rounded-md bg-[var(--pastel-green-bg)] border border-border text-[var(--pastel-green-text)] text-xs flex items-center gap-2">
+                <div className="p-3 rounded-xl bg-[var(--pastel-green-bg)] border border-border text-[var(--pastel-green-text)] text-xs flex items-center gap-2 font-mono">
                   <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
                   <span>{successMessage}</span>
                 </div>
@@ -688,7 +687,7 @@ function BooksSection({
               <form onSubmit={handleUploadSubmit} className="space-y-4">
                 {/* Drag and drop box */}
                 <label
-                  className="border-2 border-dashed border-border rounded-md p-6 sm:p-8 flex flex-col items-center justify-center cursor-pointer transition-colors hover:border-muted-foreground hover:bg-secondary/50 touch-manipulation"
+                  className="border-2 border-dashed border-border/80 rounded-2xl p-7 sm:p-9 flex flex-col items-center justify-center cursor-pointer transition-all hover:border-foreground/40 hover:bg-secondary/30 touch-manipulation"
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => {
                     e.preventDefault();
@@ -703,13 +702,13 @@ function BooksSection({
                     className="hidden"
                     onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0])}
                   />
-                  <div className="p-3 rounded-md bg-secondary text-foreground mb-2 sm:mb-3">
+                  <div className="p-3.5 rounded-2xl bg-secondary text-foreground mb-3 border border-border/60">
                     <FileText className="h-6 w-6" />
                   </div>
-                  <p className="text-xs sm:text-sm font-semibold text-foreground text-center">
+                  <p className="text-xs sm:text-sm font-semibold text-foreground text-center font-heading">
                     {selectedFile ? selectedFile.name : "Tap to choose PDF from device"}
                   </p>
-                  <p className="text-[11px] sm:text-xs text-muted-foreground mt-1">
+                  <p className="text-[11px] sm:text-xs text-muted-foreground mt-1 font-mono">
                     {selectedFile ? `${formatBytes(selectedFile.size)} selected` : "PDF format up to 50MB"}
                   </p>
                 </label>
@@ -724,7 +723,7 @@ function BooksSection({
                     placeholder="e.g. Class 10 Chemistry Formulas"
                     value={customTitle}
                     onChange={(e) => setCustomTitle(e.target.value)}
-                    className="auth-input-field text-sm"
+                    className="auth-input-field !rounded-xl text-sm"
                   />
                 </div>
 
@@ -732,14 +731,14 @@ function BooksSection({
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="h-10 px-4 rounded-md text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer touch-manipulation"
+                    className="h-10 px-5 rounded-full text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer touch-manipulation"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={isUploading || !selectedFile}
-                    className="inline-flex items-center justify-center gap-2 h-11 sm:h-10 px-5 rounded-md text-xs sm:text-sm font-medium text-primary-foreground bg-primary hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity cursor-pointer touch-manipulation active:scale-[0.97] shadow-xs"
+                    className="inline-flex items-center justify-center gap-2 h-10 px-6 rounded-full text-xs font-medium text-background bg-foreground hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer touch-manipulation active:scale-[0.98] shadow-xs"
                   >
                     {isUploading ? (
                       <>
@@ -766,10 +765,10 @@ function BooksSection({
           {filtered.map((item) => (
             <div
               key={item.fullPath}
-              className="rounded-md border border-border bg-card p-4 sm:p-5 flex flex-col justify-between gap-4 transition-transform hover:-translate-y-px"
+              className="rounded-2xl border border-border/80 bg-card p-5 flex flex-col justify-between gap-4 transition-all hover:border-foreground/30 hover:shadow-xs"
             >
               <div className="flex items-center justify-between gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-md bg-secondary text-foreground flex-shrink-0">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-secondary text-foreground flex-shrink-0 border border-border/60">
                   <BookMarked className="h-4 w-4" />
                 </div>
                 <span className="text-xs font-mono text-muted-foreground">
@@ -778,16 +777,16 @@ function BooksSection({
               </div>
 
               <div>
-                <h3 className="text-sm sm:text-base font-bold text-foreground line-clamp-2">
+                <h3 className="text-sm sm:text-base font-medium text-foreground line-clamp-2 font-heading">
                   {formatTitle(item.name)}
                 </h3>
               </div>
 
-              <div className="pt-3 border-t border-border flex items-center justify-between">
+              <div className="pt-3 border-t border-border/80 flex items-center justify-between">
                 <span className="text-xs font-mono text-muted-foreground">
                   {toDate(item.createdAt ?? item.updatedAt)?.toLocaleDateString() ?? "Uploaded"}
                 </span>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-2">
                   {item.id && (
                     <button
                       type="button"
@@ -795,7 +794,7 @@ function BooksSection({
                         await deleteLocalUserBook(item.id!);
                         if (onRefresh) onRefresh();
                       }}
-                      className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
+                      className="p-2 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
                       title="Delete local book"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -808,7 +807,7 @@ function BooksSection({
                       const targetUrl = blob ? URL.createObjectURL(blob) : item.url || getInternetArchiveUrl(item.fullPath);
                       onOpenPdf(targetUrl, formatTitle(item.name), "Custom Upload", "My Bookshelf");
                     }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium text-xs text-primary-foreground bg-primary hover:opacity-90 transition-opacity cursor-pointer shadow-xs"
+                    className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full font-medium text-xs text-background bg-foreground hover:opacity-90 transition-opacity cursor-pointer shadow-xs active:scale-[0.98]"
                   >
                     <span>Open</span>
                     <BookOpen className="h-3.5 w-3.5" />
@@ -819,12 +818,12 @@ function BooksSection({
           ))}
         </div>
       ) : (
-        <div className="rounded-md border border-dashed border-border p-10 text-center">
-          <BookMarked className="mx-auto h-8 w-8 text-muted-foreground opacity-40" />
-          <p className="mt-3 text-sm font-semibold text-foreground">
+        <div className="rounded-3xl border border-dashed border-border/80 bg-card/40 p-12 text-center space-y-2">
+          <BookMarked className="mx-auto h-8 w-8 text-muted-foreground opacity-35" />
+          <p className="text-sm font-semibold text-foreground font-heading">
             {search ? "No matching files" : "Your bookshelf is empty"}
           </p>
-          <p className="mt-0.5 text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground max-w-sm mx-auto font-body">
             Upload custom PDFs to your private cloud storage to study anytime.
           </p>
           <button
@@ -834,7 +833,7 @@ function BooksSection({
               setErrorMessage(null);
               setSuccessMessage(null);
             }}
-            className="mt-4 inline-flex items-center gap-2 px-3.5 py-2 rounded-md text-xs font-medium text-primary-foreground bg-primary hover:opacity-90 transition-opacity cursor-pointer shadow-xs"
+            className="mt-3 inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-medium text-background bg-foreground hover:opacity-90 transition-opacity cursor-pointer shadow-xs active:scale-[0.98]"
           >
             <UploadCloud className="h-3.5 w-3.5" />
             <span>Upload First PDF</span>
@@ -902,8 +901,8 @@ function NotesSection() {
     >
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h2 className="text-lg sm:text-2xl font-bold tracking-tight text-foreground">Study Notes</h2>
-          <p className="text-xs text-muted-foreground mt-0.5">
+          <h2 className="text-xl sm:text-2xl font-heading font-normal tracking-tight text-foreground">Study Notes</h2>
+          <p className="text-xs text-muted-foreground mt-0.5 font-body">
             Capture revision notes, key formulas, and chapter summaries
           </p>
         </div>
@@ -911,7 +910,7 @@ function NotesSection() {
         <button
           type="button"
           onClick={() => setIsAdding(!isAdding)}
-          className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-md font-medium text-xs sm:text-sm text-primary-foreground bg-primary hover:opacity-90 transition-opacity self-start sm:self-auto cursor-pointer touch-manipulation active:scale-[0.97] shadow-xs"
+          className="inline-flex items-center justify-center gap-2 h-10 px-5 rounded-full font-medium text-xs text-background bg-foreground hover:opacity-90 transition-opacity self-start sm:self-auto cursor-pointer touch-manipulation active:scale-[0.98] shadow-xs"
         >
           <Plus className="h-4 w-4" />
           <span>{isAdding ? "Cancel" : "New Note"}</span>
@@ -922,15 +921,15 @@ function NotesSection() {
       {isAdding && (
         <form
           onSubmit={handleAddNote}
-          className="p-4 sm:p-6 rounded-md border border-border bg-card shadow-xs space-y-3.5 sm:space-y-4"
+          className="p-5 sm:p-7 rounded-2xl border border-border/80 bg-card shadow-xs space-y-4"
         >
-          <h3 className="text-sm font-bold text-foreground">Create Study Note</h3>
+          <h3 className="text-sm font-semibold text-foreground font-heading">Create Study Note</h3>
           <input
             type="text"
             placeholder="Note title (e.g. Chapter 4 Key Concepts)"
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
-            className="auth-input-field text-sm"
+            className="auth-input-field !rounded-xl text-sm"
             required
           />
           <textarea
@@ -938,19 +937,19 @@ function NotesSection() {
             value={newContent}
             onChange={(e) => setNewContent(e.target.value)}
             rows={4}
-            className="auth-input-field text-sm resize-none h-28 sm:h-24 p-3"
+            className="auth-input-field !rounded-xl text-sm resize-none h-28 sm:h-24 p-3"
           />
-          <div className="flex justify-end gap-2.5 pt-1">
+          <div className="flex justify-end gap-3 pt-1">
             <button
               type="button"
               onClick={() => setIsAdding(false)}
-              className="h-10 px-4 rounded-md text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer touch-manipulation"
+              className="h-10 px-5 rounded-full text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer touch-manipulation"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="h-10 px-4 rounded-md text-xs sm:text-sm font-medium text-primary-foreground bg-primary hover:opacity-90 transition-opacity cursor-pointer touch-manipulation active:scale-[0.97] shadow-xs"
+              className="h-10 px-6 rounded-full text-xs font-medium text-background bg-foreground hover:opacity-90 transition-opacity cursor-pointer touch-manipulation active:scale-[0.98] shadow-xs"
             >
               Save Note
             </button>
@@ -964,39 +963,39 @@ function NotesSection() {
           {notes.map((note) => (
             <div
               key={note.id}
-              className="rounded-md border border-border bg-card p-4 sm:p-5 flex flex-col justify-between gap-4 transition-transform hover:-translate-y-px"
+              className="rounded-2xl border border-border/80 bg-card p-5 flex flex-col justify-between gap-4 transition-all hover:border-foreground/30 hover:shadow-xs"
             >
               <div className="space-y-2">
                 <div className="flex items-start justify-between gap-2">
-                  <h4 className="text-sm sm:text-base font-bold text-foreground">{note.title}</h4>
+                  <h4 className="text-sm sm:text-base font-medium text-foreground font-heading">{note.title}</h4>
                   <button
                     type="button"
                     onClick={() => handleDelete(note.id)}
                     aria-label={`Delete note: ${note.title}`}
-                    className="p-1 rounded-md text-muted-foreground hover:text-destructive hover:bg-secondary transition-colors cursor-pointer"
+                    className="p-1.5 rounded-full text-muted-foreground hover:text-destructive hover:bg-secondary transition-colors cursor-pointer"
                     title="Delete Note"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
                 </div>
-                <p className="text-xs text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                <p className="text-xs text-muted-foreground whitespace-pre-wrap leading-relaxed font-body">
                   {note.content}
                 </p>
               </div>
 
-              <div className="pt-2.5 border-t border-border text-xs font-mono text-muted-foreground">
+              <div className="pt-3 border-t border-border/80 text-[11px] font-mono text-muted-foreground uppercase tracking-wider">
                 Saved {note.date}
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="rounded-md border border-dashed border-border p-10 text-center">
-          <FileText className="mx-auto h-8 w-8 text-muted-foreground opacity-40" />
-          <p className="mt-3 text-sm font-semibold text-foreground">
+        <div className="rounded-3xl border border-dashed border-border/80 bg-card/40 p-12 text-center space-y-2">
+          <FileText className="mx-auto h-8 w-8 text-muted-foreground opacity-35" />
+          <p className="text-sm font-semibold text-foreground font-heading">
             No notes written yet
           </p>
-          <p className="mt-0.5 text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground max-w-sm mx-auto font-body">
             Click &ldquo;New Note&rdquo; above to record key concepts.
           </p>
         </div>
@@ -1146,23 +1145,27 @@ export default function Dashboard({ onLogout }: DashboardProps) {
       {/* Desktop Sidebar (Pinned on lg screens) */}
       <aside
         id="dashboard-sidebar"
-        className="hidden lg:flex fixed top-0 bottom-0 left-0 z-50 w-64 flex-col border-r border-border bg-card"
+        className="hidden lg:flex fixed top-0 bottom-0 left-0 z-50 w-64 flex-col border-r border-border/80 bg-card"
       >
         {/* Brand Header */}
-        <div className="p-5 flex items-center justify-between border-b border-border">
-          <div className="flex items-center gap-2.5">
-            <Logo className="h-8 w-8" />
+        <div className="p-5 flex items-center justify-between border-b border-border/80">
+          <div className="flex items-center gap-3">
+            <img
+              src="/novaslate_icon.png"
+              alt="NovaSlate"
+              className="w-8 h-8 object-contain"
+            />
             <div>
-              <span className="text-sm font-bold tracking-tight text-foreground">
+              <span className="font-heading font-semibold text-base tracking-tight text-foreground">
                 NovaSlate
               </span>
-              <p className="text-[10px] font-mono uppercase text-muted-foreground tracking-wider">Workspace</p>
+              <p className="text-[10px] font-mono uppercase text-muted-foreground tracking-widest">Workspace</p>
             </div>
           </div>
         </div>
 
         {/* Navigation items */}
-        <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+        <nav className="flex-1 p-3 space-y-1.5 overflow-y-auto">
           {sidebarNav.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -1172,13 +1175,13 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                 key={item.id}
                 type="button"
                 onClick={() => setActiveTab(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-medium transition-colors duration-150 cursor-pointer ${
+                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-full text-xs font-medium transition-all duration-150 cursor-pointer ${
                   isActive
                     ? "bg-foreground text-background font-semibold shadow-xs"
                     : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                 }`}
               >
-                <Icon className="h-4 w-4" />
+                <Icon className="h-4 w-4 shrink-0" />
                 <span>{item.label}</span>
               </button>
             );
@@ -1186,13 +1189,13 @@ export default function Dashboard({ onLogout }: DashboardProps) {
         </nav>
 
         {/* Sidebar Footer */}
-        <div className="p-3 border-t border-border space-y-3">
+        <div className="p-3.5 border-t border-border/80 space-y-3">
           <div className="flex items-center justify-between px-1">
             <ThemeToggle />
             <button
               type="button"
               onClick={handleLogout}
-              className="p-2 rounded-md text-muted-foreground hover:text-destructive hover:bg-secondary transition-colors cursor-pointer"
+              className="p-2 rounded-full text-muted-foreground hover:text-destructive hover:bg-secondary transition-colors cursor-pointer"
               title="Logout"
               aria-label="Logout"
             >
@@ -1201,8 +1204,8 @@ export default function Dashboard({ onLogout }: DashboardProps) {
           </div>
 
           {/* User Profile Mini-Badge */}
-          <div className="flex items-center gap-3 px-2 py-1.5 rounded-md bg-secondary/50">
-            <div className="relative flex-shrink-0">
+          <div className="flex items-center gap-3 px-3 py-2 rounded-2xl bg-secondary/60 border border-border/70">
+            <div className="relative shrink-0">
               {userProfile.avatarUrl ? (
                 <img
                   src={userProfile.avatarUrl}
@@ -1214,11 +1217,11 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                   {userProfile.name.charAt(0).toUpperCase()}
                 </div>
               )}
-              <div className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 border-2 border-background" />
+              <div className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 border-2 border-card" />
             </div>
 
-            <div className="overflow-hidden text-left">
-              <p className="truncate text-xs font-bold text-foreground">
+            <div className="overflow-hidden text-left flex-1 min-w-0">
+              <p className="truncate text-xs font-semibold text-foreground">
                 {userProfile.name}
               </p>
               <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
@@ -1232,21 +1235,25 @@ export default function Dashboard({ onLogout }: DashboardProps) {
       {/* Main Content Area */}
       <div className="flex-1 lg:pl-64 flex flex-col min-h-[100dvh]">
         {/* Top App Bar with mobile-first ergonomics */}
-        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-background/90 backdrop-blur-md px-3.5 sm:px-8 safe-top">
-          <div className="flex items-center gap-2.5">
-            <Logo className="h-7 w-7 lg:hidden" />
-            <h2 className="text-sm sm:text-base font-bold text-foreground truncate">
+        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border/80 bg-background/85 backdrop-blur-md px-4 sm:px-8 safe-top">
+          <div className="flex items-center gap-3">
+            <img
+              src="/novaslate_icon.png"
+              alt="NovaSlate"
+              className="w-7 h-7 object-contain lg:hidden"
+            />
+            <h2 className="text-base sm:text-lg font-heading font-normal text-foreground truncate">
               {tabTitles[activeTab]}
             </h2>
           </div>
 
           {/* Top Bar Controls & Telemetry */}
-          <div className="flex items-center gap-1.5 sm:gap-3 font-mono">
-            <div className="flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[11px] sm:text-xs bg-[var(--pastel-amber-bg)] text-[var(--pastel-amber-text)] border border-border">
-              <Flame className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+          <div className="flex items-center gap-2 sm:gap-3 font-mono">
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs bg-[var(--pastel-amber-bg)] text-[var(--pastel-amber-text)] border border-border/70">
+              <Flame className="h-3.5 w-3.5" />
               <span>{streak}d</span>
             </div>
-            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs bg-secondary text-muted-foreground border border-border">
+            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full text-xs bg-secondary/80 text-muted-foreground border border-border/70">
               <UserCircle2 className="h-3.5 w-3.5" />
               <span>{userProfile.classLabel}</span>
             </div>
@@ -1257,7 +1264,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-secondary transition-colors touch-manipulation active:scale-95"
+                className="p-2 rounded-full text-muted-foreground hover:text-destructive hover:bg-secondary transition-colors touch-manipulation active:scale-95"
                 title="Logout"
                 aria-label="Logout"
               >
@@ -1315,7 +1322,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
       <nav
         role="navigation"
         aria-label="Mobile Navigation"
-        className="fixed bottom-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-md border-t border-border safe-bottom-nav flex items-center justify-around h-16 px-1 lg:hidden shadow-lg"
+        className="fixed bottom-0 left-0 right-0 z-40 bg-card/90 backdrop-blur-md border-t border-border/80 safe-bottom-nav flex items-center justify-around h-16 px-2 lg:hidden shadow-lg"
       >
         {sidebarNav.map((item) => {
           const Icon = item.icon;
@@ -1325,7 +1332,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
               key={item.id}
               type="button"
               onClick={() => setActiveTab(item.id)}
-              className="flex-1 flex flex-col items-center justify-center py-1 px-0.5 rounded-lg transition-transform active:scale-[0.92] touch-manipulation focus-visible:outline-none"
+              className="flex-1 flex flex-col items-center justify-center py-1 px-0.5 rounded-xl transition-transform active:scale-[0.92] touch-manipulation focus-visible:outline-none"
             >
               <div
                 className={`flex items-center justify-center h-7 px-3.5 rounded-full transition-all duration-200 ${

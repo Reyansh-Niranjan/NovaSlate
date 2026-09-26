@@ -377,13 +377,13 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -50, opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="flex h-13 sm:h-14 items-center justify-between border-b border-border bg-card/95 px-3 sm:px-4 text-foreground backdrop-blur-md z-30 shrink-0"
+              className="flex h-14 items-center justify-between border-b border-border/80 bg-card/90 px-3 sm:px-5 text-foreground backdrop-blur-md z-30 shrink-0 shadow-xs"
             >
               {/* Left Back & Title */}
-              <div className="flex items-center gap-2 sm:gap-3 overflow-hidden min-w-0">
+              <div className="flex items-center gap-2.5 sm:gap-3.5 overflow-hidden min-w-0">
                 <button
                   onClick={onClose}
-                  className="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background text-foreground hover:bg-secondary transition-colors cursor-pointer touch-manipulation active:scale-95 shrink-0"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-border/80 bg-background text-foreground hover:bg-secondary transition-colors cursor-pointer touch-manipulation active:scale-95 shrink-0"
                   title="Back (Esc)"
                   aria-label="Back"
                 >
@@ -391,7 +391,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                 </button>
 
                 <div className="truncate min-w-0">
-                  <h2 className="truncate text-xs sm:text-sm font-bold tracking-tight text-foreground" title={title}>
+                  <h2 className="truncate text-xs sm:text-sm font-medium tracking-tight text-foreground font-heading" title={title}>
                     {title}
                   </h2>
                   <div className="flex items-center gap-1.5 mt-0.5">
@@ -400,7 +400,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                         {className} {subject ? `• ${subject}` : ""}
                       </span>
                     )}
-                    <span className="text-[10px] sm:text-xs font-mono text-muted-foreground bg-secondary px-1.5 py-0.2 rounded-xs border border-border shrink-0">
+                    <span className="text-[10px] sm:text-xs font-mono text-muted-foreground bg-secondary/80 px-2 py-0.5 rounded-full border border-border/70 shrink-0">
                       {percentProgress}%
                     </span>
                   </div>
@@ -412,21 +412,21 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                 <button
                   onClick={handlePrevPage}
                   disabled={currentPage <= 1 || isLoading}
-                  className="rounded-md p-1.5 text-muted-foreground transition-colors hover:text-foreground hover:bg-secondary active:scale-95 disabled:opacity-30 cursor-pointer"
+                  className="rounded-full p-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-secondary active:scale-95 disabled:opacity-30 cursor-pointer"
                   title="Previous Page (← or J)"
                   aria-label="Previous Page"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </button>
 
-                <form onSubmit={handlePageJump} className="flex items-center space-x-1">
+                <form onSubmit={handlePageJump} className="flex items-center space-x-1.5">
                   <input
                     type="text"
                     value={pageInputValue}
                     onChange={(e) => setPageInputValue(e.target.value)}
                     onBlur={handlePageJump}
                     disabled={isLoading || numPages === 0}
-                    className="h-7 w-12 rounded-sm border border-border bg-background text-center text-xs font-mono font-medium text-foreground transition focus:border-foreground focus:outline-none"
+                    className="h-8 w-12 rounded-full border border-border/80 bg-background text-center text-xs font-mono font-medium text-foreground transition focus:border-foreground focus:outline-none"
                   />
                   <span className="text-xs font-mono text-muted-foreground">/ {numPages || "--"}</span>
                 </form>
@@ -434,7 +434,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                 <button
                   onClick={handleNextPage}
                   disabled={currentPage >= numPages || isLoading}
-                  className="rounded-md p-1.5 text-muted-foreground transition-colors hover:text-foreground hover:bg-secondary active:scale-95 disabled:opacity-30 cursor-pointer"
+                  className="rounded-full p-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-secondary active:scale-95 disabled:opacity-30 cursor-pointer"
                   title="Next Page (→ or K)"
                   aria-label="Next Page"
                 >
@@ -445,10 +445,10 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
               {/* Right Action Tools */}
               <div className="flex items-center space-x-1 sm:space-x-2 shrink-0">
                 {/* Reading Theme Toggle */}
-                <div className="flex items-center rounded-md border border-border bg-secondary p-0.5">
+                <div className="flex items-center rounded-full border border-border/80 bg-secondary/80 p-0.5">
                   <button
                     onClick={() => setReadingTheme("light")}
-                    className={`rounded-xs p-1.5 transition-colors touch-manipulation active:scale-95 ${
+                    className={`rounded-full p-1.5 transition-colors touch-manipulation active:scale-95 ${
                       readingTheme === "light" ? "bg-foreground text-background shadow-xs" : "text-muted-foreground hover:text-foreground"
                     }`}
                     title="Light Theme"
@@ -458,7 +458,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                   </button>
                   <button
                     onClick={() => setReadingTheme("sepia")}
-                    className={`rounded-xs p-1.5 transition-colors touch-manipulation active:scale-95 ${
+                    className={`rounded-full p-1.5 transition-colors touch-manipulation active:scale-95 ${
                       readingTheme === "sepia" ? "bg-amber-700 text-white shadow-xs" : "text-muted-foreground hover:text-foreground"
                     }`}
                     title="Sepia Mode"
@@ -468,7 +468,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                   </button>
                   <button
                     onClick={() => setReadingTheme("dark")}
-                    className={`rounded-xs p-1.5 transition-colors touch-manipulation active:scale-95 ${
+                    className={`rounded-full p-1.5 transition-colors touch-manipulation active:scale-95 ${
                       readingTheme === "dark" ? "bg-foreground text-background shadow-xs" : "text-muted-foreground hover:text-foreground"
                     }`}
                     title="Dark Mode"
@@ -479,11 +479,11 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                 </div>
 
                 {/* Desktop Zoom Controls */}
-                <div className="hidden lg:flex items-center space-x-1 rounded-md border border-border bg-secondary p-0.5">
+                <div className="hidden lg:flex items-center space-x-1 rounded-full border border-border/80 bg-secondary/80 p-0.5">
                   <button
                     onClick={handleZoomOut}
                     disabled={scale <= 0.4}
-                    className="rounded-sm p-1.5 text-muted-foreground transition-colors hover:text-foreground hover:bg-background disabled:opacity-30 cursor-pointer"
+                    className="rounded-full p-1.5 text-muted-foreground transition-colors hover:text-foreground hover:bg-background disabled:opacity-30 cursor-pointer"
                     title="Zoom Out (-)"
                     aria-label="Zoom Out"
                   >
@@ -491,7 +491,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                   </button>
                   <button
                     onClick={handleFitToWidth}
-                    className="px-2 py-1 text-xs font-mono font-medium text-foreground hover:opacity-80 transition cursor-pointer"
+                    className="px-2.5 py-1 text-xs font-mono font-medium text-foreground hover:opacity-80 transition cursor-pointer"
                     title="Fit Width (Press 0)"
                   >
                     {Math.round(scale * 100)}%
@@ -499,7 +499,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                   <button
                     onClick={handleZoomIn}
                     disabled={scale >= 3.0}
-                    className="rounded-sm p-1.5 text-muted-foreground transition-colors hover:text-foreground hover:bg-background disabled:opacity-30 cursor-pointer"
+                    className="rounded-full p-1.5 text-muted-foreground transition-colors hover:text-foreground hover:bg-background disabled:opacity-30 cursor-pointer"
                     title="Zoom In (+)"
                     aria-label="Zoom In"
                   >
@@ -507,7 +507,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                   </button>
                   <button
                     onClick={handleRotate}
-                    className="rounded-sm p-1.5 text-muted-foreground transition-colors hover:text-foreground hover:bg-background cursor-pointer"
+                    className="rounded-full p-1.5 text-muted-foreground transition-colors hover:text-foreground hover:bg-background cursor-pointer"
                     title="Rotate 90°"
                     aria-label="Rotate 90°"
                   >
@@ -520,10 +520,10 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                   <button
                     type="button"
                     onClick={() => setShowStudyPanel((prev) => !prev)}
-                    className={`inline-flex items-center gap-1.5 h-8 px-2.5 rounded-sm border text-xs font-mono transition-colors cursor-pointer active:scale-95 ${
+                    className={`inline-flex items-center gap-1.5 h-8 px-3.5 rounded-full border text-xs font-mono transition-all cursor-pointer active:scale-95 ${
                       showStudyPanel
-                        ? "bg-foreground text-background font-bold border-foreground shadow-xs"
-                        : "border-border bg-secondary hover:bg-secondary/80 text-foreground"
+                        ? "bg-foreground text-background font-medium border-foreground shadow-xs"
+                        : "border-border/80 bg-secondary/80 hover:bg-secondary text-foreground"
                     }`}
                     title="Toggle Board PYQs & Study Kit"
                   >
@@ -535,7 +535,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                 {/* Keyboard Shortcuts Dialog Toggle */}
                 <button
                   onClick={() => setShowShortcuts((prev) => !prev)}
-                  className="hidden sm:block rounded-md p-1.5 text-muted-foreground transition-colors hover:text-foreground hover:bg-secondary cursor-pointer"
+                  className="hidden sm:block rounded-full p-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-secondary cursor-pointer"
                   title="Keyboard Shortcuts (?)"
                   aria-label="Keyboard Shortcuts"
                 >
@@ -548,7 +548,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                   download={`${title}.pdf`}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-md p-1.5 text-muted-foreground transition-colors hover:text-foreground hover:bg-secondary cursor-pointer touch-manipulation active:scale-95"
+                  className="rounded-full p-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-secondary cursor-pointer touch-manipulation active:scale-95"
                   title="Download PDF"
                   aria-label="Download PDF"
                 >
@@ -558,7 +558,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                 {/* Fullscreen */}
                 <button
                   onClick={toggleFullscreen}
-                  className="hidden rounded-md p-1.5 text-muted-foreground transition-colors hover:text-foreground hover:bg-secondary sm:block cursor-pointer"
+                  className="hidden rounded-full p-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-secondary sm:block cursor-pointer"
                   title="Fullscreen Toggle (F)"
                   aria-label="Toggle Fullscreen"
                 >
@@ -577,22 +577,22 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
             className={`relative flex flex-1 items-center justify-center overflow-auto p-1 sm:p-6 pb-24 transition-colors duration-300 ${getThemeBg()}`}
           >
             {isLoading && (
-              <div className="flex flex-col items-center space-y-3 text-muted-foreground p-6 sm:p-8 rounded-md border border-border bg-card shadow-lg mx-4">
+              <div className="flex flex-col items-center space-y-3 text-muted-foreground p-6 sm:p-8 rounded-2xl border border-border/80 bg-card/95 backdrop-blur-md shadow-xl mx-4">
                 <Loader2 className="h-7 w-7 animate-spin text-foreground" />
-                <p className="text-xs sm:text-sm font-semibold text-foreground text-center">Rendering High-DPI PDF Pages...</p>
+                <p className="text-xs sm:text-sm font-heading font-medium text-foreground text-center">Rendering High-DPI PDF Pages...</p>
                 <span className="text-[11px] text-muted-foreground font-mono">Loading NCERT textbook stream</span>
               </div>
             )}
 
             {error && (
-              <div className="flex max-w-md flex-col items-center rounded-md border border-destructive/30 bg-[var(--pastel-red-bg)] text-[var(--pastel-red-text)] p-6 sm:p-8 text-center shadow-lg mx-4">
+              <div className="flex max-w-md flex-col items-center rounded-2xl border border-destructive/30 bg-destructive/5 text-destructive p-6 sm:p-8 text-center shadow-lg mx-4">
                 <AlertCircle className="mb-2 h-7 w-7 text-destructive" />
-                <h3 className="mb-1 text-sm sm:text-base font-bold text-foreground">Unable to Display PDF Stream</h3>
-                <p className="mb-3 text-xs leading-relaxed">{error}</p>
+                <h3 className="mb-1 text-sm sm:text-base font-heading font-semibold text-foreground">Unable to Display PDF Stream</h3>
+                <p className="mb-3 text-xs leading-relaxed text-muted-foreground">{error}</p>
                 <a
                   href={pdfUrl}
                   download={`${title}.pdf`}
-                  className="rounded-md bg-primary text-primary-foreground px-4 py-2 text-xs font-medium transition-opacity hover:opacity-90 active:scale-95"
+                  className="rounded-full bg-foreground text-background px-4 py-2 text-xs font-medium transition-transform hover:opacity-90 active:scale-95 shadow-sm"
                 >
                   Download PDF Directly
                 </a>
@@ -606,7 +606,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                 boxShadow: "0 10px 30px -10px rgba(0, 0, 0, 0.5)",
               }}
             >
-              <canvas ref={canvasRef} className="rounded-md bg-white max-w-full" />
+              <canvas ref={canvasRef} className="rounded-xl bg-white max-w-full" />
             </div>
           </main>
 
@@ -618,17 +618,17 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: 380, opacity: 0 }}
                 transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                className="w-full sm:w-96 lg:w-[420px] shrink-0 border-l border-border bg-card flex flex-col z-40 overflow-hidden shadow-2xl h-full select-text"
+                className="w-full sm:w-96 lg:w-[420px] shrink-0 border-l border-border/80 bg-card flex flex-col z-40 overflow-hidden shadow-2xl h-full select-text"
               >
                 {/* Drawer Header */}
-                <div className="p-3.5 border-b border-border flex items-center justify-between bg-secondary/30">
+                <div className="p-3.5 border-b border-border/80 flex items-center justify-between bg-secondary/30">
                   <div className="flex items-center gap-2 overflow-hidden">
                     <span className="text-base">{resolvedContext.subject.icon}</span>
                     <div className="truncate">
                       <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground block">
                         {resolvedContext.subject.label} • {resolvedContext.activeChapter?.code}
                       </span>
-                      <h3 className="text-xs font-bold truncate text-foreground">
+                      <h3 className="text-xs font-heading font-semibold truncate text-foreground">
                         {resolvedContext.activeChapter?.name}
                       </h3>
                     </div>
@@ -636,21 +636,21 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                   <button
                     type="button"
                     onClick={() => setShowStudyPanel(false)}
-                    className="p-1 rounded-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                    className="h-7 w-7 rounded-full border border-border/80 bg-card hover:bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-all cursor-pointer"
                   >
-                    <X className="h-4 w-4" />
+                    <X className="h-3.5 w-3.5" />
                   </button>
                 </div>
 
                 {/* Tab Controls */}
-                <div className="p-2 border-b border-border flex items-center gap-1 font-mono text-[11px] bg-card">
+                <div className="p-2 border-b border-border/80 flex items-center gap-1.5 font-mono text-[11px] bg-card">
                   {isBoard && (
                     <button
                       type="button"
                       onClick={() => setStudyPanelTab("pyq")}
-                      className={`flex-1 py-1 px-2 rounded-xs text-center transition-colors cursor-pointer ${
+                      className={`flex-1 py-1.5 px-2.5 rounded-full text-center transition-all cursor-pointer ${
                         studyPanelTab === "pyq"
-                          ? "bg-foreground text-background font-bold shadow-xs"
+                          ? "bg-foreground text-background font-semibold shadow-xs"
                           : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                       }`}
                     >
@@ -660,9 +660,9 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                   <button
                     type="button"
                     onClick={() => setStudyPanelTab("cheatsheet")}
-                    className={`flex-1 py-1 px-2 rounded-xs text-center transition-colors cursor-pointer ${
+                    className={`flex-1 py-1.5 px-2.5 rounded-full text-center transition-all cursor-pointer ${
                       studyPanelTab === "cheatsheet"
-                        ? "bg-foreground text-background font-bold shadow-xs"
+                        ? "bg-foreground text-background font-semibold shadow-xs"
                         : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                     }`}
                   >
@@ -671,9 +671,9 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                   <button
                     type="button"
                     onClick={() => setStudyPanelTab("flashcards")}
-                    className={`flex-1 py-1 px-2 rounded-xs text-center transition-colors cursor-pointer ${
+                    className={`flex-1 py-1.5 px-2.5 rounded-full text-center transition-all cursor-pointer ${
                       studyPanelTab === "flashcards"
-                        ? "bg-foreground text-background font-bold shadow-xs"
+                        ? "bg-foreground text-background font-semibold shadow-xs"
                         : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                     }`}
                   >
@@ -692,25 +692,25 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                     studyPYQ?.questions && studyPYQ.questions.length > 0 ? (
                       <div className="space-y-3">
                         {studyPYQ.questions.map((q, idx) => (
-                          <div key={idx} className="rounded-sm border border-border bg-secondary/20 p-3 space-y-2">
-                            <div className="flex items-center gap-1.5 font-mono text-[9px]">
-                              <span className="px-1 py-0.5 rounded-xs bg-[var(--pastel-amber-bg)] text-[var(--pastel-amber-text)] font-bold">
+                          <div key={idx} className="rounded-2xl border border-border/80 bg-card p-3.5 space-y-2 hover:border-foreground/30 transition-all">
+                            <div className="flex items-center gap-1.5 font-mono text-[10px]">
+                              <span className="px-2 py-0.5 rounded-full bg-[var(--pastel-amber-bg)] text-[var(--pastel-amber-text)] font-semibold border border-[var(--pastel-amber-border)]">
                                 CBSE {q.year}
                               </span>
-                              <span className="px-1 py-0.5 rounded-xs bg-secondary text-muted-foreground uppercase">
+                              <span className="px-2 py-0.5 rounded-full bg-secondary text-muted-foreground uppercase border border-border/60">
                                 {q.type || "Q"} • {q.marks || 1}M
                               </span>
                             </div>
-                            <p className="text-xs font-semibold leading-relaxed text-foreground">
+                            <p className="text-xs font-medium leading-relaxed text-foreground">
                               <span className="font-mono text-muted-foreground mr-1">Q{q.q_num}.</span>
                               {q.q}
                             </p>
                             {q.options && q.options.length > 0 && (
-                              <div className="space-y-1 pt-1 border-t border-border/60">
+                              <div className="space-y-1.5 pt-2 border-t border-border/60">
                                 {q.options.map((opt, oIdx) => (
                                   <div
                                     key={oIdx}
-                                    className="p-1.5 rounded-xs border border-border bg-card text-[11px] leading-snug flex items-start gap-1.5"
+                                    className="p-2 rounded-xl border border-border/70 bg-secondary/30 text-[11px] leading-snug flex items-start gap-1.5"
                                   >
                                     <span className="font-mono font-bold text-muted-foreground">
                                       {String.fromCharCode(65 + oIdx)}.
@@ -730,7 +730,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                     )
                   ) : studyPanelTab === "cheatsheet" ? (
                     studyKit?.cheatsheet ? (
-                      <div className="text-xs leading-relaxed whitespace-pre-wrap font-sans text-foreground">
+                      <div className="rounded-2xl border border-border/80 bg-card p-4 text-xs leading-relaxed whitespace-pre-wrap font-sans text-foreground">
                         {studyKit.cheatsheet}
                       </div>
                     ) : (
@@ -742,19 +742,19 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                     <div className="space-y-3">
                       <div
                         onClick={() => setCardFlipped(!cardFlipped)}
-                        className="rounded-md border border-border bg-card p-4 min-h-[160px] flex flex-col justify-between cursor-pointer select-none"
+                        className="rounded-2xl border border-border/80 bg-card p-5 min-h-[170px] flex flex-col justify-between cursor-pointer select-none hover:border-foreground/30 transition-all shadow-xs"
                       >
-                        <span className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground font-bold">
+                        <span className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground font-semibold">
                           {cardFlipped ? "Answer" : `Card ${cardIdx + 1}/${studyKit.flashcards.length} (Tap to flip)`}
                         </span>
-                        <p className="text-xs font-bold text-center my-auto leading-relaxed">
+                        <p className="text-xs font-semibold text-center my-auto leading-relaxed text-foreground">
                           {cardFlipped ? studyKit.flashcards[cardIdx]?.back : studyKit.flashcards[cardIdx]?.front}
                         </p>
                         <span className="text-[10px] text-center text-muted-foreground font-mono">
                           {cardFlipped ? "Tap to flip back" : studyKit.flashcards[cardIdx]?.hint || "Tap to reveal"}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between font-mono text-xs text-muted-foreground">
+                      <div className="flex items-center justify-between font-mono text-xs">
                         <button
                           type="button"
                           disabled={cardIdx === 0}
@@ -762,7 +762,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                             setCardFlipped(false);
                             setCardIdx((i) => Math.max(0, i - 1));
                           }}
-                          className="hover:text-foreground disabled:opacity-30"
+                          className="px-3 py-1 rounded-full border border-border/80 bg-secondary hover:bg-foreground hover:text-background disabled:opacity-30 transition-colors"
                         >
                           ← Prev
                         </button>
@@ -773,7 +773,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                             setCardFlipped(false);
                             setCardIdx((i) => Math.min(studyKit.flashcards!.length - 1, i + 1));
                           }}
-                          className="hover:text-foreground disabled:opacity-30"
+                          className="px-3 py-1 rounded-full border border-border/80 bg-secondary hover:bg-foreground hover:text-background disabled:opacity-30 transition-colors"
                         >
                           Next →
                         </button>
@@ -798,7 +798,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 80, opacity: 0 }}
               transition={{ type: "spring", damping: 30, stiffness: 350 }}
-              className="fixed bottom-3 left-3 right-3 z-40 bg-card/95 backdrop-blur-md border border-border rounded-xl p-2 flex items-center justify-between shadow-2xl safe-bottom max-w-md mx-auto"
+              className="fixed bottom-4 left-4 right-4 z-40 bg-card/90 backdrop-blur-xl border border-border/80 rounded-full p-2 flex items-center justify-between shadow-2xl safe-bottom max-w-md mx-auto"
             >
               {/* Prev Button */}
               <button
@@ -807,7 +807,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                   handlePrevPage();
                 }}
                 disabled={currentPage <= 1 || isLoading}
-                className="h-10 w-10 flex items-center justify-center rounded-lg border border-border bg-secondary text-foreground disabled:opacity-30 touch-manipulation active:scale-90 transition-transform"
+                className="h-10 w-10 flex items-center justify-center rounded-full border border-border/80 bg-secondary text-foreground disabled:opacity-30 touch-manipulation active:scale-90 transition-transform cursor-pointer"
                 aria-label="Previous Page"
               >
                 <ChevronLeft className="h-5 w-5" />
@@ -830,7 +830,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                   value={pageInputValue}
                   onChange={(e) => setPageInputValue(e.target.value)}
                   onBlur={handlePageJump}
-                  className="h-9 w-12 rounded-md border border-border bg-background text-center font-bold text-foreground text-xs focus:border-foreground focus:outline-none"
+                  className="h-9 w-12 rounded-full border border-border/80 bg-background text-center font-bold text-foreground text-xs focus:border-foreground focus:outline-none"
                 />
                 <span className="text-muted-foreground text-xs">/ {numPages}</span>
               </form>
@@ -839,7 +839,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
               <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                 <button
                   onClick={handleZoomOut}
-                  className="h-9 w-9 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary touch-manipulation active:scale-90"
+                  className="h-9 w-9 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary touch-manipulation active:scale-90 cursor-pointer"
                   title="Zoom Out"
                   aria-label="Zoom Out"
                 >
@@ -847,7 +847,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                 </button>
                 <button
                   onClick={handleFitToWidth}
-                  className="h-9 px-2 flex items-center justify-center rounded-md font-mono text-[11px] font-semibold text-foreground bg-secondary/80 border border-border touch-manipulation active:scale-90"
+                  className="h-9 px-3 flex items-center justify-center rounded-full font-mono text-[11px] font-semibold text-foreground bg-secondary/80 border border-border/80 hover:bg-secondary touch-manipulation active:scale-90 cursor-pointer"
                   title="Fit Width"
                   aria-label="Fit Width"
                 >
@@ -855,7 +855,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                 </button>
                 <button
                   onClick={handleZoomIn}
-                  className="h-9 w-9 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary touch-manipulation active:scale-90"
+                  className="h-9 w-9 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary touch-manipulation active:scale-90 cursor-pointer"
                   title="Zoom In"
                   aria-label="Zoom In"
                 >
@@ -870,7 +870,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
                   handleNextPage();
                 }}
                 disabled={currentPage >= numPages || isLoading}
-                className="h-10 w-10 flex items-center justify-center rounded-lg border border-border bg-secondary text-foreground disabled:opacity-30 touch-manipulation active:scale-90 transition-transform"
+                className="h-10 w-10 flex items-center justify-center rounded-full border border-border/80 bg-secondary text-foreground disabled:opacity-30 touch-manipulation active:scale-90 transition-transform cursor-pointer"
                 aria-label="Next Page"
               >
                 <ChevronRight className="h-5 w-5" />
@@ -886,14 +886,14 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="absolute top-16 right-6 z-50 w-72 rounded-md border border-border bg-card p-4 text-foreground shadow-lg text-xs space-y-3"
+              className="absolute top-16 right-6 z-50 w-72 rounded-2xl border border-border/80 bg-card/95 backdrop-blur-md p-5 text-foreground shadow-2xl text-xs space-y-3"
             >
-              <div className="flex items-center justify-between pb-2 border-b border-border">
-                <span className="font-bold text-sm text-foreground flex items-center gap-1.5">
+              <div className="flex items-center justify-between pb-2 border-b border-border/80">
+                <span className="font-heading font-semibold text-sm text-foreground flex items-center gap-1.5">
                   <Sparkles className="h-3.5 w-3.5" />
                   Keyboard Shortcuts
                 </span>
-                <button onClick={() => setShowShortcuts(false)} aria-label="Close shortcuts" className="text-muted-foreground hover:text-foreground">
+                <button onClick={() => setShowShortcuts(false)} aria-label="Close shortcuts" className="h-6 w-6 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer">
                   ✕
                 </button>
               </div>
@@ -901,27 +901,27 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
               <div className="space-y-2 text-xs">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Next / Prev Page</span>
-                  <kbd className="px-2 py-1 text-xs rounded bg-secondary font-mono text-foreground">→ / ← or J / K</kbd>
+                  <kbd className="px-2 py-0.5 text-xs rounded-lg bg-secondary/80 border border-border/80 font-mono text-foreground">→ / ← or J / K</kbd>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Zoom In / Out</span>
-                  <kbd className="px-2 py-1 text-xs rounded bg-secondary font-mono text-foreground">+ / -</kbd>
+                  <kbd className="px-2 py-0.5 text-xs rounded-lg bg-secondary/80 border border-border/80 font-mono text-foreground">+ / -</kbd>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Fit to Width</span>
-                  <kbd className="px-2 py-1 text-xs rounded bg-secondary font-mono text-foreground">0</kbd>
+                  <kbd className="px-2 py-0.5 text-xs rounded-lg bg-secondary/80 border border-border/80 font-mono text-foreground">0</kbd>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Cycle Theme</span>
-                  <kbd className="px-2 py-1 text-xs rounded bg-secondary font-mono text-foreground">T</kbd>
+                  <kbd className="px-2 py-0.5 text-xs rounded-lg bg-secondary/80 border border-border/80 font-mono text-foreground">T</kbd>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Toggle Fullscreen</span>
-                  <kbd className="px-2 py-1 text-xs rounded bg-secondary font-mono text-foreground">F</kbd>
+                  <kbd className="px-2 py-0.5 text-xs rounded-lg bg-secondary/80 border border-border/80 font-mono text-foreground">F</kbd>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Close Reader</span>
-                  <kbd className="px-2 py-1 text-xs rounded bg-secondary font-mono text-foreground">Esc</kbd>
+                  <kbd className="px-2 py-0.5 text-xs rounded-lg bg-secondary/80 border border-border/80 font-mono text-foreground">Esc</kbd>
                 </div>
               </div>
             </motion.div>

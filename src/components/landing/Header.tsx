@@ -29,6 +29,8 @@ export const Header: React.FC<HeaderProps> = ({
         </a>
       </div>
       <nav className="s__nav">
+
+
         <ul className="s__menu">
           {siteContent.header.links.map((link) => (
             <li key={link.label} className="s__menu-item s__menu-item--link">
@@ -98,6 +100,8 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           </li>
         </ul>
+
+
       </nav>
     </header>
   );

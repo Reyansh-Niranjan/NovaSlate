@@ -16,7 +16,6 @@ import {
 } from "@radix-ui/react-icons";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
-import Logo from "@/components/Logo";
 
 gsap.registerPlugin(ScrollToPlugin);
 
@@ -92,14 +91,18 @@ export default function Header() {
         <a
           href="#home"
           onClick={(e) => handleNavClick(e, "#home")}
-          className="flex items-center gap-2.5 group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md interactive-tap"
+          className="flex items-center gap-3 group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-full interactive-tap"
         >
-          <Logo className="h-7 w-auto transition-transform group-hover:scale-105" />
+          <img
+            src="/novaslate_icon.png"
+            alt="NovaSlate"
+            className="w-8 h-8 object-contain transform group-hover:scale-105 transition-transform duration-200"
+          />
           <div className="flex items-center gap-2">
-            <span className="font-extrabold text-base tracking-tight text-foreground font-heading">
-              Nova<span className="text-primary font-serif italic font-normal">Slate</span>
+            <span className="font-heading font-semibold text-lg tracking-tight text-foreground">
+              NovaSlate
             </span>
-            <span className="inline-flex items-center text-xs font-semibold font-mono px-2.5 py-1 rounded-full bg-secondary text-primary border border-border tracking-wide">
+            <span className="inline-flex items-center text-[10px] font-semibold font-mono px-2.5 py-0.5 rounded-full bg-secondary text-foreground border border-border/80 tracking-wide">
               Open K–12
             </span>
           </div>
@@ -113,7 +116,7 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
-                className="px-3 py-1.5 rounded-lg text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors cursor-pointer font-heading"
+                className="px-3.5 py-1.5 rounded-full text-xs font-heading font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors cursor-pointer"
               >
                 {link.label}
               </a>
@@ -126,14 +129,14 @@ export default function Header() {
           <ThemeToggle />
           <button
             onClick={navigateToLogin}
-            className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors px-2 py-1.5 cursor-pointer font-heading interactive-tap active:scale-[0.97]"
+            className="text-xs font-semibold font-heading text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full hover:bg-secondary cursor-pointer interactive-tap active:scale-[0.97]"
           >
             Log In
           </button>
           <Button
             size="sm"
             onClick={navigateToLogin}
-            className="text-xs h-8 px-4 gap-1.5 font-bold cursor-pointer rounded-lg font-heading bg-primary text-primary-foreground hover:opacity-90 shadow-xs interactive-tap active:scale-[0.97]"
+            className="text-xs h-8 px-4 gap-1.5 font-bold cursor-pointer rounded-full font-heading bg-foreground text-background hover:opacity-90 shadow-xs interactive-tap active:scale-[0.97]"
           >
             <span>Start Free</span>
             <ArrowTopRightIcon className="w-3.5 h-3.5" />
@@ -145,7 +148,7 @@ export default function Header() {
           <ThemeToggle />
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-lg border border-border text-foreground hover:bg-secondary transition-colors cursor-pointer interactive-tap active:scale-[0.97]"
+            className="p-2 rounded-full border border-border/80 text-foreground hover:bg-secondary transition-colors cursor-pointer interactive-tap active:scale-[0.97]"
             aria-label="Toggle Navigation Menu"
             aria-expanded={mobileMenuOpen}
           >
@@ -173,20 +176,24 @@ export default function Header() {
                   animate={{ y: 0 }}
                   exit={{ y: "-100%" }}
                   transition={{ type: "spring", damping: 28, stiffness: 280 }}
-                  className="fixed top-0 left-0 right-0 bg-card border-b border-border z-50 p-6 shadow-xl lg:hidden flex flex-col gap-4"
+                  className="fixed top-0 left-0 right-0 bg-card border-b border-border/80 z-50 p-6 shadow-2xl lg:hidden flex flex-col gap-4 rounded-b-3xl"
                 >
-                  <div className="flex items-center justify-between pb-3 border-b border-border">
-                    <div className="flex items-center gap-2">
-                      <Logo className="h-6 w-auto" />
-                      <span className="font-bold text-sm text-foreground font-heading">
+                  <div className="flex items-center justify-between pb-3 border-b border-border/80">
+                    <div className="flex items-center gap-2.5">
+                      <img
+                        src="/novaslate_icon.png"
+                        alt="NovaSlate"
+                        className="w-7 h-7 object-contain"
+                      />
+                      <span className="font-heading font-semibold text-base text-foreground">
                         NovaSlate
                       </span>
                     </div>
                     <button
                       onClick={() => setMobileMenuOpen(false)}
-                      className="p-1.5 rounded-md text-muted-foreground hover:text-foreground cursor-pointer"
+                      className="p-1.5 rounded-full border border-border/80 text-muted-foreground hover:text-foreground cursor-pointer"
                     >
-                      <Cross2Icon className="w-5 h-5" />
+                      <Cross2Icon className="w-4 h-4" />
                     </button>
                   </div>
 
@@ -198,9 +205,9 @@ export default function Header() {
                           key={link.href}
                           href={link.href}
                           onClick={(e) => handleNavClick(e, link.href)}
-                          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-foreground hover:bg-secondary transition-colors font-heading"
+                          className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-heading font-medium text-foreground hover:bg-secondary transition-colors"
                         >
-                          <div className="p-1 rounded-md bg-primary/10 text-primary">
+                          <div className="p-1.5 rounded-lg bg-secondary text-foreground">
                             <Icon className="w-4 h-4" />
                           </div>
                           <span>{link.label}</span>
@@ -209,13 +216,13 @@ export default function Header() {
                     })}
                   </div>
 
-                  <div className="flex flex-col gap-2 pt-3 border-t border-border">
+                  <div className="flex flex-col gap-2 pt-3 border-t border-border/80">
                     <Button
                       onClick={() => {
                         setMobileMenuOpen(false);
                         navigateToLogin();
                       }}
-                      className="w-full h-10 font-bold font-heading bg-primary text-primary-foreground hover:opacity-90"
+                      className="w-full h-11 font-bold font-heading rounded-full bg-foreground text-background hover:opacity-90 shadow-sm"
                     >
                       <span>Start Reading Free</span>
                       <ArrowTopRightIcon className="w-4 h-4" />

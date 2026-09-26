@@ -8,12 +8,12 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Lexend', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        display: ['Work Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        heading: ['Work Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        body: ['Lexend', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: ['Neue Montreal', 'Lexend', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['Frama', 'Work Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        heading: ['Frama', 'Work Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        body: ['Neue Montreal', 'Lexend', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         serif: ['Newsreader', 'Georgia', 'serif'],
-        mono: ['JetBrains Mono', 'monospace'],
+        mono: ['Supply Mono', 'JetBrains Mono', 'monospace'],
       },
       colors: {
         border: 'var(--border)',

@@ -29,13 +29,13 @@ export const ExecutionCanvas: React.FC = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     let width = (canvas.width = container.clientWidth * dpr);
     let height = (canvas.height = container.clientHeight * dpr);
 
     // Pre-render curriculum cards
     const loadedImages: HTMLCanvasElement[] = curriculumModules.map((mod) =>
-      renderCurriculumCardImage(mod, Math.min(dpr, 2))
+      renderCurriculumCardImage(mod, Math.min(dpr, 1.5))
     );
 
     const baseCardWidth = 260 * dpr;
@@ -45,6 +45,16 @@ export const ExecutionCanvas: React.FC = () => {
     let lastY = -1;
     let lastSpawnTime = 0;
     let imageIndex = 0;
+    let isVisible = false;
+    let isRunning = false;
+    let animationFrameId: number;
+
+    const startLoop = () => {
+      if (!isRunning && isVisible) {
+        isRunning = true;
+        animationFrameId = requestAnimationFrame(render);
+      }
+    };
 
     const spawnCard = (x: number, y: number, dirX: number, dirY: number) => {
       if (loadedImages.length === 0) return;
@@ -70,12 +80,15 @@ export const ExecutionCanvas: React.FC = () => {
         width: cWidth,
         height: cHeight,
         life: 0,
-        maxLife: 220 + Math.random() * 80,
+        maxLife: 200 + Math.random() * 60,
       });
 
-      if (cards.length > 20) {
+      // Cap at 10 floating cards for mobile performance
+      if (cards.length > 10) {
         cards.shift();
       }
+
+      startLoop();
     };
 
     const handlePointerMove = (e: MouseEvent) => {
@@ -88,7 +101,7 @@ export const ExecutionCanvas: React.FC = () => {
       const now = performance.now();
       const dist = Math.hypot(x - lastX, y - lastY);
 
-      if (dist > 45 && now - lastSpawnTime > 70) {
+      if (dist > 45 && now - lastSpawnTime > 80) {
         const dirX = lastX < 0 ? 0 : (x - lastX) / (dist || 1);
         const dirY = lastY < 0 ? 0 : (y - lastY) / (dist || 1);
         spawnCard(x, y, dirX, dirY);
@@ -97,6 +110,30 @@ export const ExecutionCanvas: React.FC = () => {
 
       lastX = x;
       lastY = y;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        const rect = container.getBoundingClientRect();
+        const x = (touch.clientX - rect.left) * dpr;
+        const y = (touch.clientY - rect.top) * dpr;
+
+        if (x < 0 || x > width || y < 0 || y > height) return;
+
+        const now = performance.now();
+        const dist = Math.hypot(x - lastX, y - lastY);
+
+        if (dist > 50 && now - lastSpawnTime > 120) {
+          const dirX = lastX < 0 ? 0 : (x - lastX) / (dist || 1);
+          const dirY = lastY < 0 ? 0 : (y - lastY) / (dist || 1);
+          spawnCard(x, y, dirX, dirY);
+          lastSpawnTime = now;
+        }
+
+        lastX = x;
+        lastY = y;
+      }
     };
 
     // Auto-spawn initial cards so canvas is alive on load
@@ -109,19 +146,28 @@ export const ExecutionCanvas: React.FC = () => {
     }, 400);
 
     container.addEventListener('mousemove', handlePointerMove as EventListener);
+    container.addEventListener('touchmove', handleTouchMove as EventListener, { passive: true });
 
     const handleResize = () => {
       width = canvas.width = container.clientWidth * dpr;
       height = canvas.height = container.clientHeight * dpr;
+      if (cards.length > 0) startLoop();
     };
     window.addEventListener('resize', handleResize);
 
-    let isVisible = false;
-    let animationFrameId: number;
-
     const render = () => {
-      if (!isVisible) return;
+      if (!isVisible) {
+        isRunning = false;
+        return;
+      }
+
       ctx.clearRect(0, 0, width, height);
+
+      // IDLE STOP: When cards fade out, pause RAF completely (0% CPU/GPU)
+      if (cards.length === 0) {
+        isRunning = false;
+        return;
+      }
 
       for (let i = cards.length - 1; i >= 0; i--) {
         const c = cards[i];
@@ -156,11 +202,11 @@ export const ExecutionCanvas: React.FC = () => {
         const h = c.height;
         const r = 10 * dpr;
 
-        // Soft drop shadow
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.16)';
-        ctx.shadowBlur = 24 * dpr;
+        // Lightweight shadow (reduced blur radius prevents heavy 2D Gaussian kernel)
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.12)';
+        ctx.shadowBlur = 8 * dpr;
         ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 12 * dpr;
+        ctx.shadowOffsetY = 4 * dpr;
 
         // Rounded rect clip
         ctx.beginPath();
@@ -188,9 +234,11 @@ export const ExecutionCanvas: React.FC = () => {
       (entries) => {
         const [entry] = entries;
         isVisible = entry.isIntersecting;
-        if (isVisible) {
+        if (isVisible && cards.length > 0) {
+          startLoop();
+        } else if (!isVisible) {
+          isRunning = false;
           cancelAnimationFrame(animationFrameId);
-          render();
         }
       },
       { threshold: 0.05 }
@@ -202,6 +250,7 @@ export const ExecutionCanvas: React.FC = () => {
       cancelAnimationFrame(animationFrameId);
       observer.disconnect();
       container.removeEventListener('mousemove', handlePointerMove as EventListener);
+      container.removeEventListener('touchmove', handleTouchMove as EventListener);
       window.removeEventListener('resize', handleResize);
     };
   }, []);

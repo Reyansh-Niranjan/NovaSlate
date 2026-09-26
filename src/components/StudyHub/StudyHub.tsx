@@ -280,39 +280,32 @@ export const StudyHub: React.FC<StudyHubProps> = ({
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground selection:bg-muted font-sans">
-      {/* Telemetry Faux-OS Header Bar */}
-      <header className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur-md px-4 py-3 sm:px-6 safe-top">
+      {/* Editorial Header Bar */}
+      <header className="sticky top-0 z-30 border-b border-border/80 bg-card/90 backdrop-blur-md px-4 py-3 sm:px-6 safe-top">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             {onClose && (
               <button
                 type="button"
                 onClick={onClose}
-                className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-background hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors active:scale-95"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-border/80 bg-card hover:bg-secondary text-muted-foreground hover:text-foreground transition-all active:scale-95 cursor-pointer"
                 title="Back"
                 aria-label="Back"
               >
-                <ArrowLeft className="h-3.5 w-3.5" />
+                <ArrowLeft className="h-4 w-4" />
               </button>
             )}
 
-            {/* Faux-OS Window Dots */}
-            <div className="hidden sm:flex items-center gap-1.5 mr-1">
-              <span className="h-2 w-2 rounded-full bg-border" />
-              <span className="h-2 w-2 rounded-full bg-border" />
-              <span className="h-2 w-2 rounded-full bg-border" />
-            </div>
-
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+                <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                   edu://cbse.ncert/pyq-archive
                 </span>
-                <span className="inline-flex items-center gap-1 rounded-sm bg-[var(--pastel-green-bg)] px-1.5 py-0.5 text-[10px] font-mono font-medium text-[var(--pastel-green-text)] border border-border">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Live Indexed
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-mono font-medium text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" /> Live Indexed
                 </span>
               </div>
-              <h1 className="text-sm sm:text-base font-bold tracking-tight text-foreground">
+              <h1 className="text-base sm:text-lg font-heading font-semibold tracking-tight text-foreground">
                 Board Exam PYQs & Study Kit Laboratory
               </h1>
             </div>
@@ -322,7 +315,7 @@ export const StudyHub: React.FC<StudyHubProps> = ({
             <button
               type="button"
               onClick={() => window.print()}
-              className="hidden sm:inline-flex items-center gap-1.5 h-8 px-3 rounded-md border border-border bg-card text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer active:scale-98"
+              className="hidden sm:inline-flex items-center gap-1.5 h-9 px-4 rounded-full border border-border/80 bg-card text-xs font-mono font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-all cursor-pointer active:scale-95"
             >
               <Printer className="h-3.5 w-3.5" />
               <span>Print Worksheet</span>
@@ -331,7 +324,7 @@ export const StudyHub: React.FC<StudyHubProps> = ({
               <button
                 type="button"
                 onClick={() => onOpenPdfForChapter(activeChapter.code)}
-                className="inline-flex items-center gap-1.5 h-8 px-3.5 rounded-md font-medium text-xs text-primary-foreground bg-primary hover:opacity-90 transition-opacity active:scale-97 cursor-pointer shadow-xs"
+                className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full font-medium text-xs text-background bg-foreground hover:opacity-90 transition-transform active:scale-95 cursor-pointer shadow-sm"
               >
                 <BookOpen className="h-3.5 w-3.5" />
                 <span>Open Textbook</span>
@@ -342,10 +335,10 @@ export const StudyHub: React.FC<StudyHubProps> = ({
       </header>
 
       {/* Class & Stream Telemetry Selector */}
-      <section className="border-b border-border bg-secondary/30 px-4 py-2.5 sm:px-6">
-        <div className="mx-auto max-w-7xl flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+      <section className="border-b border-border/70 bg-secondary/30 px-4 py-2.5 sm:px-6">
+        <div className="mx-auto max-w-7xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           {/* Class Tabs */}
-          <div className="flex items-center gap-1 overflow-x-auto pb-0.5 scrollbar-none font-mono">
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none font-mono">
             <span className="text-[10px] uppercase tracking-wider text-muted-foreground mr-1.5 font-bold">
               Class:
             </span>
@@ -354,10 +347,10 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                 key={cls.key}
                 type="button"
                 onClick={() => setSelectedClass(cls.key)}
-                className={`px-2.5 py-1 rounded-sm text-xs transition-colors cursor-pointer ${
+                className={`px-3 py-1 rounded-full text-xs transition-all cursor-pointer ${
                   selectedClass === cls.key
-                    ? "bg-foreground text-background font-bold shadow-xs"
-                    : "border border-border bg-card text-muted-foreground hover:text-foreground hover:bg-secondary"
+                    ? "bg-foreground text-background font-semibold shadow-xs"
+                    : "border border-border/80 bg-card text-muted-foreground hover:text-foreground hover:bg-secondary"
                 }`}
               >
                 {cls.label}
@@ -370,7 +363,7 @@ export const StudyHub: React.FC<StudyHubProps> = ({
 
           {/* Stream Selector for 11 & 12 */}
           {(selectedClass === "11" || selectedClass === "12") && (
-            <div className="flex items-center gap-1 font-mono text-xs">
+            <div className="flex items-center gap-1.5 font-mono text-xs">
               <span className="text-[10px] uppercase tracking-wider text-muted-foreground mr-1">
                 Stream:
               </span>
@@ -379,10 +372,10 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                   key={st}
                   type="button"
                   onClick={() => setSelectedStream(st)}
-                  className={`px-2 py-0.5 rounded-sm capitalize transition-colors ${
+                  className={`px-3 py-0.5 rounded-full capitalize transition-all cursor-pointer ${
                     selectedStream === st
-                      ? "bg-foreground text-background font-bold"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "bg-foreground text-background font-semibold shadow-xs"
+                      : "border border-border/80 bg-card text-muted-foreground hover:text-foreground hover:bg-secondary"
                   }`}
                 >
                   {st}
@@ -394,9 +387,9 @@ export const StudyHub: React.FC<StudyHubProps> = ({
       </section>
 
       {/* Subject Filter Bar */}
-      <section className="border-b border-border bg-card px-4 py-2 sm:px-6">
+      <section className="border-b border-border/80 bg-card px-4 py-2 sm:px-6">
         <div className="mx-auto max-w-7xl flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-          <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mr-1">
+          <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mr-1 font-bold">
             Subject:
           </span>
           {availableSubjectKeys.map((key) => {
@@ -408,15 +401,15 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                 key={key}
                 type="button"
                 onClick={() => setSelectedCacheKey(key)}
-                className={`flex items-center gap-1.5 px-3 py-1 rounded-sm text-xs transition-colors cursor-pointer whitespace-nowrap ${
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs transition-all cursor-pointer whitespace-nowrap ${
                   isSelected
-                    ? "bg-primary text-primary-foreground font-semibold shadow-xs"
-                    : "border border-border bg-background text-muted-foreground hover:text-foreground hover:bg-secondary"
+                    ? "bg-foreground text-background font-semibold shadow-xs"
+                    : "border border-border/80 bg-card text-muted-foreground hover:text-foreground hover:bg-secondary"
                 }`}
               >
                 <span>{subj.icon}</span>
                 <span>{subj.label}</span>
-                <span className="text-[10px] opacity-60 font-mono">
+                <span className="text-[10px] opacity-70 font-mono">
                   [{getSubjectChapters(subj).length}]
                 </span>
               </button>
@@ -440,13 +433,13 @@ export const StudyHub: React.FC<StudyHubProps> = ({
 
           {/* Search Box */}
           <div className="relative">
-            <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
+            <Search className="absolute left-3.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
             <input
               type="text"
               placeholder="Filter by title or code..."
               value={chapterSearch}
               onChange={(e) => setChapterSearch(e.target.value)}
-              className="w-full rounded-md border border-border bg-card pl-8 pr-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-foreground"
+              className="w-full rounded-full border border-border/80 bg-card pl-9 pr-4 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-foreground transition-all"
             />
           </div>
 
@@ -465,7 +458,7 @@ export const StudyHub: React.FC<StudyHubProps> = ({
               return (
                 <div key={gIdx} className="space-y-1">
                   {group.label && (
-                    <div className="px-2 py-1 text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-wider bg-secondary/50 rounded-xs">
+                    <div className="px-3 py-1 text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-wider bg-secondary/50 rounded-full">
                       {group.label}
                     </div>
                   )}
@@ -476,17 +469,17 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                         key={ch.code}
                         type="button"
                         onClick={() => setSelectedChapterCode(ch.code)}
-                        className={`w-full flex items-start gap-2.5 text-left p-2.5 rounded-md border transition-colors cursor-pointer ${
+                        className={`w-full flex items-start gap-2.5 text-left p-3 rounded-2xl border transition-all cursor-pointer ${
                           isSelected
                             ? "border-foreground bg-card text-foreground font-semibold shadow-xs"
-                            : "border-border bg-card/60 text-muted-foreground hover:text-foreground hover:bg-secondary/40"
+                            : "border-border/70 bg-card text-muted-foreground hover:text-foreground hover:bg-secondary/40"
                         }`}
                       >
-                        <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-xs bg-secondary text-[9px] font-mono font-bold text-muted-foreground mt-0.5">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-secondary text-[10px] font-mono font-bold text-muted-foreground mt-0.5">
                           {idx + 1}
                         </span>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs leading-snug line-clamp-2">{ch.name}</p>
+                          <p className="text-xs font-heading font-medium leading-snug line-clamp-2">{ch.name}</p>
                           <span className="text-[10px] font-mono text-muted-foreground mt-0.5 inline-block uppercase">
                             CODE: {ch.code}
                           </span>
@@ -506,8 +499,8 @@ export const StudyHub: React.FC<StudyHubProps> = ({
         {/* Right Column: Active Study & PYQ Terminal (8 cols) */}
         <section className="lg:col-span-8 flex flex-col gap-4">
           {/* Active Chapter Header Card */}
-          <div className="rounded-md border border-border bg-card p-4 sm:p-5 shadow-xs space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 pb-3 border-b border-border">
+          <div className="rounded-3xl border border-border/80 bg-card p-5 sm:p-6 shadow-xs space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 pb-3 border-b border-border/80">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
                   <span>Class {selectedClass}</span>
@@ -516,14 +509,14 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                   <span>/</span>
                   <span className="text-foreground font-bold">{activeChapter?.code}</span>
                 </div>
-                <h2 className="text-base sm:text-lg font-bold tracking-tight text-foreground">
+                <h2 className="text-lg sm:text-xl font-heading font-semibold tracking-tight text-foreground">
                   {activeChapter?.name}
                 </h2>
               </div>
 
               {/* Board Statistics or Curriculum Badge */}
               {isBoardClass(selectedClass) && pyqData?.stats ? (
-                <div className="flex items-center gap-2.5 rounded-sm border border-border bg-secondary/60 px-3 py-1.5 text-xs font-mono">
+                <div className="flex items-center gap-2.5 rounded-full border border-border/80 bg-secondary/60 px-4 py-1.5 text-xs font-mono">
                   <div className="text-right">
                     <span className="text-foreground font-bold">{pyqData.stats.total || pyqData.total}</span>
                     <span className="text-muted-foreground text-[10px] block">Questions</span>
@@ -535,23 +528,23 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                   </div>
                 </div>
               ) : !isBoardClass(selectedClass) ? (
-                <div className="flex items-center gap-2 rounded-sm border border-border bg-secondary/50 px-3 py-1.5 text-xs font-mono text-muted-foreground">
-                  <span className="h-2 w-2 rounded-full bg-[var(--pastel-green-text)] animate-pulse" />
+                <div className="flex items-center gap-2 rounded-full border border-border/80 bg-secondary/50 px-4 py-1.5 text-xs font-mono text-muted-foreground">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                   <span>NCERT Study Kit & Cheatsheet</span>
                 </div>
               ) : null}
             </div>
 
             {/* Mode Switcher Tabs */}
-            <div className="flex items-center gap-1 overflow-x-auto scrollbar-none font-mono text-xs">
+            <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none font-mono text-xs">
               {isBoardClass(selectedClass) && (
                 <button
                   type="button"
                   onClick={() => setActiveTab("pyq")}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-colors cursor-pointer whitespace-nowrap ${
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full transition-all cursor-pointer whitespace-nowrap ${
                     activeTab === "pyq"
-                      ? "bg-foreground text-background font-bold shadow-xs"
-                      : "border border-border bg-card text-muted-foreground hover:text-foreground hover:bg-secondary"
+                      ? "bg-foreground text-background font-semibold shadow-xs"
+                      : "border border-border/80 bg-card text-muted-foreground hover:text-foreground hover:bg-secondary"
                   }`}
                 >
                   <Flame className="h-3 w-3" />
@@ -567,10 +560,10 @@ export const StudyHub: React.FC<StudyHubProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveTab("cheatsheet")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-colors cursor-pointer whitespace-nowrap ${
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full transition-all cursor-pointer whitespace-nowrap ${
                   activeTab === "cheatsheet"
-                    ? "bg-foreground text-background font-bold shadow-xs"
-                    : "border border-border bg-card text-muted-foreground hover:text-foreground hover:bg-secondary"
+                    ? "bg-foreground text-background font-semibold shadow-xs"
+                    : "border border-border/80 bg-card text-muted-foreground hover:text-foreground hover:bg-secondary"
                 }`}
               >
                 <FileText className="h-3 w-3" />
@@ -580,10 +573,10 @@ export const StudyHub: React.FC<StudyHubProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveTab("flashcards")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-colors cursor-pointer whitespace-nowrap ${
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full transition-all cursor-pointer whitespace-nowrap ${
                   activeTab === "flashcards"
-                    ? "bg-foreground text-background font-bold shadow-xs"
-                    : "border border-border bg-card text-muted-foreground hover:text-foreground hover:bg-secondary"
+                    ? "bg-foreground text-background font-semibold shadow-xs"
+                    : "border border-border/80 bg-card text-muted-foreground hover:text-foreground hover:bg-secondary"
                 }`}
               >
                 <Layers className="h-3 w-3" />
@@ -598,10 +591,10 @@ export const StudyHub: React.FC<StudyHubProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveTab("quiz")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-colors cursor-pointer whitespace-nowrap ${
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full transition-all cursor-pointer whitespace-nowrap ${
                   activeTab === "quiz"
-                    ? "bg-foreground text-background font-bold shadow-xs"
-                    : "border border-border bg-card text-muted-foreground hover:text-foreground hover:bg-secondary"
+                    ? "bg-foreground text-background font-semibold shadow-xs"
+                    : "border border-border/80 bg-card text-muted-foreground hover:text-foreground hover:bg-secondary"
                 }`}
               >
                 <CheckCircle2 className="h-3 w-3" />
@@ -611,10 +604,10 @@ export const StudyHub: React.FC<StudyHubProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveTab("important")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-colors cursor-pointer whitespace-nowrap ${
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full transition-all cursor-pointer whitespace-nowrap ${
                   activeTab === "important"
-                    ? "bg-foreground text-background font-bold shadow-xs"
-                    : "border border-border bg-card text-muted-foreground hover:text-foreground hover:bg-secondary"
+                    ? "bg-foreground text-background font-semibold shadow-xs"
+                    : "border border-border/80 bg-card text-muted-foreground hover:text-foreground hover:bg-secondary"
                 }`}
               >
                 <Sparkles className="h-3 w-3" />
@@ -624,10 +617,10 @@ export const StudyHub: React.FC<StudyHubProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveTab("mindmap")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-colors cursor-pointer whitespace-nowrap ${
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full transition-all cursor-pointer whitespace-nowrap ${
                   activeTab === "mindmap"
-                    ? "bg-foreground text-background font-bold shadow-xs"
-                    : "border border-border bg-card text-muted-foreground hover:text-foreground hover:bg-secondary"
+                    ? "bg-foreground text-background font-semibold shadow-xs"
+                    : "border border-border/80 bg-card text-muted-foreground hover:text-foreground hover:bg-secondary"
                 }`}
               >
                 <SlidersHorizontal className="h-3 w-3" />
@@ -638,7 +631,7 @@ export const StudyHub: React.FC<StudyHubProps> = ({
 
           {/* Loading View */}
           {loading && (
-            <div className="flex min-h-[320px] flex-col items-center justify-center rounded-md border border-border bg-card p-8 text-center">
+            <div className="flex min-h-[320px] flex-col items-center justify-center rounded-3xl border border-border/80 bg-card p-10 text-center">
               <Loader2 className="h-6 w-6 animate-spin text-foreground mb-3" />
               <p className="text-xs font-mono uppercase tracking-wider text-foreground">
                 Syncing curriculum index for {activeChapter?.code}...
@@ -648,20 +641,20 @@ export const StudyHub: React.FC<StudyHubProps> = ({
 
           {/* Auth Required View */}
           {!loading && error && error.includes("AUTH_REQUIRED") && (
-            <div className="rounded-md border border-border bg-card p-6 sm:p-8 text-center flex flex-col items-center justify-center space-y-4 shadow-xs">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary text-foreground">
+            <div className="rounded-3xl border border-border/80 bg-card p-8 sm:p-12 text-center flex flex-col items-center justify-center space-y-4 shadow-sm">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-secondary text-foreground">
                 <Lock className="h-6 w-6" />
               </div>
               <div className="space-y-1 max-w-md">
-                <h3 className="text-sm sm:text-base font-bold text-foreground">Authentication Required</h3>
-                <p className="text-xs text-muted-foreground">
+                <h3 className="text-base sm:text-lg font-heading font-semibold text-foreground">Authentication Required</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
                   Access to StudyOS past year board questions, formula sheets, and 3D flashcards requires an authenticated NovaSlate account.
                 </p>
               </div>
               <div className="flex items-center gap-3 pt-2">
                 <a
                   href="#login"
-                  className="inline-flex items-center gap-2 rounded-md bg-foreground px-4 py-2 text-xs font-bold text-background hover:opacity-90 transition-opacity"
+                  className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-xs font-semibold text-background hover:opacity-90 transition-transform active:scale-95 shadow-sm"
                 >
                   <UserCheck className="h-3.5 w-3.5" /> Sign In to NovaSlate
                 </a>
@@ -671,15 +664,15 @@ export const StudyHub: React.FC<StudyHubProps> = ({
 
           {/* Generic Error View */}
           {!loading && error && !error.includes("AUTH_REQUIRED") && (
-            <div className="rounded-md border border-border bg-[var(--pastel-red-bg)] p-4 text-[var(--pastel-red-text)] flex items-start gap-3 text-xs">
+            <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-5 text-destructive flex items-start gap-3 text-xs">
               <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
               <div>
-                <p className="font-bold">Telecommunication Error</p>
-                <p className="mt-0.5">{error}</p>
+                <p className="font-heading font-semibold text-sm">Telecommunication Error</p>
+                <p className="mt-1 leading-relaxed text-muted-foreground">{error}</p>
                 <button
                   type="button"
                   onClick={() => setSelectedChapterCode(activeChapter?.code || "")}
-                  className="mt-2.5 inline-flex items-center gap-1 rounded-sm border border-border bg-card px-2.5 py-1 text-xs text-foreground font-medium hover:bg-secondary"
+                  className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-3.5 py-1.5 text-xs text-foreground font-mono font-medium hover:bg-secondary transition-all cursor-pointer"
                 >
                   <RotateCw className="h-3 w-3" /> Retry Sync
                 </button>
@@ -694,14 +687,14 @@ export const StudyHub: React.FC<StudyHubProps> = ({
               {activeTab === "pyq" && (
                 <div className="space-y-3.5">
                   {/* Filter Toolbar */}
-                  <div className="rounded-md border border-border bg-card p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+                  <div className="rounded-2xl border border-border/80 bg-card p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs">
                     <div className="flex flex-wrap items-center gap-2">
-                      <div className="flex items-center gap-1 font-mono text-[11px]">
-                        <span className="text-muted-foreground uppercase">Year:</span>
+                      <div className="flex items-center gap-1.5 font-mono text-[11px]">
+                        <span className="text-muted-foreground uppercase font-bold">Year:</span>
                         <select
                           value={selectedYear}
                           onChange={(e) => setSelectedYear(e.target.value)}
-                          className="rounded-sm border border-border bg-background px-2 py-0.5 text-xs text-foreground focus:outline-none"
+                          className="rounded-full border border-border/80 bg-background px-3 py-1 text-xs text-foreground focus:outline-none"
                         >
                           <option value="all">All Sets</option>
                           {availableYears.map((y) => (
@@ -712,12 +705,12 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                         </select>
                       </div>
 
-                      <div className="flex items-center gap-1 font-mono text-[11px]">
-                        <span className="text-muted-foreground uppercase">Type:</span>
+                      <div className="flex items-center gap-1.5 font-mono text-[11px]">
+                        <span className="text-muted-foreground uppercase font-bold">Type:</span>
                         <select
                           value={selectedType}
                           onChange={(e) => setSelectedType(e.target.value)}
-                          className="rounded-sm border border-border bg-background px-2 py-0.5 text-xs text-foreground focus:outline-none"
+                          className="rounded-full border border-border/80 bg-background px-3 py-1 text-xs text-foreground focus:outline-none"
                         >
                           <option value="all">All Formats</option>
                           {availableTypes.map((t) => (
@@ -731,10 +724,10 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                       <button
                         type="button"
                         onClick={() => setShowBookmarksOnly(!showBookmarksOnly)}
-                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border text-[11px] font-mono transition-colors ${
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[11px] font-mono transition-all cursor-pointer ${
                           showBookmarksOnly
-                            ? "bg-[var(--pastel-amber-bg)] text-[var(--pastel-amber-text)] border-border font-bold"
-                            : "border-border bg-background text-muted-foreground hover:text-foreground"
+                            ? "bg-[var(--pastel-amber-bg)] text-[var(--pastel-amber-text)] border-[var(--pastel-amber-border)] font-bold shadow-xs"
+                            : "border-border/80 bg-background text-muted-foreground hover:text-foreground"
                         }`}
                       >
                         <Bookmark className="h-3 w-3" />
@@ -742,23 +735,23 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                       </button>
                     </div>
 
-                    <div className="relative w-full sm:w-48">
-                      <Search className="absolute left-2 top-2 h-3 w-3 text-muted-foreground" />
+                    <div className="relative w-full sm:w-52">
+                      <Search className="absolute left-3 top-2 h-3.5 w-3.5 text-muted-foreground" />
                       <input
                         type="text"
                         placeholder="Search question..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full rounded-sm border border-border bg-background pl-7 pr-2 py-1 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none"
+                        className="w-full rounded-full border border-border/80 bg-background pl-8 pr-3 py-1 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-foreground"
                       />
                     </div>
                   </div>
 
                   {/* Question Cards */}
                   {filteredQuestions.length === 0 ? (
-                    <div className="rounded-md border border-dashed border-border bg-card p-10 text-center text-muted-foreground">
-                      <HelpCircle className="mx-auto h-7 w-7 opacity-40 mb-2" />
-                      <p className="text-xs font-semibold text-foreground">No questions match filter criteria</p>
+                    <div className="rounded-3xl border border-dashed border-border/80 bg-card p-12 text-center text-muted-foreground">
+                      <HelpCircle className="mx-auto h-8 w-8 opacity-40 mb-2" />
+                      <p className="text-xs font-heading font-medium text-foreground">No questions match filter criteria</p>
                     </div>
                   ) : (
                     <div className="space-y-3">
@@ -769,18 +762,18 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                         return (
                           <div
                             key={`${q.year}_${q.q_num}_${idx}`}
-                            className="rounded-md border border-border bg-card p-4 sm:p-5 space-y-3 transition-colors hover:border-foreground/40"
+                            className="rounded-2xl border border-border/80 bg-card p-4 sm:p-5 space-y-3 transition-all hover:border-foreground/30 shadow-xs"
                           >
                             {/* Question Header */}
-                            <div className="flex items-center justify-between gap-2 border-b border-border pb-2.5">
+                            <div className="flex items-center justify-between gap-2 border-b border-border/70 pb-2.5">
                               <div className="flex items-center gap-1.5 flex-wrap font-mono text-[10px]">
-                                <span className="px-1.5 py-0.5 rounded-xs bg-[var(--pastel-amber-bg)] text-[var(--pastel-amber-text)] font-bold">
+                                <span className="px-2.5 py-0.5 rounded-full bg-[var(--pastel-amber-bg)] text-[var(--pastel-amber-text)] font-semibold border border-[var(--pastel-amber-border)]">
                                   CBSE {q.year}
                                 </span>
-                                <span className="px-1.5 py-0.5 rounded-xs bg-[var(--pastel-blue-bg)] text-[var(--pastel-blue-text)] font-semibold uppercase">
+                                <span className="px-2.5 py-0.5 rounded-full bg-[var(--pastel-blue-bg)] text-[var(--pastel-blue-text)] font-semibold uppercase border border-[var(--pastel-blue-border)]">
                                   {q.type || "Q"}
                                 </span>
-                                <span className="px-1.5 py-0.5 rounded-xs bg-secondary text-muted-foreground font-semibold">
+                                <span className="px-2.5 py-0.5 rounded-full bg-secondary text-muted-foreground font-semibold border border-border/60">
                                   {q.marks || 1}M
                                 </span>
                                 {q.set && (
@@ -792,7 +785,7 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                                 <button
                                   type="button"
                                   onClick={() => handleCopyText(q.q)}
-                                  className="p-1 rounded-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                                  className="h-7 w-7 rounded-full border border-border/80 bg-card hover:bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-all cursor-pointer"
                                   title="Copy text"
                                 >
                                   {copied ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
@@ -800,10 +793,10 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                                 <button
                                   type="button"
                                   onClick={() => handleBookmarkToggle(q)}
-                                  className={`p-1 rounded-sm transition-colors ${
+                                  className={`h-7 w-7 rounded-full border transition-all flex items-center justify-center cursor-pointer ${
                                     isBookmarked
-                                      ? "text-[var(--pastel-amber-text)] bg-[var(--pastel-amber-bg)]"
-                                      : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                                      ? "text-[var(--pastel-amber-text)] bg-[var(--pastel-amber-bg)] border-[var(--pastel-amber-border)]"
+                                      : "border-border/80 bg-card text-muted-foreground hover:text-foreground hover:bg-secondary"
                                   }`}
                                   title={isBookmarked ? "Remove Bookmark" : "Bookmark"}
                                 >
@@ -818,21 +811,21 @@ export const StudyHub: React.FC<StudyHubProps> = ({
 
                             {/* Passage for case studies */}
                             {q.passage && (
-                              <div className="rounded-sm border border-border bg-secondary/30 p-3 text-xs leading-relaxed text-muted-foreground font-mono">
+                              <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 text-xs leading-relaxed text-muted-foreground font-mono">
                                 <span className="font-bold text-foreground block mb-1">Source Text:</span>
                                 {q.passage}
                               </div>
                             )}
 
                             {/* Question Body */}
-                            <p className="text-xs sm:text-sm font-semibold leading-relaxed text-foreground">
+                            <p className="text-xs sm:text-sm font-medium leading-relaxed text-foreground">
                               <span className="font-mono text-muted-foreground mr-1">Q{q.q_num}.</span>
                               {q.q}
                             </p>
 
                             {/* MCQ Options */}
                             {q.options && q.options.length > 0 && (
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-border">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-border/60">
                                 {q.options.map((opt, oIdx) => {
                                   const isSelected = userSelected === oIdx;
                                   return (
@@ -845,14 +838,14 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                                           [`${q.year}_${q.q_num}`]: oIdx,
                                         }))
                                       }
-                                      className={`flex items-start gap-2 text-left p-2 rounded-sm border text-xs leading-snug transition-colors cursor-pointer ${
+                                      className={`flex items-start gap-2.5 text-left p-2.5 rounded-xl border text-xs leading-snug transition-all cursor-pointer ${
                                         isSelected
                                           ? "border-foreground bg-foreground text-background font-semibold"
-                                          : "border-border bg-secondary/20 hover:bg-secondary/60 text-foreground"
+                                          : "border-border/80 bg-secondary/20 hover:bg-secondary/60 text-foreground"
                                       }`}
                                     >
                                       <span
-                                        className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-xs text-[10px] font-mono font-bold ${
+                                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-mono font-bold ${
                                           isSelected
                                             ? "bg-background text-foreground"
                                             : "bg-secondary text-muted-foreground"
@@ -860,7 +853,7 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                                       >
                                         {String.fromCharCode(65 + oIdx)}
                                       </span>
-                                      <span className="flex-1">{opt}</span>
+                                      <span className="flex-1 mt-0.5">{opt}</span>
                                     </button>
                                   );
                                 })}
@@ -878,14 +871,14 @@ export const StudyHub: React.FC<StudyHubProps> = ({
               {activeTab === "cheatsheet" && (
                 <div className="space-y-4">
                   {/* Top Action Bar */}
-                  <div className="flex items-center justify-between rounded-md border border-border bg-card p-3 shadow-xs">
+                  <div className="flex items-center justify-between rounded-2xl border border-border/80 bg-card p-4 shadow-xs">
                     <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground font-bold">
                       Curriculum Synthesis & Key Formulas
                     </span>
                     <button
                       type="button"
                       onClick={() => handleCopyText(kitData?.cheatsheet || JSON.stringify(kitData?.notes || "", null, 2))}
-                      className="text-xs font-mono text-foreground hover:underline inline-flex items-center gap-1 cursor-pointer"
+                      className="text-xs font-mono text-foreground hover:underline inline-flex items-center gap-1.5 cursor-pointer"
                     >
                       <Copy className="h-3 w-3" /> Copy Full Notes
                     </button>
@@ -895,7 +888,7 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                   {kitData?.notes ? (
                     <div className="space-y-4">
                       {kitData.notes.overview && (
-                        <div className="rounded-md border border-border bg-card p-4 space-y-1.5 shadow-xs">
+                        <div className="rounded-2xl border border-border/80 bg-card p-5 space-y-2 shadow-xs">
                           <h4 className="text-xs font-mono uppercase tracking-wider text-muted-foreground font-bold">
                             Chapter Overview
                           </h4>
@@ -906,12 +899,12 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                       )}
 
                       {kitData.notes.formulas && (
-                        <div className="rounded-md border border-border bg-card p-4 space-y-2 shadow-xs">
+                        <div className="rounded-2xl border border-border/80 bg-card p-5 space-y-2.5 shadow-xs">
                           <h4 className="text-xs font-mono uppercase tracking-wider text-[var(--pastel-blue-text)] font-bold flex items-center gap-1.5">
                             <span className="h-2 w-2 rounded-full bg-[var(--pastel-blue-text)]" />
                             Key Formulas & Equations
                           </h4>
-                          <div className="rounded-sm border border-border bg-secondary/30 p-3 font-mono text-xs sm:text-sm text-foreground whitespace-pre-wrap leading-relaxed">
+                          <div className="rounded-xl border border-border/70 bg-secondary/30 p-4 font-mono text-xs sm:text-sm text-foreground whitespace-pre-wrap leading-relaxed">
                             {typeof kitData.notes.formulas === "string"
                               ? kitData.notes.formulas
                               : JSON.stringify(kitData.notes.formulas, null, 2)}
@@ -920,12 +913,12 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                       )}
 
                       {kitData.notes.exam_traps && (
-                        <div className="rounded-md border border-border bg-[var(--pastel-red-bg)] p-4 space-y-1.5 text-[var(--pastel-red-text)]">
+                        <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-5 space-y-2 text-destructive">
                           <h4 className="text-xs font-mono uppercase tracking-wider font-bold flex items-center gap-1.5">
                             <AlertCircle className="h-3.5 w-3.5" />
                             Common Exam Traps & Mistakes
                           </h4>
-                          <p className="text-xs sm:text-sm leading-relaxed">
+                          <p className="text-xs sm:text-sm leading-relaxed text-foreground/90">
                             {typeof kitData.notes.exam_traps === "string"
                               ? kitData.notes.exam_traps
                               : JSON.stringify(kitData.notes.exam_traps, null, 2)}
@@ -934,12 +927,12 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                       )}
 
                       {kitData.notes.board_exam_focus && (
-                        <div className="rounded-md border border-border bg-[var(--pastel-amber-bg)] p-4 space-y-1.5 text-[var(--pastel-amber-text)]">
+                        <div className="rounded-2xl border border-[var(--pastel-amber-border)] bg-[var(--pastel-amber-bg)]/30 p-5 space-y-2 text-[var(--pastel-amber-text)]">
                           <h4 className="text-xs font-mono uppercase tracking-wider font-bold flex items-center gap-1.5">
                             <Flame className="h-3.5 w-3.5" />
                             High-Yield Board Exam Focus
                           </h4>
-                          <p className="text-xs sm:text-sm leading-relaxed">
+                          <p className="text-xs sm:text-sm leading-relaxed text-foreground/90">
                             {typeof kitData.notes.board_exam_focus === "string"
                               ? kitData.notes.board_exam_focus
                               : JSON.stringify(kitData.notes.board_exam_focus, null, 2)}
@@ -948,7 +941,7 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                       )}
 
                       {kitData.cheatsheet && (
-                        <div className="rounded-md border border-border bg-card p-5 space-y-3 shadow-xs">
+                        <div className="rounded-2xl border border-border/80 bg-card p-6 space-y-3 shadow-xs">
                           <h4 className="text-xs font-mono uppercase tracking-wider text-muted-foreground font-bold">
                             Comprehensive Markdown Cheatsheet
                           </h4>
@@ -959,13 +952,13 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                       )}
                     </div>
                   ) : kitData?.cheatsheet ? (
-                    <div className="rounded-md border border-border bg-card p-5 space-y-4 shadow-xs">
+                    <div className="rounded-2xl border border-border/80 bg-card p-6 space-y-4 shadow-xs">
                       <div className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap font-sans text-foreground">
                         {kitData.cheatsheet}
                       </div>
                     </div>
                   ) : (
-                    <div className="rounded-md border border-border bg-card p-8 text-center text-xs text-muted-foreground font-mono">
+                    <div className="rounded-3xl border border-border/80 bg-card p-10 text-center text-xs text-muted-foreground font-mono">
                       No smart notes available for this chapter code.
                     </div>
                   )}
@@ -976,17 +969,17 @@ export const StudyHub: React.FC<StudyHubProps> = ({
               {activeTab === "flashcards" && (
                 <div className="space-y-4">
                   {kitData?.flashcards && kitData.flashcards.length > 0 ? (
-                    <div className="flex flex-col items-center gap-4">
+                    <div className="flex flex-col items-center gap-5">
                       {/* Telemetry Header */}
                       <div className="flex items-center justify-between w-full max-w-md font-mono text-xs text-muted-foreground">
                         <span>
                           Index: {currentCardIndex + 1} / {kitData.flashcards.length}
                         </span>
                         <div className="flex gap-2">
-                          <span className="text-[var(--pastel-green-text)] font-bold">
+                          <span className="text-[var(--pastel-green-text)] font-semibold">
                             ✓ {knownCards.size} Mastered
                           </span>
-                          <span className="text-[var(--pastel-red-text)] font-bold">
+                          <span className="text-[var(--pastel-red-text)] font-semibold">
                             ↺ {reviewLaterCards.size} Review
                           </span>
                         </div>
@@ -995,11 +988,11 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                       {/* 3D Flip Card */}
                       <div
                         onClick={() => setIsFlipped(!isFlipped)}
-                        className="relative w-full max-w-md h-60 cursor-pointer select-none"
+                        className="relative w-full max-w-md h-64 cursor-pointer select-none"
                         style={{ perspective: "1000px" }}
                       >
                         <div
-                          className="w-full h-full relative rounded-md border border-border shadow-xs transition-transform duration-500"
+                          className="w-full h-full relative rounded-3xl border border-border/80 shadow-md transition-transform duration-500"
                           style={{
                             transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
                             transformStyle: "preserve-3d",
@@ -1007,7 +1000,7 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                         >
                           {/* FRONT */}
                           <div
-                            className={`absolute inset-0 rounded-md p-6 flex flex-col justify-between bg-card border border-border backface-hidden ${
+                            className={`absolute inset-0 rounded-3xl p-6 flex flex-col justify-between bg-card border border-border/80 backface-hidden ${
                               isFlipped ? "pointer-events-none" : ""
                             }`}
                             style={{ backfaceVisibility: "hidden" }}
@@ -1015,7 +1008,7 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                             <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
                               Prompt (Click to Invert)
                             </span>
-                            <p className="text-sm sm:text-base font-bold text-center text-foreground leading-relaxed my-auto">
+                            <p className="text-base sm:text-lg font-heading font-semibold text-center text-foreground leading-relaxed my-auto">
                               {kitData.flashcards[currentCardIndex]?.front}
                             </p>
                             <span className="text-[11px] text-center text-muted-foreground font-mono">
@@ -1025,7 +1018,7 @@ export const StudyHub: React.FC<StudyHubProps> = ({
 
                           {/* BACK */}
                           <div
-                            className={`absolute inset-0 rounded-md p-6 flex flex-col justify-between bg-secondary/40 border border-border backface-hidden ${
+                            className={`absolute inset-0 rounded-3xl p-6 flex flex-col justify-between bg-secondary/50 border border-border/80 backface-hidden ${
                               !isFlipped ? "pointer-events-none" : ""
                             }`}
                             style={{
@@ -1058,7 +1051,7 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                               setCurrentCardIndex((i) => i + 1);
                             }
                           }}
-                          className="flex-1 rounded-md border border-border bg-[var(--pastel-red-bg)] text-[var(--pastel-red-text)] py-2 text-xs font-mono font-bold hover:opacity-90 active:scale-98 transition-all"
+                          className="flex-1 rounded-full border border-destructive/20 bg-destructive/10 text-destructive py-2.5 text-xs font-mono font-semibold hover:opacity-90 active:scale-95 transition-all cursor-pointer"
                         >
                           ↺ Mark Review
                         </button>
@@ -1072,7 +1065,7 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                               setCurrentCardIndex((i) => i + 1);
                             }
                           }}
-                          className="flex-1 rounded-md border border-border bg-[var(--pastel-green-bg)] text-[var(--pastel-green-text)] py-2 text-xs font-mono font-bold hover:opacity-90 active:scale-98 transition-all"
+                          className="flex-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 py-2.5 text-xs font-mono font-semibold hover:opacity-90 active:scale-95 transition-all cursor-pointer"
                         >
                           ✓ Mastered
                         </button>
@@ -1087,7 +1080,7 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                             setIsFlipped(false);
                             setCurrentCardIndex((i) => Math.max(0, i - 1));
                           }}
-                          className="hover:text-foreground disabled:opacity-30 cursor-pointer"
+                          className="px-4 py-1 rounded-full border border-border/80 bg-card hover:text-foreground disabled:opacity-30 cursor-pointer transition-colors"
                         >
                           ← Prev
                         </button>
@@ -1101,16 +1094,16 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                               Math.min(kitData.flashcards!.length - 1, i + 1)
                             );
                           }}
-                          className="hover:text-foreground disabled:opacity-30 cursor-pointer"
+                          className="px-4 py-1 rounded-full border border-border/80 bg-card hover:text-foreground disabled:opacity-30 cursor-pointer transition-colors"
                         >
                           Next →
                         </button>
                       </div>
                     </div>
                   ) : (
-                    <div className="rounded-md border border-dashed border-border p-10 text-center text-muted-foreground">
-                      <Layers className="mx-auto h-7 w-7 opacity-40 mb-2" />
-                      <p className="text-xs">No flashcards indexed</p>
+                    <div className="rounded-3xl border border-dashed border-border/80 p-12 text-center text-muted-foreground">
+                      <Layers className="mx-auto h-8 w-8 opacity-40 mb-2" />
+                      <p className="text-xs font-mono">No flashcards indexed</p>
                     </div>
                   )}
                 </div>
@@ -1127,7 +1120,7 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                       return (
                         <div
                           key={idx}
-                          className="rounded-md border border-border bg-card p-4 space-y-3"
+                          className="rounded-2xl border border-border/80 bg-card p-4 sm:p-5 space-y-3 shadow-xs"
                         >
                           <span className="font-mono text-[10px] uppercase text-muted-foreground font-bold">
                             Question {idx + 1}
@@ -1136,7 +1129,7 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                             {mcq.question}
                           </p>
 
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
                             {mcq.options?.map((opt, oIdx) => {
                               const isSelected = selected === oIdx;
                               return (
@@ -1149,14 +1142,14 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                                       [answerKey]: oIdx,
                                     }))
                                   }
-                                  className={`flex items-start gap-2 text-left p-2 rounded-sm border text-xs leading-snug transition-colors cursor-pointer ${
+                                  className={`flex items-start gap-2.5 text-left p-2.5 rounded-xl border text-xs leading-snug transition-all cursor-pointer ${
                                     isSelected
                                       ? "border-foreground bg-foreground text-background font-semibold"
-                                      : "border-border bg-secondary/20 hover:bg-secondary/60 text-foreground"
+                                      : "border-border/80 bg-secondary/20 hover:bg-secondary/60 text-foreground"
                                   }`}
                                 >
                                   <span
-                                    className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-xs text-[10px] font-mono font-bold ${
+                                    className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-mono font-bold ${
                                       isSelected
                                         ? "bg-background text-foreground"
                                         : "bg-secondary text-muted-foreground"
@@ -1164,15 +1157,15 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                                   >
                                     {String.fromCharCode(65 + oIdx)}
                                   </span>
-                                  <span className="flex-1">{opt}</span>
+                                  <span className="flex-1 mt-0.5">{opt}</span>
                                 </button>
                               );
                             })}
                           </div>
 
                           {selected !== undefined && mcq.explanation && (
-                            <div className="mt-2 rounded-sm border border-border bg-[var(--pastel-blue-bg)] p-2.5 text-xs text-[var(--pastel-blue-text)] leading-relaxed font-mono">
-                              <span className="font-bold block mb-0.5">Verification:</span>
+                            <div className="mt-2 rounded-xl border border-border/70 bg-secondary/30 p-3 text-xs text-foreground leading-relaxed font-mono">
+                              <span className="font-bold block mb-0.5 text-muted-foreground">Verification:</span>
                               {mcq.explanation}
                             </div>
                           )}
@@ -1180,8 +1173,8 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                       );
                     })
                   ) : (
-                    <div className="rounded-md border border-dashed border-border p-10 text-center text-muted-foreground">
-                      <p className="text-xs">No quiz questions indexed</p>
+                    <div className="rounded-3xl border border-dashed border-border/80 p-12 text-center text-muted-foreground">
+                      <p className="text-xs font-mono">No quiz questions indexed</p>
                     </div>
                   )}
                 </div>
@@ -1194,18 +1187,18 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                     kitData.important.map((item, idx) => (
                       <div
                         key={idx}
-                        className="rounded-md border border-border bg-card p-4 space-y-2.5"
+                        className="rounded-2xl border border-border/80 bg-card p-4 sm:p-5 space-y-3 shadow-xs"
                       >
                         <div className="flex items-center gap-2 font-mono text-[10px]">
-                          <span className="px-1.5 py-0.5 rounded-xs bg-[var(--pastel-blue-bg)] text-[var(--pastel-blue-text)] font-bold">
+                          <span className="px-2.5 py-0.5 rounded-full bg-[var(--pastel-blue-bg)] text-[var(--pastel-blue-text)] font-semibold border border-[var(--pastel-blue-border)]">
                             {item.marks ? `${item.marks}M Key Target` : "High Yield"}
                           </span>
                         </div>
-                        <p className="text-xs sm:text-sm font-bold text-foreground leading-relaxed">
+                        <p className="text-xs sm:text-sm font-medium text-foreground leading-relaxed">
                           {item.q || item.question}
                         </p>
                         {(item.answer || item.solution) && (
-                          <div className="rounded-sm border border-border bg-secondary/30 p-3 text-xs leading-relaxed text-foreground whitespace-pre-wrap">
+                          <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 text-xs leading-relaxed text-foreground whitespace-pre-wrap">
                             <span className="font-mono text-[10px] uppercase text-muted-foreground block mb-1 font-bold">
                               Model Solution:
                             </span>
@@ -1215,8 +1208,8 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                       </div>
                     ))
                   ) : (
-                    <div className="rounded-md border border-dashed border-border p-10 text-center text-muted-foreground">
-                      <p className="text-xs">No important questions indexed</p>
+                    <div className="rounded-3xl border border-dashed border-border/80 p-12 text-center text-muted-foreground">
+                      <p className="text-xs font-mono">No important questions indexed</p>
                     </div>
                   )}
                 </div>
@@ -1224,14 +1217,14 @@ export const StudyHub: React.FC<StudyHubProps> = ({
 
               {/* ── 6. MIND MAP TAB ───────────────────────────────────────── */}
               {activeTab === "mindmap" && (
-                <div className="rounded-md border border-border bg-card p-5 space-y-3">
-                  <div className="border-b border-border pb-2">
+                <div className="rounded-3xl border border-border/80 bg-card p-6 space-y-4 shadow-xs">
+                  <div className="border-b border-border/80 pb-3">
                     <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground font-bold">
                       Hierarchical Structural Map
                     </span>
                   </div>
                   {kitData?.mind_map ? (
-                    <pre className="font-mono text-xs leading-relaxed bg-secondary/30 p-4 rounded-sm border border-border whitespace-pre-wrap overflow-x-auto text-foreground">
+                    <pre className="font-mono text-xs leading-relaxed bg-secondary/30 p-5 rounded-2xl border border-border/80 whitespace-pre-wrap overflow-x-auto text-foreground">
                       {kitData.mind_map}
                     </pre>
                   ) : (

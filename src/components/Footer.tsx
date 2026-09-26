@@ -1,5 +1,4 @@
 import { GitHubLogoIcon, ArrowTopRightIcon, ReaderIcon, HeartFilledIcon, Component1Icon } from "@radix-ui/react-icons";
-import Logo from "./Logo";
 import { Button } from "@/components/ui/button";
 
 export default function Footer() {
@@ -18,18 +17,18 @@ export default function Footer() {
   };
 
   return (
-    <footer className="border-t border-border bg-background text-foreground text-xs">
+    <footer className="border-t border-border/80 bg-background text-foreground text-xs font-sans">
       {/* High-Impact Pre-Footer Conversion Banner */}
-      <div className="border-b border-border py-12 sm:py-16 bg-secondary/40">
+      <div className="border-b border-border/80 py-12 sm:py-16 bg-card/60">
         <div className="container mx-auto px-4 sm:px-6 max-w-6xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="max-w-xl">
-            <span className="text-xs font-bold tracking-wide text-primary font-mono block mb-2">
+            <span className="text-xs font-semibold tracking-wide text-foreground font-mono block mb-2">
               Start Learning Today · 100% Free
             </span>
-            <h3 className="text-2xl sm:text-3xl font-black font-heading text-foreground tracking-tight mb-2">
+            <h3 className="text-2xl sm:text-3xl font-heading font-semibold text-foreground tracking-tight mb-2">
               Transform your K–12 study workflow.
             </h3>
-            <p className="text-xs sm:text-sm text-muted-foreground font-body leading-relaxed max-w-[50ch]">
+            <p className="text-xs sm:text-sm text-muted-foreground font-sans leading-relaxed max-w-[50ch]">
               No ads, no subscription lockouts, and no tracking. Launch the open web library immediately or deploy Atlas hardware for zero-connectivity classrooms.
             </p>
           </div>
@@ -37,7 +36,7 @@ export default function Footer() {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
             <Button
               onClick={navigateToLogin}
-              className="h-11 px-6 font-bold font-heading bg-primary text-primary-foreground hover:opacity-90 cursor-pointer shadow-xs gap-2"
+              className="h-11 px-6 font-bold font-heading rounded-full bg-foreground text-background hover:opacity-90 cursor-pointer shadow-sm gap-2"
             >
               <ReaderIcon className="w-4 h-4" />
               <span>Launch Free Library</span>
@@ -46,7 +45,7 @@ export default function Footer() {
             <Button
               variant="outline"
               onClick={() => scrollToSection("#pricing")}
-              className="h-11 px-5 font-semibold font-heading border-border text-foreground hover:bg-secondary cursor-pointer"
+              className="h-11 px-5 font-semibold font-heading rounded-full border-border/80 text-foreground hover:bg-secondary cursor-pointer"
             >
               <span>View Hardware &amp; Plans</span>
             </Button>
@@ -60,9 +59,13 @@ export default function Footer() {
           {/* Brand & Mission Statement Column */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center gap-2.5">
-              <Logo className="h-6 w-auto" />
-              <span className="font-extrabold text-base tracking-tight text-foreground font-heading">
-                Nova<span className="text-primary font-serif italic font-normal">Slate</span>
+              <img
+                src="/novaslate_icon.png"
+                alt="NovaSlate"
+                className="w-7 h-7 object-contain"
+              />
+              <span className="font-heading font-semibold text-base tracking-tight text-foreground">
+                NovaSlate
               </span>
             </div>
 

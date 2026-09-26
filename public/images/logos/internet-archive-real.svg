@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 32" fill="none" height="32">
+  <!-- Official Internet Archive Neoclassical Pillars Icon -->
+  <g transform="translate(2, 2)">
+    <!-- Base plinth -->
+    <rect x="2" y="24" width="24" height="2" fill="#2b2b2b"/>
+    <rect x="0" y="26" width="28" height="2" fill="#2b2b2b"/>
+    <!-- 5 Classical Columns -->
+    <rect x="3" y="10" width="2.8" height="13" fill="#2b2b2b"/>
+    <rect x="8" y="10" width="2.8" height="13" fill="#2b2b2b"/>
+    <rect x="12.6" y="10" width="2.8" height="13" fill="#2b2b2b"/>
+    <rect x="17.2" y="10" width="2.8" height="13" fill="#2b2b2b"/>
+    <rect x="22.2" y="10" width="2.8" height="13" fill="#2b2b2b"/>
+    <!-- Architrave / Lintel -->
+    <rect x="2" y="7.5" width="24" height="2" fill="#2b2b2b"/>
+    <!-- Triangular Pediment -->
+    <path d="M1 7L14 0.8L27 7H1Z" fill="#2b2b2b"/>
+    <!-- Inner medallion in pediment -->
+    <circle cx="14" cy="4.2" r="1.1" fill="#f1f1f1"/>
+  </g>
+  <text x="36" y="20" fill="#2b2b2b" font-family="'Supply Mono', 'JetBrains Mono', monospace" font-size="11" font-weight="600" letter-spacing="-0.02em">INTERNET ARCHIVE</text>
+</svg>

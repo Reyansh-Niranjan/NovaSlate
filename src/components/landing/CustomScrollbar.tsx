@@ -11,7 +11,11 @@ export const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ lenis }) => {
   const startDragY = useRef(0);
   const startScrollTop = useRef(0);
 
+  const isTouchDevice = typeof window !== 'undefined' && (window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768);
+
   useEffect(() => {
+    if (isTouchDevice) return;
+
     const updateScrollbar = () => {
       const docHeight = document.documentElement.scrollHeight;
       const winHeight = window.innerHeight;
@@ -39,7 +43,9 @@ export const CustomScrollbar: React.FC<CustomScrollbarProps> = ({ lenis }) => {
       window.removeEventListener('scroll', updateScrollbar);
       window.removeEventListener('resize', updateScrollbar);
     };
-  }, []);
+  }, [isTouchDevice]);
+
+  if (isTouchDevice) return null;
 
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();

@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 import { supabase } from "../lib/supabaseClient";
-import Logo from "./Logo";
 
 interface LoginProps {
   onCancel?: () => void;
@@ -127,7 +126,7 @@ export default function Login({ onCancel, onSuccess }: LoginProps) {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-background flex flex-col justify-between p-3.5 sm:p-6 lg:p-8 safe-top safe-bottom">
+    <div className="min-h-[100dvh] bg-[var(--color-white-darker)] text-[var(--color-black)] selection:bg-[var(--color-accent)] selection:text-white flex flex-col justify-between p-3.5 sm:p-6 lg:p-8 safe-top safe-bottom">
       {/* Top Bar */}
       <motion.div
         initial={shouldReduceMotion ? false : { opacity: 0, y: -8 }}
@@ -138,10 +137,10 @@ export default function Login({ onCancel, onSuccess }: LoginProps) {
         <button
           onClick={onCancel}
           aria-label="Back to homepage"
-          className="group inline-flex items-center gap-1.5 h-9 px-3 rounded-md border border-border bg-card text-xs font-medium text-muted-foreground hover:text-foreground hover:border-muted-foreground transition-all duration-150 active:scale-[0.97] touch-manipulation"
+          className="group inline-flex items-center gap-2 h-10 px-4 rounded-full border border-border bg-card text-xs font-mono uppercase tracking-wider text-foreground hover:bg-secondary transition-all duration-200 active:scale-[0.98] cursor-pointer shadow-xs"
         >
-          <ArrowLeft className="w-3.5 h-3.5 transition-transform duration-150 group-hover:-translate-x-0.5" />
-          Back to Overview
+          <ArrowLeft className="w-3.5 h-3.5 transition-transform duration-200 group-hover:-translate-x-1 text-primary" />
+          <span>Back to Overview</span>
         </button>
         <ThemeToggle />
       </motion.div>
@@ -153,14 +152,18 @@ export default function Login({ onCancel, onSuccess }: LoginProps) {
         transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
         className="w-full max-w-4xl mx-auto my-3 sm:my-8"
       >
-        <div className="rounded-md border border-border bg-card grid grid-cols-1 md:grid-cols-12 overflow-hidden shadow-xs md:min-h-[580px]">
+        <div className="rounded-3xl border border-border bg-card grid grid-cols-1 md:grid-cols-12 overflow-hidden shadow-sm md:min-h-[580px]">
           
           {/* Left Context Column (5 cols) */}
-          <div className="md:col-span-5 p-4 sm:p-8 bg-secondary/40 border-b md:border-b-0 md:border-r border-border flex flex-col justify-between">
+          <div className="md:col-span-5 p-6 sm:p-10 bg-secondary/50 border-b md:border-b-0 md:border-r border-border flex flex-col justify-between">
             <div className="space-y-4 sm:space-y-6">
-              <div className="flex items-center gap-2.5">
-                <Logo className="w-7 h-7" />
-                <span className="font-semibold text-sm text-foreground tracking-tight">
+              <div className="flex items-center gap-3">
+                <img
+                  src="/novaslate_icon.png"
+                  alt="NovaSlate"
+                  className="w-8 h-8 object-contain"
+                />
+                <span className="font-heading font-semibold text-base text-foreground tracking-tight">
                   NovaSlate
                 </span>
               </div>
@@ -174,10 +177,10 @@ export default function Login({ onCancel, onSuccess }: LoginProps) {
                     exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -4 }}
                     transition={{ duration: 0.18, ease: "easeOut" }}
                   >
-                    <h2 className="text-2xl font-bold tracking-tight text-foreground">
+                    <h2 className="text-3xl font-heading font-normal tracking-tight text-foreground leading-tight">
                       {isCreate ? "Create workspace account" : "Access your workspace"}
                     </h2>
-                    <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
+                    <p className="mt-2 text-xs text-muted-foreground font-body leading-relaxed">
                       {isCreate
                         ? "Set up your personal Class 1–12 bookshelf, sync study notes across devices, and query diagrams."
                         : "Browse Class 1–12 NCERT textbooks, track study progress, and query diagrams via Gemini 2.0 Flash vision."}
@@ -187,41 +190,41 @@ export default function Login({ onCancel, onSuccess }: LoginProps) {
               </div>
 
               <ul className="space-y-3 pt-2 font-mono text-xs list-none p-0 m-0">
-                <li className="p-3 rounded-md bg-background/60 transition-colors">
-                  <div className="font-semibold text-foreground text-xs mb-0.5">
+                <li className="p-3.5 rounded-xl border border-border/70 bg-card transition-colors">
+                  <div className="font-semibold text-foreground text-xs mb-1 font-mono uppercase tracking-wide">
                     Class 1–12 Library
                   </div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-xs text-muted-foreground font-body">
                     Complete syllabus taxonomy and watermark-free PDFs.
                   </div>
                 </li>
 
-                <li className="p-3 rounded-md bg-background/60 transition-colors">
-                  <div className="font-semibold text-foreground text-xs mb-0.5">
+                <li className="p-3.5 rounded-xl border border-border/70 bg-card transition-colors">
+                  <div className="font-semibold text-foreground text-xs mb-1 font-mono uppercase tracking-wide">
                     Offline Sync Ready
                   </div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-xs text-muted-foreground font-body">
                     Export archives directly to companion ESP32 hardware.
                   </div>
                 </li>
               </ul>
             </div>
 
-            <div className="pt-6 mt-6 border-t border-border flex items-center gap-1.5 text-xs font-mono text-muted-foreground">
-              <ShieldCheck className="w-3.5 h-3.5 text-foreground" />
-              <span>Independent Open Education</span>
+            <div className="pt-6 mt-6 border-t border-border flex items-center gap-2 text-xs font-mono text-muted-foreground">
+              <ShieldCheck className="w-4 h-4 text-primary" />
+              <span className="uppercase tracking-wider">Independent Open Education</span>
             </div>
           </div>
 
           {/* Right Form Column (7 cols) */}
-          <div className="md:col-span-7 p-4 sm:p-8 flex flex-col justify-center">
+          <div className="md:col-span-7 p-6 sm:p-10 flex flex-col justify-center">
             <div className="w-full max-w-sm mx-auto">
               
               {/* Animated Mode Tabs with Sliding Spring Pill */}
               <nav
                 role="tablist"
                 aria-label="Authentication mode"
-                className="relative grid grid-cols-2 gap-1 p-1 rounded-md bg-secondary mb-5 sm:mb-6 text-xs font-medium"
+                className="relative grid grid-cols-2 gap-1 p-1 rounded-full bg-secondary border border-border mb-6 text-xs font-medium"
               >
                 <button
                   type="button"
@@ -233,7 +236,7 @@ export default function Login({ onCancel, onSuccess }: LoginProps) {
                     setErrorMessage(null);
                     setSuccessMessage(null);
                   }}
-                  className={`relative py-2 sm:py-1.5 rounded-sm transition-colors text-xs font-medium z-10 cursor-pointer touch-manipulation active:scale-[0.98] ${
+                  className={`relative py-2 rounded-full transition-colors text-xs font-mono uppercase tracking-wider z-10 cursor-pointer touch-manipulation active:scale-[0.98] ${
                     mode === "sign-in"
                       ? "text-foreground font-semibold"
                       : "text-muted-foreground hover:text-foreground"
@@ -242,7 +245,7 @@ export default function Login({ onCancel, onSuccess }: LoginProps) {
                   {mode === "sign-in" && (
                     <motion.div
                       layoutId="auth-tab-pill"
-                      className="absolute inset-0 bg-card rounded-sm shadow-xs border border-border"
+                      className="absolute inset-0 bg-card rounded-full shadow-xs border border-border"
                       transition={
                         shouldReduceMotion
                           ? { duration: 0 }
@@ -263,7 +266,7 @@ export default function Login({ onCancel, onSuccess }: LoginProps) {
                     setErrorMessage(null);
                     setSuccessMessage(null);
                   }}
-                  className={`relative py-2 sm:py-1.5 rounded-sm transition-colors text-xs font-medium z-10 cursor-pointer touch-manipulation active:scale-[0.98] ${
+                  className={`relative py-2 rounded-full transition-colors text-xs font-mono uppercase tracking-wider z-10 cursor-pointer touch-manipulation active:scale-[0.98] ${
                     mode === "create"
                       ? "text-foreground font-semibold"
                       : "text-muted-foreground hover:text-foreground"
@@ -272,7 +275,7 @@ export default function Login({ onCancel, onSuccess }: LoginProps) {
                   {mode === "create" && (
                     <motion.div
                       layoutId="auth-tab-pill"
-                      className="absolute inset-0 bg-card rounded-sm shadow-xs border border-border"
+                      className="absolute inset-0 bg-card rounded-full shadow-xs border border-border"
                       transition={
                         shouldReduceMotion
                           ? { duration: 0 }
@@ -290,10 +293,10 @@ export default function Login({ onCancel, onSuccess }: LoginProps) {
                 onClick={handleOAuth}
                 aria-label="Sign in with Google"
                 disabled={isOAuthLoading || isSubmitting}
-                className="w-full flex items-center justify-center gap-2.5 py-2 px-3 rounded-md border border-border bg-background text-xs font-medium hover:bg-secondary hover:border-muted-foreground transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                className="w-full flex items-center justify-center gap-2.5 h-11 px-4 rounded-full border border-border/80 bg-card text-xs font-mono uppercase tracking-wider text-foreground font-semibold hover:bg-secondary transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-xs"
               >
                 {isOAuthLoading ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin text-foreground" />
                 ) : (
                   <svg className="w-4 h-4" viewBox="0 0 24 24">
                     <path
@@ -314,7 +317,7 @@ export default function Login({ onCancel, onSuccess }: LoginProps) {
                     />
                   </svg>
                 )}
-                <span>Continue with Google</span>
+                <span className="text-foreground font-semibold">Continue with Google</span>
               </button>
 
               <div className="my-4 flex items-center gap-3">

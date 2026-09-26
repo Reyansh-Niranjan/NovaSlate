@@ -66,16 +66,34 @@ export const Hero: React.FC = () => {
             {siteContent.hero.clients.label}
           </p>
           <ul className="s__logos">
-            {siteContent.hero.clients.logos.map((c) => (
-              <li key={c.name} className="s__logo-item">
-                <img
-                  className="s__logo"
-                  src={c.logo}
-                  alt={c.name}
-                  loading="lazy"
-                />
-              </li>
-            ))}
+            <li className="s__logo-pill">
+              <img
+                src="/images/logos/ncert-real.svg"
+                alt="NCERT & CBSE Official"
+                className="h-7 w-auto object-contain"
+              />
+            </li>
+            <li className="s__logo-pill">
+              <img
+                src="/images/logos/internet-archive-real.svg"
+                alt="Internet Archive Library"
+                className="h-7 w-auto object-contain"
+              />
+            </li>
+            <li className="s__logo-pill">
+              <img
+                src="/images/logos/python-real.svg"
+                alt="Python & PyMuPDF Engine"
+                className="h-7 w-auto object-contain"
+              />
+            </li>
+            <li className="s__logo-pill">
+              <img
+                src="/images/logos/atlas-esp32.svg"
+                alt="Atlas ESP32 Reader"
+                className="h-7 w-auto object-contain"
+              />
+            </li>
           </ul>
         </div>
 

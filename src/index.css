@@ -4,7 +4,7 @@
 @import './styles/variables.css';
 @import './styles/buttons.css';
 @import './styles/scrollbar.css';
-@import './styles/incredibles_native.css';
+@import './styles/novaslate_editorial.css';
 
 @tailwind base;
 @tailwind components;
@@ -87,26 +87,26 @@ html.lenis body {
     --ns-crimson:     #D2475F;
     --ns-slate:       #DEE4E6;
 
-    --background:     #F8FAFC;
-    --foreground:     #0E1F27;
+    --background:     #EBF1F3;
+    --foreground:     #0E1B22;
 
     --card:           #FFFFFF;
-    --card-foreground:#0E1F27;
+    --card-foreground:#0E1B22;
 
     --popover:        #FFFFFF;
-    --popover-foreground:#0E1F27;
+    --popover-foreground:#0E1B22;
 
     --primary:        #1883B1;
     --primary-foreground:#FFFFFF;
 
-    --secondary:      #EAF1F4;
+    --secondary:      #F5F8F9;
     --secondary-foreground:#1883B1;
 
-    --muted:          #EDF3F5;
-    --muted-foreground:#547280;
+    --muted:          #E2EAEF;
+    --muted-foreground:#55717D;
 
     --accent:         #E4B34C;
-    --accent-foreground:#0E1F27;
+    --accent-foreground:#0E1B22;
 
     --destructive:    #D2475F;
     --destructive-foreground:#FFFFFF;
@@ -115,7 +115,7 @@ html.lenis body {
     --input:          #DEE4E6;
     --ring:           #1883B1;
 
-    --radius:         0.5rem;
+    --radius:         0.75rem;
 
     /* Status pastels — aligned to Pomelli harmonics */
     --pastel-green-bg:  #E8F6EE;
@@ -140,15 +140,15 @@ html.lenis body {
     --theme-input-bg:       #FFFFFF;
     --theme-nav-bg:         rgba(248, 250, 252, 0.94);
     --theme-hero-bg:        var(--background);
-    --theme-footer-bg:      #0B1519;
+    --theme-footer-bg:      #0E1B22;
 
-    /* Typography Version 1: Work Sans + Lexend */
-    --font-sans:    'Lexend', ui-sans-serif, system-ui, sans-serif;
-    --font-display: 'Work Sans', ui-sans-serif, system-ui, sans-serif;
-    --font-heading: 'Work Sans', ui-sans-serif, system-ui, sans-serif;
-    --font-body:    'Lexend', ui-sans-serif, system-ui, sans-serif;
+    /* Editorial Typography: Frama + Neue Montreal + Supply Mono */
+    --font-sans:    'Neue Montreal', 'Lexend', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Frama', 'Work Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-heading: 'Frama', 'Work Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-body:    'Neue Montreal', 'Lexend', ui-sans-serif, system-ui, sans-serif;
     --font-serif:   'Newsreader', Georgia, serif;
-    --font-mono:    'JetBrains Mono', monospace;
+    --font-mono:    'Supply Mono', 'JetBrains Mono', monospace;
 
     /* Easing curves (Emil Kowalski) */
     --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -164,33 +164,33 @@ html.lenis body {
        Dark Mode — Refined Architectural Slate & Cobalt
        (Eliminates AI-slop cyan-on-dark detection)
     ═══════════════════════════════════════════════════ */
-    --background:     #0B1216;
-    --foreground:     #F1F5F9;
+    --background:     #0E1B22;
+    --foreground:     #F5F8F9;
 
-    --card:           #131E24;
-    --card-foreground:#F1F5F9;
+    --card:           #13242D;
+    --card-foreground:#F5F8F9;
 
-    --popover:        #131E24;
-    --popover-foreground:#F1F5F9;
+    --popover:        #13242D;
+    --popover-foreground:#F5F8F9;
 
-    --primary:        #60A5FA;
-    --primary-foreground:#0B1216;
+    --primary:        #2197C9;
+    --primary-foreground:#FFFFFF;
 
-    --secondary:      #16232B;
-    --secondary-foreground:#F1F5F9;
+    --secondary:      #1A2F3B;
+    --secondary-foreground:#F5F8F9;
 
-    --muted:          #131F26;
-    --muted-foreground:#94A3B8;
+    --muted:          #182B35;
+    --muted-foreground:#88A9B6;
 
     --accent:         #E4B34C;
-    --accent-foreground:#0B1216;
+    --accent-foreground:#0E1B22;
 
     --destructive:    #E25B72;
     --destructive-foreground:#FFFFFF;
 
-    --border:         rgba(226, 232, 240, 0.14);
-    --input:          rgba(226, 232, 240, 0.18);
-    --ring:           #60A5FA;
+    --border:         rgba(222, 228, 230, 0.15);
+    --input:          rgba(222, 228, 230, 0.18);
+    --ring:           #2197C9;
 
     /* Status pastels — dark */
     --pastel-green-bg:  rgba(26, 105, 59, 0.25);
@@ -489,67 +489,79 @@ kbd {
 /* ── Auth Inputs ── */
 .auth-input-field {
   width: 100%;
-  height: 2.5rem;
-  border-radius: var(--radius);
-  border: 1.5px solid var(--border);
-  background-color: var(--background);
+  height: 2.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  background-color: var(--card);
   color: var(--foreground);
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
+  padding-left: 0.875rem;
+  padding-right: 0.875rem;
   font-size: 0.875rem;
-  font-family: 'Lexend', ui-sans-serif, sans-serif;
+  font-family: var(--font-body);
   outline: none;
   touch-action: manipulation;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.2s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.2s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 @media (max-width: 640px) {
   .auth-input-field {
-    height: 2.75rem;
-    font-size: 1rem;
+    height: 2.875rem;
+    font-size: 0.9375rem;
   }
 }
 
 .auth-input-field:focus-visible,
 .auth-input-field:focus {
-  border-color: var(--ns-blue);
-  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+  border-color: var(--foreground);
+  box-shadow: 0 0 0 2px rgba(24, 131, 177, 0.18);
+}
+
+.auth-input-field:-webkit-autofill,
+.auth-input-field:-webkit-autofill:hover, 
+.auth-input-field:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--foreground);
+  -webkit-box-shadow: 0 0 0px 1000px var(--card) inset;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 .auth-button {
   width: 100%;
-  height: 2.5rem;
-  border-radius: var(--radius);
-  background-color: var(--ns-navy);
-  color: #FFFFFF;
-  font-size: 0.875rem;
-  font-weight: 600;
-  font-family: 'Work Sans', ui-sans-serif, sans-serif;
+  height: 2.875rem;
+  border-radius: 999rem;
+  background-color: var(--foreground);
+  color: var(--background);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  font-family: var(--font-mono);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   touch-action: manipulation;
-  transition: opacity 0.15s ease, transform 0.15s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 @media (max-width: 640px) {
   .auth-button {
-    height: 2.75rem;
-    font-size: 0.9375rem;
+    height: 3rem;
+    font-size: 0.875rem;
   }
 }
 
 .auth-button:hover:not(:disabled) {
-  opacity: 0.9;
+  opacity: 0.92;
+  transform: translateY(-1px);
 }
 
 .auth-button:active:not(:disabled) {
-  transform: scale(0.97);
+  transform: scale(0.98);
 }
 
 .auth-button:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
@@ -881,3 +893,121 @@ input[type="range"].mobile-slider:active::-moz-range-thumb {
   opacity: 1;
   transition: filter 220ms ease-out, opacity 200ms ease-out;
 }
+
+
+/* ═══════════════════════════════════════════════════
+   Landing Page Isolation — Editorial Light Theme
+   (Guarantees crisp #2B2B2B black text regardless of dark mode)
+═══════════════════════════════════════════════════ */
+.landing-page-root {
+  --foreground: #2b2b2b;
+  --color-black: #2b2b2b;
+  --color-heading: #2b2b2b;
+  --color-text: #2b2b2b;
+  color: #2b2b2b !important;
+  background-color: var(--color-white-darker);
+}
+
+.landing-page-root h1,
+.landing-page-root h2,
+.landing-page-root h3,
+.landing-page-root h4,
+.landing-page-root h5,
+.landing-page-root h6 {
+  color: #2b2b2b !important;
+}
+
+.landing-page-root .s-hero .s__title,
+.landing-page-root .s-hero .s__awards,
+.landing-page-root .s-hero .s__text,
+.landing-page-root .s-usps .s__title,
+.landing-page-root .s-usps .s__text,
+.landing-page-root .b-usp-card .b__title,
+.landing-page-root .b-usp-card .b__text,
+.landing-page-root .b-execution .b__title,
+.landing-page-root .b-delivery .b__title,
+.landing-page-root .b-delivery .sb-project .sb__description,
+.landing-page-root .s-catchphrase .s__title,
+.landing-page-root .s-pricing .s__title,
+.landing-page-root .s-pricing .s__text,
+.landing-page-root .b-pricing-toggle .b__option,
+.landing-page-root .b-calculator .b__title,
+.landing-page-root .b-calculator .b__text,
+.landing-page-root .b-calculator .b__result,
+.landing-page-root .b-recurring .b__title,
+.landing-page-root .b-recurring .b__name,
+.landing-page-root .b-recurring .b__pricing,
+.landing-page-root .b-recurring .b__arg,
+.landing-page-root .s-faq .s__title,
+.landing-page-root .b-faq .b__title,
+.landing-page-root .b-faq .b__toggle,
+.landing-page-root .b-faq .b__text,
+.landing-page-root .s-final-cta .s__title {
+  color: #2b2b2b !important;
+}
+
+.landing-page-root .s-hero .s__awards,
+.landing-page-root .s-hero .s__award {
+  color: #2b2b2b !important;
+}
+
+.landing-page-root .b-faq .b__title .b__toggle {
+  color: #2b2b2b !important;
+  width: 100%;
+  text-align: left;
+}
+
+/* Quote card is specifically designed with a dark background & light text */
+.landing-page-root .b-quote {
+  background-color: #2b2b2b !important;
+  color: #fafafa !important;
+}
+.landing-page-root .b-quote .b__content,
+.landing-page-root .b-quote .b__text,
+.landing-page-root .b-quote .b__author {
+  color: #fafafa !important;
+}
+
+
+/* Hero Clients Logo Pills */
+.landing-page-root .s-hero .s__logos {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin: 1.5rem 0 0;
+  padding: 0 1rem;
+  list-style: none;
+  flex-wrap: wrap;
+}
+.landing-page-root .s-hero .s__logo-pill {
+  display: flex;
+  align-items: center;
+  padding: 0.35rem 0.65rem;
+  background: transparent;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+.landing-page-root .s-hero .s__logo-pill:hover {
+  border-bottom-color: var(--color-accent, #2197c9);
+}
+
+/* Nav Menu Opaque Buttons */
+.landing-page-root .s__nav .btn-main--secondary .btn-main__outer {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(43, 43, 43, 0.18) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 999rem;
+}
+.landing-page-root .s__nav .btn-main--secondary:hover .btn-main__outer {
+  background-color: #f4f6f8 !important;
+  border-color: rgba(43, 43, 43, 0.35) !important;
+}
+.landing-page-root .s__nav .btn-main--secondary .btn-main__outer:after {
+  border-color: transparent !important;
+}
+.landing-page-root .s__nav .s__menu-link--cta .btn-main__outer {
+  border-radius: 999rem;
+}
+

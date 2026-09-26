@@ -35,10 +35,28 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const [isShowreelOpen, setIsShowreelOpen] = useState(false);
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
+    // Landing page is an editorial light publication with #2b2b2b typography
+    const hadDark = document.documentElement.classList.contains('dark');
+    document.documentElement.classList.remove('dark');
+    document.documentElement.setAttribute('data-theme', 'light');
 
-    // Initialize Lenis smooth scroll
+    return () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (hadDark || savedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    };
+  }, []);
+
+
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isTouch = window.matchMedia('(pointer: coarse)').matches;
+    // Native mobile compositor scroll is 120Hz and zero CPU cost; avoid JS smooth scroll on phones
+    if (prefersReducedMotion || isTouch) return;
+
+    // Initialize Lenis smooth scroll for desktop pointer/wheel
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -54,7 +72,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     };
 
     gsap.ticker.add(tickerCallback);
-    gsap.ticker.lagSmoothing(0);
 
     return () => {
       gsap.ticker.remove(tickerCallback);
@@ -72,7 +89,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   };
 
   return (
-    <div className="relative min-h-screen bg-[var(--color-white-darker)] text-[var(--color-black)] selection:bg-[var(--color-accent)] selection:text-white">
+    <div className="landing-page-root relative min-h-screen bg-[var(--color-white-darker)] text-[#2b2b2b] selection:bg-[var(--color-accent)] selection:text-white">
       {/* Custom Draggable Scrollbar */}
       <CustomScrollbar lenis={lenisInstance} />
 

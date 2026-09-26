@@ -27,7 +27,10 @@ export const PatternCanvas: React.FC<PatternCanvasProps> = ({
 
     if (!gl) return;
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // Ponytail & GSAP performance: Dithering shader looks sharper and uses 4x-9x less GPU at 1x DPR
+    const isMobile = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
+    const isStatic = staticFlow || isMobile;
+    const dpr = 1.0;
     let width = (canvas.width = (canvas.parentElement?.clientWidth || window.innerWidth) * dpr);
     let height = (canvas.height = (canvas.parentElement?.clientHeight || window.innerHeight) * dpr);
 
@@ -178,6 +181,7 @@ export const PatternCanvas: React.FC<PatternCanvasProps> = ({
     const uFadeLoc = gl.getUniformLocation(program, 'u_fade');
 
     let startTime = performance.now();
+    let lastRenderTime = 0;
     let animationFrameId: number;
     let isVisible = true;
 
@@ -185,7 +189,7 @@ export const PatternCanvas: React.FC<PatternCanvasProps> = ({
       width = canvas.width = (canvas.parentElement?.clientWidth || window.innerWidth) * dpr;
       height = canvas.height = (canvas.parentElement?.clientHeight || window.innerHeight) * dpr;
       gl.viewport(0, 0, width, height);
-      if (staticFlow) {
+      if (isStatic) {
         render();
       }
     };
@@ -196,6 +200,13 @@ export const PatternCanvas: React.FC<PatternCanvasProps> = ({
       if (!isVisible) return;
 
       const now = performance.now();
+      // On desktop, throttle render to 24 FPS (~41ms) to eliminate battery & GPU drain
+      if (!isStatic && now - lastRenderTime < 41) {
+        animationFrameId = requestAnimationFrame(render);
+        return;
+      }
+      lastRenderTime = now;
+
       const elapsed = (now - startTime) * 0.001; // seconds
 
       let fade = 1.0;
@@ -210,14 +221,14 @@ export const PatternCanvas: React.FC<PatternCanvasProps> = ({
       }
 
       gl.useProgram(program);
-      gl.uniform1f(uTimeLoc, staticFlow ? 0.0 : elapsed);
+      gl.uniform1f(uTimeLoc, isStatic ? 0.0 : elapsed);
       gl.uniform2f(uResLoc, width, height);
       gl.uniform1f(uPixelRatioLoc, dpr);
       gl.uniform1f(uFadeLoc, fade);
 
       gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-      if (!staticFlow) {
+      if (!isStatic) {
         animationFrameId = requestAnimationFrame(render);
       }
     };
@@ -228,6 +239,8 @@ export const PatternCanvas: React.FC<PatternCanvasProps> = ({
         if (isVisible) {
           cancelAnimationFrame(animationFrameId);
           render();
+        } else {
+          cancelAnimationFrame(animationFrameId);
         }
       },
       { threshold: 0.05 }
@@ -240,6 +253,9 @@ export const PatternCanvas: React.FC<PatternCanvasProps> = ({
       cancelAnimationFrame(animationFrameId);
       observer.disconnect();
       window.removeEventListener('resize', handleResize);
+      // memory-leak-debugging: Free WebGL resources
+      gl.deleteBuffer(quadBuffer);
+      gl.deleteProgram(program);
     };
   }, [immediate, staticFlow]);
 

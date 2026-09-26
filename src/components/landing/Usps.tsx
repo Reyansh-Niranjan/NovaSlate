@@ -2,11 +2,11 @@ import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { siteContent } from '@/data/content';
-import { PatternCanvas } from './PatternCanvas';
 import { ContinuityAsset } from './UspAssets/Continuity';
 import { CapacityAsset } from './UspAssets/Capacity';
 import { CollaborationAsset } from './UspAssets/Collaboration';
 import { ExperienceAsset } from './UspAssets/Experience';
+import { pauseUspRunner, resumeUspRunner } from './UspAssets/syncRunner';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -97,7 +97,23 @@ export const Usps: React.FC = () => {
       });
     }, el);
 
-    return () => ctx.revert();
+    // Pause SVG and GSAP ticker when architecture section is scrolled out of view
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          resumeUspRunner();
+        } else {
+          pauseUspRunner();
+        }
+      },
+      { threshold: 0.05 }
+    );
+    observer.observe(el);
+
+    return () => {
+      observer.disconnect();
+      ctx.revert();
+    };
   }, []);
 
   const getAsset = (key: string) => {
@@ -137,9 +153,7 @@ export const Usps: React.FC = () => {
                     <div className="b__inner">
                       <div className="b__asset">
                         {getAsset(item.key)}
-                        <div className="b-fluid" aria-hidden="true">
-                          <PatternCanvas immediate={true} staticFlow={true} />
-                        </div>
+                        <div className="b-fluid bg-gradient-to-br from-white/60 via-transparent to-[var(--color-primary)]/10" aria-hidden="true" />
                       </div>
                       <div className="b__content">
                         <h3 className="b__title t-h-md">{item.title}</h3>
