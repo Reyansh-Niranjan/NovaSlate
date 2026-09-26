@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Github, MapPin, ShieldCheck, Terminal, Code2, Cpu, Database, ArrowUpRight } from "lucide-react";
+import { GitBranch, MapPin, ShieldCheck, Terminal, Code2, Cpu, Database, ArrowUpRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -199,7 +199,7 @@ export default function Creator() {
                       rel="noopener noreferrer"
                       className="text-xs font-mono text-muted-foreground hover:text-foreground inline-flex items-center justify-center sm:justify-start gap-1 touch-manipulation"
                     >
-                      <Github className="w-3.5 h-3.5" />
+                      <GitBranch className="w-3.5 h-3.5" />
                       @{creator.login}
                       <ArrowUpRight className="w-3 h-3 opacity-60" />
                     </a>

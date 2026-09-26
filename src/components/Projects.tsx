@@ -2,7 +2,7 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Globe, Cpu, ArrowUpRight, Github, ExternalLink, Terminal } from "lucide-react";
+import { Globe, Cpu, ArrowUpRight, GitBranch, ExternalLink, Terminal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -252,7 +252,7 @@ export default function Projects() {
                       rel="noopener noreferrer"
                       className="px-3 h-10 sm:h-9 rounded-md border border-border text-muted-foreground hover:text-foreground text-xs font-mono inline-flex items-center justify-center gap-1.5 transition-colors hover:border-muted-foreground touch-manipulation active:scale-[0.97]"
                     >
-                      <Github className="w-3.5 h-3.5" />
+                      <GitBranch className="w-3.5 h-3.5" />
                       <span>Source</span>
                     </a>
                   </div>

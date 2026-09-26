@@ -1,4 +1,4 @@
-import { Github, Terminal } from "lucide-react";
+import { GitBranch, Terminal } from "lucide-react";
 import Logo from "./Logo";
 
 export default function Footer() {
@@ -55,7 +55,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="py-1 text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1.5 touch-manipulation"
                 >
-                  <Github className="w-3.5 h-3.5" />
+                  <GitBranch className="w-3.5 h-3.5" />
                   Web Hub Repo
                 </a>
               </div>
