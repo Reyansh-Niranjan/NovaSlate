@@ -74,6 +74,13 @@
 - **Board PYQs & Practice:** Dedicated repository of past-year question papers (PYQs) and interactive MCQ quizzes categorized by grade and subject.
 - **Visual Learning & Revision:** Chapter mindmaps, quick-reference flashcards, formula cheatsheets, and personalized study notes alongside textbook reading.
 
+### 🌟 Unified Open-Source EdTech Stack (6 Integrated Engines)
+NovaSlate deeply assimilates 6 specialized open-source educational platforms into a cohesive, zero-mock operating system:
+- **`CaviraOSS/PageLM` & `Kaju-Open-Source/ORE`**: AI Knowledge & RAG Studio with semantic vector search across state/NCERT textbooks, automated concept quizzes, Leitner spaced-repetition flashcards, and 2-host synthesized audio podcasts (`window.speechSynthesis`).
+- **`anushkaadak2684/ClassSphere` & `edrys-org/edrys`**: Synchronous virtual classrooms with live media stage, hand-raise queue, collaborative digital blackboard, automated session duration logger with **1-Click Attendance CSV Export**, and **Atlas ESP32 Remote Lab Hardware Simulator** (live serial console, GPIO pin control, and 1000Hz oscilloscope waveform stream).
+- **`Sameerkhan9412/StudyByte`**: Modular curriculum course catalog, video lecture player with completion checkmarks, and educator course studio.
+- **`Asfer-dev/study-ai`**: Dynamic peer discussion feed with topic tagging, question upvoting, solution discussions, assignment turn-in workflow, and study buddy network.
+
 <a id="hardware-companion"></a>
 ### ⚡ Dual Ecosystem: Cloud + Embedded Hardware
 - **Web Platform:** Cloud-orchestrated web application powered by Internet Archive (IAS3) and Supabase PostgreSQL.
@@ -87,8 +94,11 @@
 NovaSlate
 ├── 🌐 Web Frontend (React 19, TypeScript, Tailwind CSS, Vite)
 │   ├── Landing Page (Precision Minimalist Bento Grid)
-│   ├── User Workspaces (Student, Teacher, Admin)
-│   ├── In-Browser PDF Reader
+│   ├── In-Browser PDF Reader & NCERT Catalog
+│   ├── AI Study Engine & RAG Studio (PageLM × ORE)
+│   ├── Live Virtual Classrooms & Labs (ClassSphere × Edrys)
+│   ├── Curriculum Courses & LMS (StudyByte)
+│   ├── Peer Community & Assignments (Study AI)
 │   └── Study Hub & Notes Workspace
 │
 ├── ⚙️ Ingestion & Compression Pipeline (Python)
