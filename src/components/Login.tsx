@@ -34,10 +34,9 @@ export default function Login({ onCancel, onSuccess }: LoginProps) {
   const handleOAuth = async () => {
     if (isOAuthLoading || isSubmitting) return;
     setErrorMessage(null);
-    setIsOAuthLoading(true);
     try {
-      const siteUrl = window.location.origin;
-      const redirectTo = `${siteUrl}/#dashboard`;
+      setIsOAuthLoading(true);
+      const redirectTo = window.location.origin;
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: { redirectTo },
