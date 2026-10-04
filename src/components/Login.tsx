@@ -36,7 +36,7 @@ export default function Login({ onCancel, onSuccess }: LoginProps) {
     setErrorMessage(null);
     setIsOAuthLoading(true);
     try {
-      const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
+      const siteUrl = window.location.origin;
       const redirectTo = `${siteUrl}/#dashboard`;
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",

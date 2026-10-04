@@ -1,0 +1,9 @@
+# Vercel Ignore File
+# Exclude offline scrapers, Python assets, and database migration scripts from frontend deployments.
+
+scraper/
+scripts/
+supabase/
+*.py
+*.marker
+downloads/
