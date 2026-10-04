@@ -23,9 +23,6 @@ import {
   CheckCircle2,
   AlertCircle,
   GraduationCap,
-  Sparkles,
-  Radio,
-  Users,
 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import ThemeToggle from "./ThemeToggle";
@@ -38,25 +35,12 @@ import {
   deleteLocalUserBook,
 } from "../lib/userBooks";
 import { StudyHub } from "./StudyHub/StudyHub";
-import { PageLMStudio } from "./AIStudio/PageLMStudio";
-import { ClassSphereView } from "./VirtualClassroom/ClassSphereView";
-import { StudyByteCourses } from "./Courses/StudyByteCourses";
-import { CommunityHub } from "./PeerCommunity/CommunityHub";
 
 interface DashboardProps {
   onLogout?: () => void;
 }
 
-type DashboardTab =
-  | "overview"
-  | "library"
-  | "pyqs"
-  | "ai_studio"
-  | "classrooms"
-  | "courses"
-  | "community"
-  | "notes"
-  | "books";
+type DashboardTab = "overview" | "library" | "pyqs" | "notes" | "books";
 
 interface UserProfile {
   name: string;
@@ -76,26 +60,18 @@ interface StorageItem {
   id?: string;
 }
 
-const sidebarNav: { id: DashboardTab; label: string; icon: any }[] = [
+const sidebarNav: { id: DashboardTab; label: string; icon: typeof LayoutDashboard }[] = [
   { id: "overview", label: "Dashboard", icon: LayoutDashboard },
   { id: "library", label: "NCERT Library", icon: BookOpen },
   { id: "pyqs", label: "Board PYQs", icon: GraduationCap },
-  { id: "ai_studio", label: "AI Study Engine", icon: Sparkles },
-  { id: "classrooms", label: "Live Lectures & Labs", icon: Radio },
-  { id: "courses", label: "Courses & LMS", icon: BookMarked },
-  { id: "community", label: "Peer Community", icon: Users },
   { id: "notes", label: "Study Notes", icon: FileText },
-  { id: "books", label: "Your Bookshelf", icon: HardDrive },
+  { id: "books", label: "Your Bookshelf", icon: BookMarked },
 ];
 
 const tabTitles: Record<DashboardTab, string> = {
   overview: "Dashboard",
   library: "NCERT Digital Library",
   pyqs: "Board Exam PYQs & Study Kits",
-  ai_studio: "AI Study Engine (PageLM × ORE RAG)",
-  classrooms: "Virtual Classroom & Atlas Station (ClassSphere × Edrys)",
-  courses: "Curriculum Courses (StudyByte)",
-  community: "Peer Community & Assignments (Study AI)",
   notes: "Study Notes",
   books: "Your Bookshelf",
 };
@@ -292,9 +268,8 @@ function DashboardOverview({
                   <div key={weekLabels[index]} className="flex flex-1 flex-col items-center gap-1">
                     <div className="h-8 sm:h-11 w-full flex items-end justify-center rounded-sm bg-secondary/80 p-0.5 border-b border-border">
                       <div
-                        className={`w-full rounded-xs transition-all duration-300 ${
-                          isZero ? "bg-muted-foreground/20" : "bg-foreground"
-                        }`}
+                        className={`w-full rounded-xs transition-all duration-300 ${isZero ? "bg-muted-foreground/20" : "bg-foreground"
+                          }`}
                         style={{ height: `${height}px` }}
                         title={`${weekLabels[index]}: ${count > 0 ? `${count} files` : "No reading activity"}`}
                       />
@@ -537,156 +512,6 @@ function DashboardOverview({
                 </div>
               </div>
               <ChevronRight className="h-3.5 w-3.5 text-muted-foreground group-hover:translate-x-0.5 transition-transform" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* 10 Open-Source Integrations Showcase Bento */}
-      <div className="rounded-3xl border border-border/80 bg-card p-6 sm:p-8 space-y-6 shadow-xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/80 pb-4">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary text-[10px] font-mono uppercase tracking-wider text-muted-foreground border border-border/70 mb-1.5">
-              <Sparkles className="h-3 w-3 text-amber-500" />
-              <span>Integrated Open-Source Stack</span>
-            </div>
-            <h2 className="text-lg sm:text-xl font-heading font-medium text-foreground">
-              Unified K-12 Educational Operating System
-            </h2>
-            <p className="text-xs text-muted-foreground font-body">
-              Synchronized open-source platforms embedded natively into NovaSlate without external dependencies or mocks.
-            </p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {/* Card 1: PageLM & ORE */}
-          <div className="p-5 rounded-2xl border border-border/70 bg-secondary/25 hover:border-foreground/40 transition-all flex flex-col justify-between space-y-3">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-secondary text-muted-foreground">
-                  CaviraOSS/PageLM × Kaju-ORE
-                </span>
-                <span className="text-[10px] font-mono text-emerald-500 font-medium">Active RAG</span>
-              </div>
-              <h3 className="text-sm font-heading font-medium text-foreground">
-                AI Knowledge Engine &amp; Audio Podcast
-              </h3>
-              <p className="text-xs text-muted-foreground line-clamp-2">
-                Semantic vector search over textbooks, automated concept quizzes, Leitner flashcards, and 2-host synthetic audio podcasts.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => onTabChange("ai_studio")}
-              className="w-full py-2 px-3 rounded-xl bg-foreground text-background text-xs font-medium hover:opacity-90 transition-opacity active:scale-[0.98] cursor-pointer flex items-center justify-center gap-1.5"
-            >
-              <span>Launch AI Studio</span>
-              <ChevronRight className="h-3 w-3" />
-            </button>
-          </div>
-
-          {/* Card 2: ClassSphere & Edrys */}
-          <div className="p-5 rounded-2xl border border-border/70 bg-secondary/25 hover:border-foreground/40 transition-all flex flex-col justify-between space-y-3">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-secondary text-muted-foreground">
-                  ClassSphere × Edrys
-                </span>
-                <span className="text-[10px] font-mono text-blue-500 font-medium">Live Labs</span>
-              </div>
-              <h3 className="text-sm font-heading font-medium text-foreground">
-                Virtual Lecture &amp; Atlas ESP32 Station
-              </h3>
-              <p className="text-xs text-muted-foreground line-clamp-2">
-                Live WebRTC stage, collaborative digital blackboard, real attendance CSV exporter, and Atlas ESP32 remote sensor telemetry.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => onTabChange("classrooms")}
-              className="w-full py-2 px-3 rounded-xl bg-foreground text-background text-xs font-medium hover:opacity-90 transition-opacity active:scale-[0.98] cursor-pointer flex items-center justify-center gap-1.5"
-            >
-              <span>Enter Classroom &amp; Lab</span>
-              <ChevronRight className="h-3 w-3" />
-            </button>
-          </div>
-
-          {/* Card 3: StudyByte */}
-          <div className="p-5 rounded-2xl border border-border/70 bg-secondary/25 hover:border-foreground/40 transition-all flex flex-col justify-between space-y-3">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-secondary text-muted-foreground">
-                  Sameerkhan9412/StudyByte
-                </span>
-                <span className="text-[10px] font-mono text-purple-500 font-medium">LMS</span>
-              </div>
-              <h3 className="text-sm font-heading font-medium text-foreground">
-                Curriculum Courses &amp; Lessons
-              </h3>
-              <p className="text-xs text-muted-foreground line-clamp-2">
-                Modular course video lectures, lesson progress tracking with completion checkmarks, and educator course studio.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => onTabChange("courses")}
-              className="w-full py-2 px-3 rounded-xl bg-foreground text-background text-xs font-medium hover:opacity-90 transition-opacity active:scale-[0.98] cursor-pointer flex items-center justify-center gap-1.5"
-            >
-              <span>Explore Courses</span>
-              <ChevronRight className="h-3 w-3" />
-            </button>
-          </div>
-
-          {/* Card 4: Study-AI */}
-          <div className="p-5 rounded-2xl border border-border/70 bg-secondary/25 hover:border-foreground/40 transition-all flex flex-col justify-between space-y-3">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-secondary text-muted-foreground">
-                  Asfer-dev/study-ai
-                </span>
-                <span className="text-[10px] font-mono text-amber-500 font-medium">Community</span>
-              </div>
-              <h3 className="text-sm font-heading font-medium text-foreground">
-                Peer Community &amp; Assignments
-              </h3>
-              <p className="text-xs text-muted-foreground line-clamp-2">
-                Dynamic peer discussion feed, academic note sharing, question upvoting, and assignment submission/grading.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => onTabChange("community")}
-              className="w-full py-2 px-3 rounded-xl bg-foreground text-background text-xs font-medium hover:opacity-90 transition-opacity active:scale-[0.98] cursor-pointer flex items-center justify-center gap-1.5"
-            >
-              <span>Access Peer Hub</span>
-              <ChevronRight className="h-3 w-3" />
-            </button>
-          </div>
-
-          {/* Card 5: NCERT Library & Atlas Hardware */}
-          <div className="p-5 rounded-2xl border border-border/70 bg-secondary/25 hover:border-foreground/40 transition-all flex flex-col justify-between space-y-3">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-secondary text-muted-foreground">
-                  NovaSlate Core × Atlas Device
-                </span>
-                <span className="text-[10px] font-mono text-foreground font-medium">Class 1-12</span>
-              </div>
-              <h3 className="text-sm font-heading font-medium text-foreground">
-                NCERT Digital Library &amp; Board Kits
-              </h3>
-              <p className="text-xs text-muted-foreground line-clamp-2">
-                Watermark-stripped vector textbooks, chapter revision kits, and offline micro-SD hardware synchronization.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => onTabChange("library")}
-              className="w-full py-2 px-3 rounded-xl bg-foreground text-background text-xs font-medium hover:opacity-90 transition-opacity active:scale-[0.98] cursor-pointer flex items-center justify-center gap-1.5"
-            >
-              <span>Browse Catalog</span>
-              <ChevronRight className="h-3 w-3" />
             </button>
           </div>
         </div>
@@ -1349,11 +1174,10 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                 key={item.id}
                 type="button"
                 onClick={() => setActiveTab(item.id)}
-                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-full text-xs font-medium transition-all duration-150 cursor-pointer ${
-                  isActive
+                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-full text-xs font-medium transition-all duration-150 cursor-pointer ${isActive
                     ? "bg-foreground text-background font-semibold shadow-xs"
                     : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                }`}
+                  }`}
               >
                 <Icon className="h-4 w-4 shrink-0" />
                 <span>{item.label}</span>
@@ -1484,14 +1308,6 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                 }
               }}
             />
-          ) : activeTab === "ai_studio" ? (
-            <PageLMStudio />
-          ) : activeTab === "classrooms" ? (
-            <ClassSphereView />
-          ) : activeTab === "courses" ? (
-            <StudyByteCourses />
-          ) : activeTab === "community" ? (
-            <CommunityHub />
           ) : activeTab === "notes" ? (
             <NotesSection />
           ) : activeTab === "books" ? (
@@ -1504,7 +1320,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
       <nav
         role="navigation"
         aria-label="Mobile Navigation"
-        className="fixed bottom-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-md border-t border-border/80 safe-bottom-nav flex items-center h-16 px-2 lg:hidden shadow-lg overflow-x-auto no-scrollbar gap-1"
+        className="fixed bottom-0 left-0 right-0 z-40 bg-card/90 backdrop-blur-md border-t border-border/80 safe-bottom-nav flex items-center justify-around h-16 px-2 lg:hidden shadow-lg"
       >
         {sidebarNav.map((item) => {
           const Icon = item.icon;
@@ -1514,39 +1330,21 @@ export default function Dashboard({ onLogout }: DashboardProps) {
               key={item.id}
               type="button"
               onClick={() => setActiveTab(item.id)}
-              className="flex-shrink-0 min-w-[62px] flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-transform active:scale-[0.92] touch-manipulation focus-visible:outline-none"
+              className="flex-1 flex flex-col items-center justify-center py-1 px-0.5 rounded-xl transition-transform active:scale-[0.92] touch-manipulation focus-visible:outline-none"
             >
               <div
-                className={`flex items-center justify-center h-7 px-3 rounded-full transition-all duration-200 ${
-                  isActive
+                className={`flex items-center justify-center h-7 px-3.5 rounded-full transition-all duration-200 ${isActive
                     ? "bg-foreground text-background font-semibold shadow-xs"
                     : "text-muted-foreground hover:text-foreground"
-                }`}
+                  }`}
               >
                 <Icon className="h-4 w-4" />
               </div>
               <span
-                className={`text-[9px] mt-0.5 tracking-tight font-medium truncate max-w-[58px] ${
-                  isActive ? "text-foreground font-semibold" : "text-muted-foreground"
-                }`}
+                className={`text-[10px] mt-0.5 tracking-tight font-medium ${isActive ? "text-foreground font-semibold" : "text-muted-foreground"
+                  }`}
               >
-                {item.id === "overview"
-                  ? "Home"
-                  : item.id === "library"
-                  ? "Library"
-                  : item.id === "pyqs"
-                  ? "PYQs"
-                  : item.id === "ai_studio"
-                  ? "AI Studio"
-                  : item.id === "classrooms"
-                  ? "Live Labs"
-                  : item.id === "courses"
-                  ? "Courses"
-                  : item.id === "community"
-                  ? "Peer Hub"
-                  : item.id === "notes"
-                  ? "Notes"
-                  : "Books"}
+                {item.id === "overview" ? "Dashboard" : item.id === "library" ? "Library" : item.id === "pyqs" ? "PYQs" : item.id === "notes" ? "Notes" : "Bookshelf"}
               </span>
             </button>
           );
