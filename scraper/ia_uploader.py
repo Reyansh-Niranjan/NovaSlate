@@ -274,7 +274,17 @@ class InternetArchiveReplenisher:
         total_uploaded = 0
         total_storage_bytes = 0
 
-        for cls_obj in catalog_data.get("classes", []):
+        classes_data = catalog_data.get("classes", [])
+        if not classes_data and isinstance(catalog_data, dict):
+            for cls_key, subjs in catalog_data.items():
+                if cls_key in ("by_code", "meta") or not isinstance(subjs, dict):
+                    continue
+                subj_list = []
+                for s_name, b_list in subjs.items():
+                    subj_list.append({"name": s_name, "books": b_list})
+                classes_data.append({"class": cls_key, "subjects": subj_list})
+
+        for cls_obj in classes_data:
             cls_name = str(cls_obj.get("class", ""))
             enriched_subjects = []
 
@@ -287,7 +297,7 @@ class InternetArchiveReplenisher:
                     code = book.get("code", "")
                     total_books += 1
 
-                    rel_path = f"Class {cls_name}/{subj_name}/{title}.pdf"
+                    rel_path = book.get("path") or f"Class {cls_name}/{subj_name}/{title}.pdf"
                     file_size = remote_files.get(rel_path, 0)
                     is_uploaded = rel_path in remote_files and file_size > 0
                     public_url = self.get_public_url(rel_path)

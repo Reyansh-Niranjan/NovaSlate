@@ -88,9 +88,10 @@ def process_book_task(
     safe_subject = sanitize_filename(subject)
 
     # Standardized remote and local hierarchy
-    remote_path = f"Class {cls}/{safe_subject}/{safe_title}.pdf"
-    local_pdf_path = out_dir / f"Class {cls}" / safe_subject / f"{safe_title}.pdf"
-    local_zip_path = out_dir / f"Class {cls}" / safe_subject / f"{safe_title}.zip"
+    class_folder = cls if cls.lower().startswith("class") else f"Class {cls}"
+    remote_path = f"{class_folder}/{safe_subject}/{safe_title}.pdf"
+    local_pdf_path = out_dir / class_folder / safe_subject / f"{safe_title}.pdf"
+    local_zip_path = out_dir / class_folder / safe_subject / f"{safe_title}.zip"
 
     # Step 1: Check if already in Internet Archive
     if upload_enabled and uploader and not force:
@@ -168,7 +169,9 @@ def main():
     parser.add_argument("--class", dest="cls", default="all", help="Target class (1-12 or 'all')")
     parser.add_argument("--subject", default=None, help="Target subject (or all if omitted)")
     parser.add_argument("--out", default="downloads", help="Output directory for downloaded books")
-    parser.add_argument("--concurrency", "-c", type=int, default=16, help="Parallel worker threads (default: 16)")
+    parser.add_argument("--concurrency", "-c", type=int, default=4, help="Parallel worker threads (default: 4)")
+    parser.add_argument("--books", default=None, help="Comma-separated book codes or file with codes to filter/retry")
+    parser.add_argument("--failed-file", default="failed_books.json", help="Path to write failed books JSON")
     parser.add_argument("--upload-to-ia", action="store_true", help="Sync merged PDFs to Internet Archive item (zero egress)")
     parser.add_argument("--clean-local", action="store_true", help="Delete local files after uploading (saves CI disk)")
     parser.add_argument("--force", action="store_true", help="Force re-download and re-upload existing files")
@@ -202,8 +205,16 @@ def main():
     catalog = fetch_catalog(refresh=args.refresh_catalog)
     target_books = list(iter_books(catalog, class_filter=args.cls, subject_filter=args.subject))
 
+    if args.books:
+        if Path(args.books).exists():
+            codes_set = {c.strip().lower() for c in Path(args.books).read_text(encoding="utf-8").replace(",", "\n").splitlines() if c.strip()}
+        else:
+            codes_set = {c.strip().lower() for c in args.books.split(",") if c.strip()}
+        target_books = [t for t in target_books if t[2].get("code", "").lower() in codes_set]
+        console.print(f"[*] Filtered target list to [bold green]{len(target_books)}[/bold green] specific books from --books filter")
+
     if not target_books:
-        console.print(f"[yellow]No books found matching Class '{args.cls}' and Subject '{args.subject}'.[/yellow]")
+        console.print(f"[yellow]No books found matching criteria (Class: '{args.cls}', Subject: '{args.subject}', Books: '{args.books}').[/yellow]")
         return
 
     console.print(f"[*] Found [bold green]{len(target_books)}[/bold green] books for Class [bold cyan]{args.cls}[/bold cyan]")
@@ -217,7 +228,8 @@ def main():
         table.add_column("Code", justify="center")
 
         for c, s, b in target_books[:40]:
-            table.add_row(f"Class {c}", s, b["title"], b["code"])
+            c_display = c if str(c).lower().startswith("class") else f"Class {c}"
+            table.add_row(c_display, s, b["title"], b["code"])
 
         console.print(table)
         if len(target_books) > 40:
@@ -247,6 +259,8 @@ def main():
     }
 
     start_time = time.time()
+
+    failed_books: List[Dict[str, Any]] = []
 
     with Progress(
         SpinnerColumn(),
@@ -281,6 +295,7 @@ def main():
             }
 
             for future in as_completed(futures):
+                c, s, b = futures[future]
                 try:
                     res = future.result()
                     results.append(res)
@@ -291,13 +306,43 @@ def main():
                     else:
                         stats["failed"] += 1
 
+                    if status in ("download_failed", "merge_failed", "upload_error", "failed"):
+                        failed_books.append({
+                            "class": c,
+                            "subject": s,
+                            "title": b.get("title", ""),
+                            "code": b.get("code", ""),
+                            "status": status,
+                        })
+
                 except Exception as e:
                     stats["failed"] += 1
+                    failed_books.append({
+                        "class": c,
+                        "subject": s,
+                        "title": b.get("title", ""),
+                        "code": b.get("code", ""),
+                        "status": "exception",
+                        "error": str(e),
+                    })
                     logging.error(f"Task error: {e}")
                 finally:
                     progress.advance(task_id)
 
     elapsed = time.time() - start_time
+
+    # Record failed books for automated retry workflows
+    failed_file = Path(args.failed_file)
+    failed_codes_file = Path("failed_codes.txt")
+    if failed_books:
+        with open(failed_file, "w", encoding="utf-8") as f:
+            json.dump(failed_books, f, indent=2, ensure_ascii=False)
+        codes_list = [b["code"] for b in failed_books if b.get("code")]
+        failed_codes_file.write_text(",".join(codes_list), encoding="utf-8")
+        console.print(f"[bold red][!] {len(failed_books)} book(s) failed. Saved to '{failed_file.name}' and '{failed_codes_file.name}'[/bold red]")
+    else:
+        failed_file.unlink(missing_ok=True)
+        failed_codes_file.unlink(missing_ok=True)
 
     # Step 4: Summary Table
     summary_table = Table(title="Execution Summary", show_header=True, header_style="bold cyan", safe_box=True)
@@ -335,9 +380,11 @@ def main():
 
     if completed_target >= total_target and stats.get("failed", 0) == 0:
         Path("all_completed.marker").write_text("COMPLETE", encoding="utf-8")
-        console.print("[bold green][✓] 100% of target textbooks completed and synced to Internet Archive![/bold green]")
+        console.print("[bold green][+] 100% of target textbooks completed![/bold green]")
 
     console.print("\n[bold green][+] NCERT Pipeline Completed Successfully![/bold green]\n")
+    if failed_books:
+        sys.exit(1)
 
 
 if __name__ == "__main__":
