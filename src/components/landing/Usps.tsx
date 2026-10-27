@@ -128,8 +128,9 @@ export const Usps: React.FC = () => {
         return <CollaborationAsset />;
       case 'experience':
         return <ExperienceAsset />;
+      case 'environment':
       default:
-        return null;
+        return <ContinuityAsset />;
     }
   };
 

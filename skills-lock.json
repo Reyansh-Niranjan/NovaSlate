@@ -150,6 +150,12 @@
       "sourceType": "github",
       "skillPath": "skills/shieldcn-badges/SKILL.md",
       "computedHash": "fb7d0a39094e63a060c5c9271b1056eb1e630101cf62581d75f2d3690d84e75b"
+    },
+    "slopmonster": {
+      "source": "itsssssjack/slopmonster",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "aaff2b70ef4d5c6d1074a8c9860c369a5129e5349c6e35189e389d7bd6e3c66b"
     }
   }
 }

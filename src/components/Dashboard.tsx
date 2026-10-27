@@ -27,7 +27,7 @@ import {
 import { supabase } from "../lib/supabaseClient";
 import ThemeToggle from "./ThemeToggle";
 import { PdfReader } from "./PdfReader";
-import { NestedLibrary, getInternetArchiveUrl, SAMPLE_NCERT_CATALOG } from "./NestedLibrary";
+import { NestedLibrary, getInternetArchiveUrl, SAMPLE_NCERT_CATALOG, IA_BUCKET } from "./NestedLibrary";
 import {
   saveLocalUserBook,
   getLocalUserBooks,
@@ -1004,32 +1004,97 @@ function NotesSection() {
 }
 
 /* =========================================================================
-   CATALOG LOADER (Zero Supabase Storage - PostgreSQL + Local Fallback)
+   CATALOG LOADER (Zero Supabase Database/Storage - Hosted on Internet Archive)
+   Authoritative catalog.json loaded directly from IA item root with local fallback
    ========================================================================= */
-async function listCatalogItems(): Promise<StorageItem[]> {
-  try {
-    const { data, error } = await supabase
-      .from("catalog")
-      .select("*")
-      .eq("is_available", true)
-      .order("class", { ascending: true });
+const IA_CATALOG_URL = `https://archive.org/download/${IA_BUCKET}/catalog.json`;
 
-    if (error || !data || data.length === 0) {
-      return getFallbackCatalog();
+interface CatalogEntry {
+  code?: string;
+  title?: string;
+  class?: string;
+  subject?: string;
+  path?: string;
+  url?: string;
+  size?: number;
+  size_bytes?: number;
+  is_available?: boolean;
+  file_path?: string;
+}
+
+function parseCatalogManifest(catalogData: any): StorageItem[] {
+  if (!catalogData) return [];
+
+  const rawBooks: CatalogEntry[] = [];
+
+  if (Array.isArray(catalogData.classes)) {
+    for (const cls of catalogData.classes) {
+      for (const subj of cls.subjects || []) {
+        for (const book of subj.books || []) {
+          rawBooks.push(book);
+        }
+      }
     }
-
-    return data.map((row: any) => ({
-      name: row.title ? `${row.title}.pdf` : (row.file_path.split("/").pop() || "Textbook.pdf"),
-      fullPath: row.file_path,
-      createdAt: row.created_at ?? null,
-      updatedAt: row.updated_at ?? null,
-      size: typeof row.size_bytes === "number" ? row.size_bytes : null,
-      mimeType: "application/pdf",
-      url: row.url || getInternetArchiveUrl(row.file_path),
-    }));
-  } catch {
-    return getFallbackCatalog();
+  } else if (Array.isArray(catalogData.books)) {
+    rawBooks.push(...catalogData.books);
+  } else if (Array.isArray(catalogData)) {
+    rawBooks.push(...catalogData);
   }
+
+  const items: StorageItem[] = [];
+  for (const book of rawBooks) {
+    if (book.is_available === false) continue;
+
+    const fullPath = book.path || book.file_path || `${book.class || "Class 10"}/${book.subject || "General"}/${book.title || "Textbook"}.pdf`;
+    const name = book.title ? `${book.title}.pdf` : (fullPath.split("/").pop() || "Textbook.pdf");
+    const size = typeof book.size === "number" ? book.size : (typeof book.size_bytes === "number" ? book.size_bytes : null);
+
+    items.push({
+      name,
+      fullPath,
+      createdAt: null,
+      updatedAt: null,
+      size,
+      mimeType: "application/pdf",
+      url: book.url || getInternetArchiveUrl(fullPath),
+      id: book.code,
+    });
+  }
+
+  return items;
+}
+
+async function listCatalogItems(): Promise<StorageItem[]> {
+  // 1. Primary: Fetch live catalog.json directly from Internet Archive
+  try {
+    const resp = await fetch(IA_CATALOG_URL);
+    if (resp.ok) {
+      const data = await resp.json();
+      const items = parseCatalogManifest(data);
+      if (items.length > 0) {
+        return items;
+      }
+    }
+  } catch (err) {
+    console.warn("Could not fetch catalog.json from Internet Archive:", err);
+  }
+
+  // 2. Secondary: Fallback to local public/catalog.json
+  try {
+    const localResp = await fetch("/catalog.json");
+    if (localResp.ok) {
+      const localData = await localResp.json();
+      const localItems = parseCatalogManifest(localData);
+      if (localItems.length > 0) {
+        return localItems;
+      }
+    }
+  } catch (localErr) {
+    console.warn("Could not fetch local /catalog.json:", localErr);
+  }
+
+  // 3. Tertiary: Static fallback sample catalog
+  return getFallbackCatalog();
 }
 
 function getFallbackCatalog(): StorageItem[] {

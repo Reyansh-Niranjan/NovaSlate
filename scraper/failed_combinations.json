@@ -1,0 +1,17 @@
+{
+  "source": "fixture://textbook.php.html",
+  "generated_at": "2026-10-27T11:07:26.335729+00:00",
+  "total_failures": 1,
+  "failures": [
+    {
+      "path": {
+        "class": "Class IX",
+        "subject": "ICT",
+        "book": "Coming Soon"
+      },
+      "reason": "Book option has no NCERT textbook code",
+      "retryable": false,
+      "selection_value": ""
+    }
+  ]
+}

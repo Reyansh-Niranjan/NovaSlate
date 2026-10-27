@@ -43,14 +43,6 @@ export const Hero: React.FC = () => {
       </div>
 
       <div ref={containerRef} className="u-container">
-        <ul className="s__awards t-l-lg">
-          {siteContent.hero.awards.map((award) => (
-            <li key={award} className="s__award">
-              <span className="u-height-fix">{award}</span>
-            </li>
-          ))}
-        </ul>
-
         <h1 className="s__title t-h-3xl">
           {siteContent.hero.title}
         </h1>
@@ -58,46 +50,6 @@ export const Hero: React.FC = () => {
         <p className="s__text t-t-lg">
           {siteContent.hero.text}
         </p>
-
-
-
-        <div className="s__clients">
-          <p className="s__clients-label t-l-md">
-            {siteContent.hero.clients.label}
-          </p>
-          <ul className="s__logos">
-            <li className="s__logo-pill">
-              <img
-                src="/images/logos/ncert-real.svg"
-                alt="NCERT & CBSE Official"
-                className="h-7 w-auto object-contain"
-              />
-            </li>
-            <li className="s__logo-pill">
-              <img
-                src="/images/logos/internet-archive-real.svg"
-                alt="Internet Archive Library"
-                className="h-7 w-auto object-contain"
-              />
-            </li>
-            <li className="s__logo-pill">
-              <img
-                src="/images/logos/python-real.svg"
-                alt="Python & PyMuPDF Engine"
-                className="h-7 w-auto object-contain"
-              />
-            </li>
-            <li className="s__logo-pill">
-              <img
-                src="/images/logos/atlas-esp32.svg"
-                alt="Atlas ESP32 Reader"
-                className="h-7 w-auto object-contain"
-              />
-            </li>
-          </ul>
-        </div>
-
-
       </div>
     </section>
   );

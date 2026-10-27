@@ -9,7 +9,6 @@ import { Hero } from './Hero';
 import { Usps } from './Usps';
 import { Work } from './Work';
 import { Catchphrase } from './Catchphrase';
-import { Pricing } from './Pricing';
 import { Faq } from './Faq';
 import { FinalCta } from './FinalCta';
 import { Footer } from './Footer';
@@ -110,7 +109,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           onOpenContact={() => handleOpenContact()}
         />
         <Catchphrase />
-        <Pricing onOpenContact={handleOpenContact} />
         <Faq onOpenContact={() => handleOpenContact()} />
         <FinalCta onOpenContact={() => handleOpenContact()} />
       </main>

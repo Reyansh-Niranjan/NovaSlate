@@ -8,11 +8,13 @@
 #   "python-dotenv>=1.0.0",
 # ]
 # ///
-"""NCERT Textbook Scraper & Internet Archive (IAS3) Replenisher (CLI).
+"""NCERT Textbook Scraper & Complete-Book Downloader CLI.
 
-Automates textbook discovery, multi-threaded downloading, PDF merging,
-watermark cleaning, deep compression, and zero-cost cloud hosting on Internet Archive (IAS3).
-Synchronizes book metadata to Supabase PostgreSQL `catalog` table.
+Orchestrates textbook catalogue discovery, validation, streaming complete-book ZIP
+downloads, archive integrity verification, manifest generation, and optional PDF assembly.
+Uploads assembled textbook archives/PDFs directly to Internet Archive (IAS3) and synchronizes
+authoritative catalog.json to the Internet Archive item root.
+Supabase catalog synchronization has been permanently retired.
 """
 
 from __future__ import annotations
@@ -22,9 +24,8 @@ import logging
 import os
 import sys
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Set
 
 from dotenv import load_dotenv
 from rich.console import Console
@@ -43,9 +44,10 @@ from rich.table import Table
 # Add module to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from catalog import fetch_catalog, iter_books
-from downloader import download_zip, merge_zip_to_pdf, probe_book, sanitize_filename
-from ia_uploader import IAUploader, InternetArchiveReplenisher
+from catalog import fetch_catalog, iter_books, normalize_class_key
+from ia_uploader import IAUploader, DEFAULT_BUCKET
+from download_books import BookDownloader, get_book_zip_url, verify_zip_archive
+from downloader import merge_zip_to_pdf, sanitize_filename
 from optimizer import format_size, optimize_pdf
 
 # Load local environment if present
@@ -66,326 +68,288 @@ def setup_logger(verbose: bool = False):
     )
 
 
-def process_book_task(
-    cls: str,
-    subject: str,
-    book: Dict[str, str],
-    out_dir: Path,
-    uploader: Optional[InternetArchiveReplenisher],
-    upload_enabled: bool,
-    clean_local: bool,
-    keep_zips: bool,
-    remove_watermarks: bool,
-    compress: bool,
-    dpi: int,
-    quality: int,
-    force: bool,
-) -> Dict[str, Any]:
-    """Worker task: probes, downloads, merges, cleans watermarks, compresses, and uploads a textbook to IAS3."""
-    code = book["code"]
-    title = book["title"]
-    safe_title = sanitize_filename(title)
-    safe_subject = sanitize_filename(subject)
-
-    # Standardized remote and local hierarchy
-    class_folder = cls if cls.lower().startswith("class") else f"Class {cls}"
-    remote_path = f"{class_folder}/{safe_subject}/{safe_title}.pdf"
-    local_pdf_path = out_dir / class_folder / safe_subject / f"{safe_title}.pdf"
-    local_zip_path = out_dir / class_folder / safe_subject / f"{safe_title}.zip"
-
-    # Step 1: Check if already in Internet Archive
-    if upload_enabled and uploader and not force:
-        if uploader.exists(remote_path):
-            return {"status": "skipped_remote", "title": title, "path": remote_path}
-
-    # Step 2: Check if already present locally
-    if local_pdf_path.exists() and local_pdf_path.stat().st_size > 0 and not force:
-        if compress:
-            optimize_pdf(
-                local_pdf_path,
-                local_pdf_path,
-                target_dpi=dpi,
-                jpeg_quality=quality,
-            )
-        if upload_enabled and uploader:
-            ok = uploader.upload_file(local_pdf_path, remote_path)
-            if ok:
-                uploader.sync_catalog_record(cls, safe_subject, title, code, remote_path, local_pdf_path.stat().st_size)
-            if clean_local and ok:
-                local_pdf_path.unlink(missing_ok=True)
-            return {"status": "uploaded" if ok else "upload_error", "title": title, "path": remote_path}
-        return {"status": "skipped_local", "title": title, "path": str(local_pdf_path)}
-
-    # Step 3: Probe availability on NCERT CDN
-    available, size_bytes = probe_book(code)
-    if not available:
-        return {"status": "not_published", "title": title, "code": code}
-
-    # Step 4: Download ZIP archive
-    download_ok = download_zip(code, local_zip_path)
-    if not download_ok or not local_zip_path.exists():
-        return {"status": "download_failed", "title": title, "code": code}
-
-    # Step 5: Extract and merge chapter PDFs into unified textbook PDF (with watermark cleaning & compression)
-    merged_path = merge_zip_to_pdf(
-        local_zip_path,
-        local_pdf_path,
-        keep_zip=keep_zips,
-        remove_watermarks=remove_watermarks,
-        optimize=compress,
-        target_dpi=dpi,
-        jpeg_quality=quality,
-    )
-    if not merged_path or not merged_path.exists() or merged_path.stat().st_size == 0:
-        return {"status": "merge_failed", "title": title, "code": code}
-
-    # Step 6: Deep compression pass if requested and watermark remover didn't already run
-    orig_sz = merged_path.stat().st_size
-    final_sz = orig_sz
-    if compress and not remove_watermarks:
-        _, final_sz, _, _ = optimize_pdf(
-            merged_path,
-            merged_path,
-            target_dpi=dpi,
-            jpeg_quality=quality,
-        )
-
-    # Step 7: Upload to Internet Archive (IAS3) & sync DB record
-    if upload_enabled and uploader:
-        upload_ok = uploader.upload_file(merged_path, remote_path)
-        if upload_ok:
-            uploader.sync_catalog_record(cls, safe_subject, title, code, remote_path, final_sz)
-        if clean_local and upload_ok:
-            merged_path.unlink(missing_ok=True)
-        if upload_ok:
-            return {"status": "uploaded", "title": title, "path": remote_path, "size": final_sz}
-        return {"status": "upload_error", "title": title, "path": remote_path}
-
-    return {"status": "downloaded_local", "title": title, "path": str(merged_path), "size": final_sz}
-
-
 def main():
-    parser = argparse.ArgumentParser(description="NCERT Textbook Scraper & Internet Archive (IAS3) Replenisher")
-    parser.add_argument("--class", dest="cls", default="all", help="Target class (1-12 or 'all')")
-    parser.add_argument("--subject", default=None, help="Target subject (or all if omitted)")
-    parser.add_argument("--out", default="downloads", help="Output directory for downloaded books")
-    parser.add_argument("--concurrency", "-c", type=int, default=4, help="Parallel worker threads (default: 4)")
-    parser.add_argument("--books", default=None, help="Comma-separated book codes or file with codes to filter/retry")
-    parser.add_argument("--failed-file", default="failed_books.json", help="Path to write failed books JSON")
-    parser.add_argument("--upload-to-ia", action="store_true", help="Sync merged PDFs to Internet Archive item (zero egress)")
-    parser.add_argument("--clean-local", action="store_true", help="Delete local files after uploading (saves CI disk)")
-    parser.add_argument("--force", action="store_true", help="Force re-download and re-upload existing files")
-    parser.add_argument("--keep-zips", action="store_true", help="Keep source chapter ZIP files")
-    parser.add_argument("--keep-watermarks", action="store_true", help="Do not remove background NCERT watermarks")
-    parser.add_argument("--no-compress", action="store_true", help="Disable multi-pass PDF compression engine")
-    parser.add_argument("--dpi", type=int, default=140, help="Target scan DPI for image downsampling (default: 140)")
-    parser.add_argument("--quality", type=int, default=75, help="JPEG quality 1-95 for embedded images (default: 75)")
-    parser.add_argument("--refresh-catalog", action="store_true", help="Re-fetch catalog from NCERT website")
-    parser.add_argument("--dry-run", action="store_true", help="Inspect and list matching books without downloading")
-    parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose debug logging")
+    parser = argparse.ArgumentParser(
+        description="NovaSlate NCERT Catalogue & Complete-Book ZIP Pipeline",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument(
+        "--class",
+        dest="target_class",
+        default="all",
+        help="Target NCERT class (e.g. 10, 'Class X', or 'all')",
+    )
+    parser.add_argument(
+        "--subject",
+        default=None,
+        help="Target subject (or all if omitted)",
+    )
+    parser.add_argument(
+        "--out",
+        default="downloads",
+        help="Output directory for downloaded books",
+    )
+    parser.add_argument(
+        "--manifest",
+        default="download_manifest.json",
+        help="Path for download manifest output JSON",
+    )
+    parser.add_argument(
+        "--concurrency",
+        "-c",
+        type=int,
+        default=4,
+        help="Parallel worker threads",
+    )
+    parser.add_argument(
+        "--books",
+        default=None,
+        help="Comma-separated book codes or file with codes to filter",
+    )
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=None,
+        help="Limit number of book archives to process (safe testing)",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Inspect and list matching books without downloading",
+    )
+    parser.add_argument(
+        "--assemble-pdf",
+        action="store_true",
+        help="Optionally unpack chapter PDFs from ZIP and merge into unified textbook PDF (original ZIP is preserved)",
+    )
+    parser.add_argument(
+        "--compress",
+        action="store_true",
+        help="Downsample images and deflate PDF streams during optional PDF assembly",
+    )
+    parser.add_argument(
+        "--dpi",
+        type=int,
+        default=140,
+        help="Target DPI for image downsampling when --compress is enabled",
+    )
+    parser.add_argument(
+        "--quality",
+        type=int,
+        default=75,
+        help="JPEG quality (1-100) when --compress is enabled",
+    )
+    parser.add_argument(
+        "--refresh-catalog",
+        action="store_true",
+        help="Re-parse catalogue from NCERT portal HTML using AST parser",
+    )
+    parser.add_argument(
+        "--upload-to-ia",
+        action="store_true",
+        help="Upload verified books and sync catalog.json directly to Internet Archive (IAS3)",
+    )
+    parser.add_argument(
+        "--sync-catalog",
+        action="store_true",
+        help="Generate and synchronize authoritative catalog.json to Internet Archive root without downloading",
+    )
+    parser.add_argument(
+        "--bucket",
+        default=None,
+        help="Target Internet Archive item identifier (default: novaslate-ncert-library)",
+    )
+    parser.add_argument(
+        "--verbose",
+        "-v",
+        action="store_true",
+        help="Enable verbose debug logging",
+    )
 
     args = parser.parse_args()
     setup_logger(args.verbose)
 
-    upload_enabled = args.upload_to_ia
+    uploader: Optional[IAUploader] = None
+    if args.upload_to_ia or args.sync_catalog:
+        uploader = IAUploader(bucket_name=args.bucket)
+        if not uploader.is_ia_configured() and not args.dry_run:
+            console.print(
+                "[bold red][!] ERROR: Internet Archive credentials (IA_ACCESS_KEY, IA_SECRET_KEY) are missing.[/bold red]\n"
+                "Please configure them in .env.local or environment variables before uploading."
+            )
+            return 1
+        console.print(f"[green]✓ Internet Archive S3 uploader initialized for item '{uploader.bucket_name}'.[/green]")
+
+    if args.sync_catalog:
+        console.print(f"\n[bold yellow]Synchronizing verified NCERT catalog.json to Internet Archive item '{uploader.bucket_name}'...[/bold yellow]")
+        if args.dry_run:
+            console.print("[dim]DRY RUN: Skipping remote catalog upload.[/dim]")
+            return 0
+        sync_ok = uploader.upload_catalog_manifest()
+        if sync_ok:
+            console.print(f"[bold green]✓ Successfully synchronized catalog.json to Internet Archive item '{uploader.bucket_name}'![/bold green]")
+            return 0
+        else:
+            console.print("[bold red]! Failed to synchronize catalog.json to Internet Archive.[/bold red]")
+            return 1
 
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    # Always remove stale completion marker at the start of every run
-    marker_file = Path("all_completed.marker")
-    if marker_file.exists():
-        marker_file.unlink(missing_ok=True)
+    console.print("[bold cyan]========================================================================[/bold cyan]")
+    console.print("[bold cyan]  NovaSlate NCERT Catalogue Discovery & Downloader Pipeline             [/bold cyan]")
+    console.print("[bold cyan]========================================================================[/bold cyan]")
 
-    console.print("[bold cyan]==============================================================[/bold cyan]")
-    console.print("[bold cyan]  NovaSlate -- NCERT Scraper & Internet Archive Pipeline      [/bold cyan]")
-    console.print("[bold cyan]==============================================================[/bold cyan]\n")
+    # Step 1: Catalogue Extraction / Loading
+    console.print("\n[bold yellow][1/3] Loading Verified NCERT Catalogue...[/bold yellow]")
+    try:
+        catalog = fetch_catalog(refresh=args.refresh_catalog)
+    except Exception as exc:
+        console.print(f"[bold red]Failed to load catalogue: {exc}[/bold red]")
+        return 1
 
-    # Step 1: Catalog Extraction (Direct NCERT parser / Cache)
-    catalog = fetch_catalog(refresh=args.refresh_catalog)
-    target_books = list(iter_books(catalog, class_filter=args.cls, subject_filter=args.subject))
+    meta = catalog.get("meta", {})
+    console.print(
+        f"[green]✓ Verified Catalogue Loaded: {meta.get('total_classes')} classes, "
+        f"{meta.get('total_books')} records, {meta.get('unique_codes')} unique archives.[/green]"
+    )
 
+    # Step 2: Downloader Orchestration
+    console.print(f"\n[bold yellow][2/3] Orchestrating Downloader (Class: {args.target_class}, Subject: {args.subject or 'all'})...[/bold yellow]")
+
+    codes_filter: Optional[Set[str]] = None
     if args.books:
-        if Path(args.books).exists():
-            codes_set = {c.strip().lower() for c in Path(args.books).read_text(encoding="utf-8").replace(",", "\n").splitlines() if c.strip()}
+        p = Path(args.books)
+        if p.exists():
+            codes_filter = {c.strip().lower() for c in p.read_text(encoding="utf-8").replace(",", "\n").splitlines() if c.strip()}
         else:
-            codes_set = {c.strip().lower() for c in args.books.split(",") if c.strip()}
-        target_books = [t for t in target_books if t[2].get("code", "").lower() in codes_set]
-        console.print(f"[*] Filtered target list to [bold green]{len(target_books)}[/bold green] specific books from --books filter")
+            codes_filter = {c.strip().lower() for c in args.books.split(",") if c.strip()}
 
-    if not target_books:
-        console.print(f"[yellow]No books found matching criteria (Class: '{args.cls}', Subject: '{args.subject}', Books: '{args.books}').[/yellow]")
-        return
+    downloader = BookDownloader(
+        catalog_path=Path(__file__).parent / "ncert_book_codes.json",
+        output_dir=out_dir,
+        manifest_path=Path(args.manifest),
+        concurrency=args.concurrency,
+    )
 
-    console.print(f"[*] Found [bold green]{len(target_books)}[/bold green] books for Class [bold cyan]{args.cls}[/bold cyan]")
-    console.print(f"[*] Compression Engine: [bold green]{'Enabled' if not args.no_compress else 'Disabled'}[/bold green] (DPI: {args.dpi}, Quality: {args.quality}%)")
+    summary = downloader.run(
+        class_filter=args.target_class,
+        subject_filter=args.subject,
+        codes_filter=codes_filter,
+        limit=args.limit,
+        dry_run=args.dry_run,
+    )
 
     if args.dry_run:
-        table = Table(title=f"Catalog Selection (Class {args.cls})", show_header=True, header_style="bold magenta", safe_box=True)
-        table.add_column("Class", justify="center")
-        table.add_column("Subject")
-        table.add_column("Book Title")
-        table.add_column("Code", justify="center")
+        console.print("\n[bold magenta]DRY RUN EXECUTION COMPLETE[/bold magenta]")
+        table = Table(title="Planned Book Downloads", show_header=True, header_style="bold cyan")
+        table.add_column("Code", style="cyan", width=10)
+        table.add_column("Classes", style="dim", width=12)
+        table.add_column("Titles", style="white")
+        table.add_column("Official ZIP URL", style="blue")
 
-        for c, s, b in target_books[:40]:
-            c_display = c if str(c).lower().startswith("class") else f"Class {c}"
-            table.add_row(c_display, s, b["title"], b["code"])
+        for item in summary["planned_downloads"][:15]:
+            table.add_row(
+                item["code"],
+                ", ".join(item["classes"]),
+                ", ".join(item["titles"]),
+                item["url"],
+            )
 
         console.print(table)
-        if len(target_books) > 40:
-            console.print(f"[dim]... and {len(target_books) - 40} more books.[/dim]")
-        return
+        console.print(
+            f"[dim]Total records: {summary['total_records']} | Unique archives: {summary['unique_codes']}[/dim]"
+        )
+        return 0
 
-    # Step 2: Initialize Internet Archive Replenisher if enabled
-    uploader: Optional[InternetArchiveReplenisher] = None
-    if upload_enabled:
-        uploader = IAUploader()
-        if not uploader.is_ia_configured():
-            console.print("[bold red][!] Error: Internet Archive credentials missing. Check IA_ACCESS_KEY and IA_SECRET_KEY.[/bold red]")
-            sys.exit(1)
-        console.print(f"[green][+] Connected to Internet Archive item: '{uploader.bucket_name}'[/green]")
-        # Sync catalog to DB & IA
-        uploader.upload_catalog_json(catalog)
+    stats = summary.get("stats", {})
 
-    # Step 3: Run Concurrent Pipeline
-    results: List[Dict[str, Any]] = []
-    stats = {
-        "uploaded": 0,
-        "downloaded_local": 0,
-        "skipped_remote": 0,
-        "skipped_local": 0,
-        "not_published": 0,
-        "failed": 0,
-    }
+    # Step 3: Optional PDF Assembly & Internet Archive Upload Pass
+    uploaded_count = 0
+    already_on_ia_count = 0
+    upload_failures = 0
 
-    start_time = time.time()
+    should_process_books = (args.assemble_pdf or args.upload_to_ia) and (stats.get("downloaded", 0) + stats.get("cached", 0) > 0)
+    if should_process_books:
+        action_desc = "PDF Assembly & IA Upload Pass" if (args.assemble_pdf and args.upload_to_ia) else ("IA Upload Pass" if args.upload_to_ia else "PDF Assembly Pass")
+        console.print(f"\n[bold yellow][3/3] {action_desc} (Original ZIP archives preserved)...[/bold yellow]")
 
-    failed_books: List[Dict[str, Any]] = []
+        for cls_name, subj_name, book in iter_books(catalog, class_filter=args.target_class, subject_filter=args.subject):
+            code = book["code"]
+            if codes_filter and code not in codes_filter:
+                continue
 
-    with Progress(
-        SpinnerColumn(),
-        TextColumn("[bold blue]{task.description}[/bold blue]"),
-        BarColumn(bar_width=32),
-        MofNCompleteColumn(),
-        TimeElapsedColumn(),
-        TimeRemainingColumn(),
-        console=console,
-    ) as progress:
-        task_id = progress.add_task("Processing NCERT Books...", total=len(target_books))
+            zip_path = out_dir / f"{code}dd.zip"
+            if not zip_path.exists():
+                continue
 
-        with ThreadPoolExecutor(max_workers=args.concurrency) as executor:
-            futures = {
-                executor.submit(
-                    process_book_task,
-                    c,
-                    s,
-                    b,
-                    out_dir,
-                    uploader,
-                    upload_enabled,
-                    args.clean_local,
-                    args.keep_zips,
-                    not args.keep_watermarks,
-                    not args.no_compress,
-                    args.dpi,
-                    args.quality,
-                    args.force,
-                ): (c, s, b)
-                for c, s, b in target_books
-            }
+            c_num = normalize_class_key(cls_name)
+            class_folder = f"Class {c_num}" if c_num.isdigit() else cls_name
+            safe_cls = cls_name.replace(" ", "_")
+            safe_subj = sanitize_filename(subj_name)
+            safe_title = sanitize_filename(book["title"])
+            pdf_path = out_dir / safe_cls / safe_subj / f"{safe_title}.pdf"
 
-            for future in as_completed(futures):
-                c, s, b = futures[future]
-                try:
-                    res = future.result()
-                    results.append(res)
-                    status = res.get("status", "failed")
+            # Assemble PDF if requested or needed for IA upload
+            if (args.assemble_pdf or args.upload_to_ia) and (not pdf_path.exists() or pdf_path.stat().st_size == 0):
+                console.print(f"[dim]Assembling: {book['title']} ({code})...[/dim]")
+                merge_zip_to_pdf(
+                    zip_path=zip_path,
+                    out_pdf_path=pdf_path,
+                    keep_zip=True,  # Mandatory: original archive kept unchanged
+                    optimize=args.compress,
+                    target_dpi=args.dpi,
+                    jpeg_quality=args.quality,
+                )
 
-                    if status in stats:
-                        stats[status] += 1
+            # Upload to Internet Archive
+            if args.upload_to_ia and uploader:
+                remote_pdf_path = f"{class_folder}/{subj_name}/{book['title']}.pdf"
+                if uploader.exists(remote_pdf_path):
+                    already_on_ia_count += 1
+                    console.print(f"[dim]Already on IA: {remote_pdf_path}[/dim]")
+                else:
+                    target_upload = pdf_path if (pdf_path.exists() and pdf_path.stat().st_size > 0) else zip_path
+                    content_type = "application/pdf" if target_upload.suffix.lower() == ".pdf" else "application/zip"
+                    remote_target_path = remote_pdf_path if target_upload.suffix.lower() == ".pdf" else f"{class_folder}/{subj_name}/{book['title']}.zip"
+                    console.print(f"[*] Uploading to IA: {remote_target_path} ({target_upload.stat().st_size} bytes)...")
+                    ok = uploader.upload_file(target_upload, remote_target_path, content_type=content_type)
+                    if ok:
+                        uploaded_count += 1
                     else:
-                        stats["failed"] += 1
+                        upload_failures += 1
 
-                    if status in ("download_failed", "merge_failed", "upload_error", "failed"):
-                        failed_books.append({
-                            "class": c,
-                            "subject": s,
-                            "title": b.get("title", ""),
-                            "code": b.get("code", ""),
-                            "status": status,
-                        })
+        # Synchronize catalog manifest on IA if any books were processed with --upload-to-ia
+        if args.upload_to_ia and uploader:
+            console.print(f"\n[bold yellow]Synchronizing updated catalog.json on Internet Archive...[/bold yellow]")
+            sync_ok = uploader.upload_catalog_manifest(catalog=catalog)
+            if sync_ok:
+                console.print(f"[bold green]✓ Successfully synchronized catalog.json on Internet Archive item '{uploader.bucket_name}'.[/bold green]")
+            else:
+                console.print("[bold yellow]! Notice: Local catalog.json updated, remote upload skipped or failed.[/bold yellow]")
 
-                except Exception as e:
-                    stats["failed"] += 1
-                    failed_books.append({
-                        "class": c,
-                        "subject": s,
-                        "title": b.get("title", ""),
-                        "code": b.get("code", ""),
-                        "status": "exception",
-                        "error": str(e),
-                    })
-                    logging.error(f"Task error: {e}")
-                finally:
-                    progress.advance(task_id)
+    # Final Summary Table
+    summary_table = Table(title="NCERT Pipeline Execution Summary", show_header=True, header_style="bold green")
+    summary_table.add_column("Metric", style="white")
+    summary_table.add_column("Value", justify="right", style="bold green")
 
-    elapsed = time.time() - start_time
-
-    # Record failed books for automated retry workflows
-    failed_file = Path(args.failed_file)
-    failed_codes_file = Path("failed_codes.txt")
-    if failed_books:
-        with open(failed_file, "w", encoding="utf-8") as f:
-            json.dump(failed_books, f, indent=2, ensure_ascii=False)
-        codes_list = [b["code"] for b in failed_books if b.get("code")]
-        failed_codes_file.write_text(",".join(codes_list), encoding="utf-8")
-        console.print(f"[bold red][!] {len(failed_books)} book(s) failed. Saved to '{failed_file.name}' and '{failed_codes_file.name}'[/bold red]")
-    else:
-        failed_file.unlink(missing_ok=True)
-        failed_codes_file.unlink(missing_ok=True)
-
-    # Step 4: Summary Table
-    summary_table = Table(title="Execution Summary", show_header=True, header_style="bold cyan", safe_box=True)
-    summary_table.add_column("Metric", style="bold")
-    summary_table.add_column("Count / Value", justify="right")
-
-    summary_table.add_row("Total Processed", str(len(target_books)))
-    if upload_enabled:
-        summary_table.add_row("Uploaded to Internet Archive", f"[bold green]{stats['uploaded']}[/bold green]")
-        summary_table.add_row("Already on Archive.org (Skipped)", f"[dim]{stats['skipped_remote']}[/dim]")
-    else:
-        summary_table.add_row("Downloaded & Merged", f"[bold green]{stats['downloaded_local']}[/bold green]")
-        summary_table.add_row("Already Local (Skipped)", f"[dim]{stats['skipped_local']}[/dim]")
-
-    summary_table.add_row("Not Published by NCERT", f"[yellow]{stats['not_published']}[/yellow]")
-    summary_table.add_row("Failures / Errors", f"[red]{stats['failed']}[/red]")
-    summary_table.add_row("Optimization Status", f"[green]Active (DPI {args.dpi}, Q{args.quality})[/green]" if not args.no_compress else "[dim]Disabled[/dim]")
-    summary_table.add_row("Time Elapsed", f"{elapsed:.1f}s")
+    summary_table.add_row("Catalogue Records Covered", str(stats.get("total_records", 0)))
+    summary_table.add_row("Unique Book Archives", str(stats.get("unique_codes", 0)))
+    summary_table.add_row("Downloaded & Verified", str(stats.get("downloaded", 0)))
+    summary_table.add_row("Cached / Already Verified", str(stats.get("cached", 0)))
+    summary_table.add_row("Unpublished on CDN (404)", str(stats.get("not_found", 0)))
+    summary_table.add_row("Download Failures", str(stats.get("failed", 0)))
+    summary_table.add_row("Elapsed Time", f"{summary.get('elapsed_seconds', 0)}s")
+    summary_table.add_row("Manifest File", str(summary.get("manifest_file", args.manifest)))
+    if args.upload_to_ia:
+        summary_table.add_row("Uploaded to IA", str(uploaded_count))
+        summary_table.add_row("Already on IA", str(already_on_ia_count))
+        summary_table.add_row("IA Upload Failures", str(upload_failures))
+        summary_table.add_row("IA Bucket Item", str(uploader.bucket_name if uploader else "N/A"))
 
     console.print("\n", summary_table)
-
-    # Step 5: Final Dynamic Catalog Sync
-    if upload_enabled and uploader:
-        console.print("[bold cyan][*] Refreshing and syncing master catalog to Internet Archive & Supabase PostgreSQL...[/bold cyan]")
-        uploader.fetch_existing_files(refresh=True)
-        uploader.upload_catalog_json(catalog)
-        console.print("[bold green][+] Final Master Catalog synced to Internet Archive & PostgreSQL successfully![/bold green]")
-
-    # Step 6: Create Completion Marker if all books are finished
-    total_target = len(target_books)
-    if upload_enabled:
-        completed_target = stats.get("uploaded", 0) + stats.get("skipped_remote", 0) + stats.get("not_published", 0)
-    else:
-        completed_target = stats.get("downloaded_local", 0) + stats.get("skipped_local", 0) + stats.get("not_published", 0)
-
-    if completed_target >= total_target and stats.get("failed", 0) == 0:
-        Path("all_completed.marker").write_text("COMPLETE", encoding="utf-8")
-        console.print("[bold green][+] 100% of target textbooks completed![/bold green]")
-
-    console.print("\n[bold green][+] NCERT Pipeline Completed Successfully![/bold green]\n")
-    if failed_books:
-        sys.exit(1)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

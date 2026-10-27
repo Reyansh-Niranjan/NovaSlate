@@ -13,7 +13,7 @@ export const Footer: React.FC = () => {
               <a href="#features" className="s__link">Technical Pipeline</a>
             </li>
             <li className="s__page">
-              <a href="#pricing" className="s__link">Atlas ESP32 Hardware</a>
+              <a href="#curriculum" className="s__link">Atlas ESP32 Hardware</a>
             </li>
             <li className="s__page">
               <a href="#privacy" className="s__link">Privacy Policy</a>

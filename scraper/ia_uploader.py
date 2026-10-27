@@ -1,49 +1,55 @@
 #!/usr/bin/env python3
-"""Internet Archive (IAS3) & Supabase PostgreSQL Replenisher.
+"""Internet Archive S3 (IAS3) Uploader & Catalog Synchronizer.
 
-Uploads and synchronizes NCERT textbook PDFs to Internet Archive (IAS3)
-with zero egress fees and unlimited storage.
-Synchronizes book metadata to the Supabase PostgreSQL `catalog` table via REST API.
+Uploads textbook archives/PDFs directly to Internet Archive (IAS3) and synchronizes
+the authoritative catalog.json to the Internet Archive item root.
+Supabase catalog synchronization has been permanently removed.
 """
 
 from __future__ import annotations
 
+import argparse
+import concurrent.futures
+from datetime import datetime, timezone
 import json
 import logging
 import os
+from pathlib import Path
 import tempfile
 import time
-from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 from urllib.parse import quote
 
+from dotenv import load_dotenv
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+
+# Add module to path
+import sys
+sys.path.insert(0, str(Path(__file__).parent))
+
+from catalog import fetch_catalog, iter_books, normalize_class_key
+from download_books import atomic_write_json
 
 logger = logging.getLogger("ncert_scraper.ia")
 
 DEFAULT_BUCKET = "novaslate-ncert-library"
 
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-    load_dotenv(Path(__file__).parent.parent / ".env.local")
-    load_dotenv(Path(__file__).parent.parent / ".env")
-except ImportError:
-    pass
+# Load local environment
+load_dotenv()
+load_dotenv(Path(__file__).parent.parent / ".env.local")
+load_dotenv(Path(__file__).parent.parent / ".env")
 
 
-class InternetArchiveReplenisher:
-    """Manages uploading and synchronization with Internet Archive (IAS3) and Supabase DB."""
+class IAUploader:
+    """Manages uploading textbook files and catalog.json directly to Internet Archive (IAS3)."""
 
     def __init__(
         self,
         ia_access_key: Optional[str] = None,
         ia_secret_key: Optional[str] = None,
         bucket_name: Optional[str] = None,
-        supabase_url: Optional[str] = None,
-        supabase_key: Optional[str] = None,
     ):
         self.access_key = ia_access_key or os.getenv("IA_ACCESS_KEY")
         self.secret_key = ia_secret_key or os.getenv("IA_SECRET_KEY")
@@ -53,20 +59,9 @@ class InternetArchiveReplenisher:
             or os.getenv("IA_ITEM_IDENTIFIER")
             or DEFAULT_BUCKET
         )
-        self.supabase_url = (
-            supabase_url
-            or os.getenv("SUPABASE_URL")
-            or os.getenv("VITE_SUPABASE_URL")
-        )
-        self.supabase_key = (
-            supabase_key
-            or os.getenv("SUPABASE_SERVICE_ROLE_KEY")
-            or os.getenv("SUPABASE_KEY")
-        )
 
         self._remote_files: Optional[Dict[str, int]] = None
 
-        # Build resilient HTTP session with high-capacity connection pooling
         self.session = requests.Session()
         retries = Retry(
             total=4,
@@ -74,25 +69,17 @@ class InternetArchiveReplenisher:
             status_forcelist=[500, 502, 503, 504, 408, 429],
             raise_on_status=False,
         )
-        adapter = HTTPAdapter(max_retries=retries, pool_connections=64, pool_maxsize=64)
+        adapter = HTTPAdapter(max_retries=retries, pool_connections=32, pool_maxsize=32)
         self.session.mount("https://", adapter)
         self.session.mount("http://", adapter)
 
         if self.is_ia_configured():
-            logger.info(f"Connected to Internet Archive S3 (Item: {self.bucket_name})")
+            logger.info("Internet Archive S3 initialized for item: %s", self.bucket_name)
         else:
             logger.warning("Internet Archive credentials (IA_ACCESS_KEY, IA_SECRET_KEY) not found.")
 
-        if self.is_supabase_configured():
-            logger.info(f"Connected to Supabase PostgreSQL metadata ({self.supabase_url})")
-        else:
-            logger.warning("Supabase URL or Key not found in environment.")
-
     def is_ia_configured(self) -> bool:
         return bool(self.access_key and self.secret_key)
-
-    def is_supabase_configured(self) -> bool:
-        return bool(self.supabase_url and self.supabase_key)
 
     def is_configured(self) -> bool:
         return self.is_ia_configured()
@@ -128,13 +115,13 @@ class InternetArchiveReplenisher:
                     if name:
                         collected[name.strip("/")] = size
         except Exception as e:
-            logger.warning(f"Could not query Internet Archive metadata files: {e}")
+            logger.warning("Could not query Internet Archive metadata files: %s", e)
 
         self._remote_files = collected
-        logger.info(f"Found {len(collected)} files in Internet Archive item '{self.bucket_name}'")
+        logger.info("Found %d files in Internet Archive item '%s'", len(collected), self.bucket_name)
         return collected
 
-    def exists(self, remote_path: str, local_size: Optional[int] = None) -> bool:
+    def exists(self, remote_path: str) -> bool:
         """Check if file exists in Internet Archive item with non-zero size."""
         clean_path = remote_path.replace("\\", "/").strip("/")
         remote_files = self.fetch_existing_files()
@@ -150,7 +137,7 @@ class InternetArchiveReplenisher:
         head_url = f"https://s3.us.archive.org/{self.bucket_name}/{safe_path}"
         headers = {"Authorization": self._ia_auth_header()}
         try:
-            resp = self.session.head(head_url, headers=headers, timeout=15)
+            resp = self.session.head(head_url, headers=headers, timeout=15, allow_redirects=True)
             if resp.status_code == 200:
                 sz = int(resp.headers.get("Content-Length", 0))
                 if sz > 0:
@@ -169,13 +156,14 @@ class InternetArchiveReplenisher:
         content_type: str = "application/pdf",
         max_retries: int = 4,
     ) -> bool:
-        """Upload file directly to Internet Archive S3 with automatic bucket initialization."""
+        """Upload file directly to Internet Archive S3 with automatic redirect handling."""
         if not self.is_ia_configured():
             logger.error("Cannot upload: Internet Archive credentials missing.")
             return False
 
+        local_path = Path(local_path)
         if not local_path.exists():
-            logger.error(f"Local file does not exist: {local_path}")
+            logger.error("Local file does not exist: %s", local_path)
             return False
 
         clean_remote_path = remote_path.replace("\\", "/").strip("/")
@@ -190,7 +178,7 @@ class InternetArchiveReplenisher:
             "x-archive-meta-collection": "opensource",
             "x-archive-meta-title": "NovaSlate NCERT Open Digital Library",
             "x-archive-ignore-preexisting-bucket": "1",
-            "x-archive-queue-derive": "0",  # Disable automatic derive queuing for fast availability
+            "x-archive-queue-derive": "0",
         }
 
         file_size = local_path.stat().st_size
@@ -203,128 +191,105 @@ class InternetArchiveReplenisher:
                         headers=headers,
                         data=f,
                         timeout=300,
+                        allow_redirects=False,
                     )
+
+                    # Handle 307 Temporary Redirect to specific IA storage node
+                    if resp.status_code == 307:
+                        redirect_url = resp.headers.get("Location")
+                        if redirect_url:
+                            f.seek(0)
+                            resp = self.session.put(
+                                redirect_url,
+                                headers=headers,
+                                data=f,
+                                timeout=300,
+                            )
 
                 if resp.status_code in (200, 201):
                     if self._remote_files is not None:
                         self._remote_files[clean_remote_path] = file_size
-                    logger.info(f"Uploaded to Internet Archive: {clean_remote_path} ({file_size} bytes)")
+                    logger.info("Uploaded to Internet Archive: %s (%d bytes)", clean_remote_path, file_size)
                     return True
 
                 logger.warning(
-                    f"IAS3 upload attempt {attempt} for '{clean_remote_path}' returned HTTP {resp.status_code}: {resp.text[:120]}"
+                    "IAS3 upload attempt %d for '%s' returned HTTP %d: %s",
+                    attempt, clean_remote_path, resp.status_code, resp.text[:120]
                 )
                 time.sleep(2 * attempt)
             except Exception as e:
-                logger.warning(f"IAS3 upload attempt {attempt} for '{clean_remote_path}' failed: {e}")
+                logger.warning("IAS3 upload attempt %d for '%s' failed: %s", attempt, clean_remote_path, e)
                 time.sleep(2 * attempt)
 
-        logger.error(f"Failed to upload '{clean_remote_path}' to Internet Archive after {max_retries} attempts.")
+        logger.error("Failed to upload '%s' to Internet Archive after %d attempts.", clean_remote_path, max_retries)
         return False
 
-    def sync_catalog_record(
+    def build_catalog_manifest(
         self,
-        cls: str,
-        subject: str,
-        title: str,
-        code: str,
-        remote_path: str,
-        file_size: int,
-    ) -> bool:
-        """Upsert a single book metadata record into Supabase PostgreSQL catalog table."""
-        if not self.is_supabase_configured():
-            return False
-
-        record = {
-            "id": remote_path,
-            "file_path": remote_path,
-            "class": str(cls),
-            "subject": subject,
-            "title": title,
-            "book_code": code,
-            "url": self.get_public_url(remote_path),
-            "size_bytes": file_size,
-            "is_available": True,
-            "updated_at": "now()",
-        }
-
-        endpoint = f"{self.supabase_url.rstrip('/')}/rest/v1/catalog"
-        headers = {
-            "apikey": self.supabase_key,
-            "Authorization": f"Bearer {self.supabase_key}",
-            "Content-Type": "application/json",
-            "Prefer": "resolution=merge-duplicates",
-        }
-
-        try:
-            resp = self.session.post(endpoint, headers=headers, json=[record], timeout=20)
-            return resp.status_code in (200, 201)
-        except Exception as e:
-            logger.warning(f"Failed to upsert catalog record into Supabase: {e}")
-            return False
-
-    def upload_catalog_json(self, catalog_data: dict, remote_name: str = "catalog.json") -> bool:
-        """Sync entire catalog metadata to Supabase PostgreSQL table & upload manifest to Internet Archive."""
-        from datetime import datetime, timezone
+        catalog: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        """Build enriched catalog JSON mapping the verified 1,067 records and IA availability."""
+        if catalog is None:
+            catalog = fetch_catalog()
 
         remote_files = self.fetch_existing_files()
         enriched_classes = []
-        db_records: List[Dict[str, Any]] = []
         total_books = 0
         total_uploaded = 0
         total_storage_bytes = 0
 
-        classes_data = catalog_data.get("classes", [])
-        if not classes_data and isinstance(catalog_data, dict):
-            for cls_key, subjs in catalog_data.items():
-                if cls_key in ("by_code", "meta") or not isinstance(subjs, dict):
-                    continue
-                subj_list = []
-                for s_name, b_list in subjs.items():
-                    subj_list.append({"name": s_name, "books": b_list})
-                classes_data.append({"class": cls_key, "subjects": subj_list})
+        # Iterate classes
+        for cls_name in catalog.keys():
+            if cls_name in ("by_code", "meta") or not isinstance(catalog[cls_name], dict):
+                continue
 
-        for cls_obj in classes_data:
-            cls_name = str(cls_obj.get("class", ""))
+            # Standardize class folder name e.g. "Class 10" or "Class I"
+            c_num = normalize_class_key(cls_name)
+            class_folder = f"Class {c_num}" if c_num.isdigit() else cls_name
+
+            subjects_dict = catalog[cls_name]
             enriched_subjects = []
 
-            for subj_obj in cls_obj.get("subjects", []):
-                subj_name = subj_obj.get("name", "")
+            for subj_name, books_list in subjects_dict.items():
                 enriched_books = []
-
-                for book in subj_obj.get("books", []):
-                    title = book.get("title", "")
-                    code = book.get("code", "")
+                for b in books_list:
                     total_books += 1
+                    code = b["code"]
+                    title = b["title"]
 
-                    rel_path = book.get("path") or f"Class {cls_name}/{subj_name}/{title}.pdf"
-                    file_size = remote_files.get(rel_path, 0)
-                    is_uploaded = rel_path in remote_files and file_size > 0
-                    public_url = self.get_public_url(rel_path)
+                    # Check possible remote path names on IA
+                    possible_paths = [
+                        f"{class_folder}/{subj_name}/{title}.pdf",
+                        f"{cls_name}/{subj_name}/{title}.pdf",
+                        f"{class_folder}/{subj_name}/{title}.zip",
+                        f"{cls_name}/{subj_name}/{title}.zip",
+                    ]
+
+                    chosen_path = possible_paths[0]
+                    file_size = 0
+                    is_uploaded = False
+
+                    for p in possible_paths:
+                        if p in remote_files and remote_files[p] > 0:
+                            chosen_path = p
+                            file_size = remote_files[p]
+                            is_uploaded = True
+                            break
 
                     if is_uploaded:
                         total_uploaded += 1
                         total_storage_bytes += file_size
 
-                    enriched_books.append({
-                        **book,
-                        "class": cls_name,
-                        "subject": subj_name,
-                        "storage_path": rel_path,
-                        "url": public_url,
-                        "is_available": is_uploaded,
-                        "size_bytes": file_size,
-                    })
+                    public_url = self.get_public_url(chosen_path)
 
-                    db_records.append({
-                        "id": rel_path,
-                        "file_path": rel_path,
+                    enriched_books.append({
+                        "code": code,
+                        "title": title,
                         "class": cls_name,
                         "subject": subj_name,
-                        "title": title,
-                        "book_code": code,
+                        "path": chosen_path,
                         "url": public_url,
-                        "size_bytes": file_size,
+                        "size": file_size,
                         "is_available": is_uploaded,
                     })
 
@@ -338,35 +303,18 @@ class InternetArchiveReplenisher:
                 "subjects": enriched_subjects,
             })
 
-        # 1. Sync metadata records to Supabase PostgreSQL catalog table in batches
-        if self.is_supabase_configured() and db_records:
-            endpoint = f"{self.supabase_url.rstrip('/')}/rest/v1/catalog"
-            headers = {
-                "apikey": self.supabase_key,
-                "Authorization": f"Bearer {self.supabase_key}",
-                "Content-Type": "application/json",
-                "Prefer": "resolution=merge-duplicates",
-            }
-            batch_size = 100
-            synced_count = 0
-            for i in range(0, len(db_records), batch_size):
-                batch = db_records[i : i + batch_size]
-                try:
-                    resp = self.session.post(endpoint, headers=headers, json=batch, timeout=30)
-                    if resp.status_code in (200, 201):
-                        synced_count += len(batch)
-                    else:
-                        logger.warning(f"Supabase catalog batch sync failed ({resp.status_code}): {resp.text[:120]}")
-                except Exception as e:
-                    logger.warning(f"Supabase catalog batch sync error: {e}")
-            logger.info(f"Synchronized {synced_count}/{len(db_records)} records to Supabase 'catalog' table.")
+        # Sort classes naturally
+        def _class_sort_key(c_obj):
+            num = normalize_class_key(c_obj["class"])
+            return int(num) if num.isdigit() else 99
 
-        # 2. Upload catalog.json manifest to Internet Archive item root
-        unified_manifest = {
+        enriched_classes.sort(key=_class_sort_key)
+
+        manifest = {
             "meta": {
-                "version": "3.0.0",
+                "version": "4.0.0",
                 "app": "NovaSlate",
-                "source": "NCERT Official",
+                "source": "NCERT Official (Static AST Verified)",
                 "storage": "Internet Archive (IAS3)",
                 "last_updated": datetime.now(timezone.utc).isoformat(),
                 "total_classes": len(enriched_classes),
@@ -377,21 +325,104 @@ class InternetArchiveReplenisher:
             },
             "classes": enriched_classes,
         }
+        return manifest
 
-        success = True
+    def upload_catalog_manifest(
+        self,
+        catalog: Optional[Dict[str, Any]] = None,
+        remote_name: str = "catalog.json",
+        local_export_paths: Optional[List[Path]] = None,
+    ) -> bool:
+        """Build verified catalog.json, export locally (e.g. public/catalog.json), and upload to IA root."""
+        manifest = self.build_catalog_manifest(catalog=catalog)
+
+        # Write to requested local paths (e.g. public/catalog.json)
+        paths_to_write = local_export_paths or [
+            Path(__file__).parent.parent / "public" / "catalog.json",
+            Path(__file__).parent / "catalog.json",
+        ]
+        for p in paths_to_write:
+            try:
+                atomic_write_json(p, manifest)
+                logger.info("Saved local catalog manifest to %s", p)
+            except Exception as e:
+                logger.warning("Failed writing local catalog copy to %s: %s", p, e)
+
+        # Upload to Internet Archive S3 root
+        if not self.is_ia_configured():
+            logger.warning("IA credentials missing; skipped uploading %s to remote IA item.", remote_name)
+            return False
+
         with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as tmp:
-            json.dump(unified_manifest, tmp, indent=2, ensure_ascii=False)
+            json.dump(manifest, tmp, indent=2, ensure_ascii=False)
             tmp_path = Path(tmp.name)
 
         try:
             ok = self.upload_file(tmp_path, remote_name, content_type="application/json")
-            if not ok:
-                success = False
+            if ok:
+                logger.info("Successfully uploaded '%s' to Internet Archive root item '%s'", remote_name, self.bucket_name)
+            return ok
         finally:
             tmp_path.unlink(missing_ok=True)
 
-        return success
+
+def main():
+    parser = argparse.ArgumentParser(description="Internet Archive Uploader & Catalog Synchronizer for NovaSlate")
+    parser.add_argument("--sync-catalog", action="store_true", help="Generate and upload verified catalog.json to IA")
+    parser.add_argument("--file", default=None, help="Local file to upload")
+    parser.add_argument("--remote-path", default=None, help="Remote path in IA item")
+    parser.add_argument("--upload-dir", default=None, help="Directory of books to upload")
+    parser.add_argument("--bucket", default=None, help="Target IA item identifier (default: novaslate-ncert-library)")
+    parser.add_argument("--concurrency", "-c", type=int, default=4, help="Concurrent upload threads")
+    parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose logging")
+
+    args = parser.parse_args()
+    logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO, format="%(message)s")
+
+    uploader = IAUploader(bucket_name=args.bucket)
+
+    if args.sync_catalog:
+        print("[*] Synchronizing verified NCERT catalog.json to Internet Archive...")
+        ok = uploader.upload_catalog_manifest()
+        if ok:
+            print("[+] Successfully synchronized catalog.json to Internet Archive!")
+            return 0
+        else:
+            print("[!] Failed to synchronize catalog.json to Internet Archive.")
+            return 1
+
+    if args.file and args.remote_path:
+        print(f"[*] Uploading {args.file} to IA as {args.remote_path}...")
+        ok = uploader.upload_file(Path(args.file), args.remote_path)
+        return 0 if ok else 1
+
+    if args.upload_dir:
+        p = Path(args.upload_dir)
+        files_to_upload = list(p.rglob("*.pdf")) + list(p.rglob("*.zip"))
+        print(f"[*] Found {len(files_to_upload)} files in {args.upload_dir} to process.")
+        with concurrent.futures.ThreadPoolExecutor(max_workers=args.concurrency) as executor:
+            def _up(f: Path):
+                rel = f.relative_to(p)
+                remote = str(rel).replace("\\", "/")
+                if uploader.exists(remote):
+                    return remote, "already_exists"
+                ok = uploader.upload_file(f, remote)
+                return remote, "uploaded" if ok else "failed"
+
+            futures = [executor.submit(_up, f) for f in files_to_upload]
+            for fut in concurrent.futures.as_completed(futures):
+                remote, status = fut.result()
+                print(f"  [{status}] {remote}")
+
+        # Update catalog after uploading files
+        print("[*] Refreshing catalog.json on Internet Archive...")
+        uploader.upload_catalog_manifest()
+        return 0
+
+    parser.print_help()
+    return 0
 
 
-# Alias
-IAUploader = InternetArchiveReplenisher
+if __name__ == "__main__":
+    import sys
+    sys.exit(main())

@@ -1,5 +1,5 @@
 export interface UspItem {
-  key: 'continuity' | 'capacity' | 'collaboration' | 'experience';
+  key: 'continuity' | 'capacity' | 'collaboration' | 'experience' | 'environment';
   title: string;
   text: string;
 }
@@ -22,7 +22,7 @@ export const siteContent = {
     links: [
       { label: 'Pipeline', href: '#architecture' },
       { label: 'Digital Library', href: '#curriculum' },
-      { label: 'Atlas Hardware', href: '#pricing' },
+      { label: 'Atlas Hardware', href: '#features' },
     ],
     cta: 'Get in Touch',
   },
@@ -33,8 +33,8 @@ export const siteContent = {
       'AUTOMATED SCRAPING PIPELINE',
       'ATLAS ESP32 OFFLINE HARDWARE',
     ],
-    title: 'Curating future-ready learning for every student',
-    text: 'Automated curriculum curation platform for Indian K-12 education (Class 1–12). Scrapes, grades, organizes, and delivers educational resources — from instant in-browser reading to the offline Atlas ESP32 hardware reader.',
+    title: 'Learning. Finally, in one place',
+    text: 'NovaSlate brings scattered educational resources into one organized learning system, from the web to offline hardware.',
     clients: {
       label: 'Powered by open infrastructure, zero-egress delivery & custom offline hardware',
       logos: [
@@ -46,28 +46,33 @@ export const siteContent = {
     },
   },
   usps: {
-    title: 'From raw web scraping to an offline hardware reader.',
-    text: 'Four technological pillars powering NovaSlate: automated content ingestion, readability grading, board exam study tools, and zero-connectivity hardware delivery.',
+    title: 'Five core values. One learning-first mission.',
+    text: 'Every decision behind NovaSlate is guided by five core values, from how learning resources are delivered to how the entire experience is designed.',
     items: [
       {
         key: 'continuity' as const,
-        title: 'Automated Ingestion & Compression Pipeline',
-        text: 'High-throughput processing pipeline that cleans raw educational resources, eliminates visual artifacts, and produces ultra-compressed, high-density PDF archives that load instantly even on 2G/3G mobile networks.',
+        title: 'Learning, Not Selling',
+        text: 'Education comes first, without distracting ads or unnecessary promotions.',
       },
       {
         key: 'capacity' as const,
-        title: 'Readability Grading & Curriculum Curation',
-        text: 'Algorithmic grading and standard alignment that organizes textbooks into an intuitive Class 1 to 12 grade, subject, and chapter hierarchy so students find materials in seconds.',
+        title: 'Everything, Sorted',
+        text: 'Educational resources are organized in one accessible, structured system.',
       },
       {
         key: 'collaboration' as const,
-        title: 'Dedicated Study Hub & Board Exam PYQs',
-        text: 'Comprehensive study companion featuring Class 10 & 12 Previous Year Questions (PYQs), interactive MCQ quizzes, chapter mindmaps, revision notes, and formula cheatsheets.',
+        title: 'Worth Your Time',
+        text: 'Every feature should make learning more efficient and useful.',
       },
       {
         key: 'experience' as const,
-        title: 'Atlas ESP32: Zero-Connectivity Hardware',
-        text: 'Portable companion hardware reader engineered with ESP32 microcontrollers and high-speed MicroSD storage, broadcasting the complete Class 1–12 library over local Wi-Fi without needing mobile data or cellular coverage.',
+        title: 'Built to Last',
+        text: 'Reliable software and hardware designed for long-term use.',
+      },
+      {
+        key: 'environment' as const,
+        title: 'Works Where You Are',
+        text: 'Learning resources remain accessible across online and offline environments.',
       },
     ],
   },
@@ -118,48 +123,48 @@ export const siteContent = {
     },
   },
   catchphrase: {
-    title: 'Curating future-ready learning for every student.',
+    title: 'Better access to learning. Fewer barriers to it.',
   },
   pricing: {
     title: 'Open access for students & educators',
     texts: [
       'NovaSlate is built student-first and open-access. Every Class 1–12 textbook, chapter mindmap, and board exam question paper is 100% free online.',
-      'For rural schools, tutoring centers, and students without reliable broadband, our companion Atlas ESP32 hardware kit delivers the complete library completely offline.',
+      'For schools and students without reliable broadband, the companion Atlas ESP32 hardware kit delivers the complete library offline.',
     ],
     toggle: {
       single: 'Resource Estimator',
       recurring: 'Access & Hardware',
     },
     recurring: {
-      title: 'Transparent Access Tiers',
-      text: 'Freely accessible web platform backed by low-cost offline hardware kits for communities with limited internet connectivity.',
+      title: 'Open-Access Infrastructure',
+      text: 'Freely accessible web platform backed by open-source offline hardware for communities with limited internet connectivity.',
       services: [
         {
           key: 'standard',
           name: 'Web Digital Library',
           price: '0',
           period: 'Free Forever',
-          text: 'Complete open access for all Indian K-12 students, teachers, and independent learners.',
+          text: 'Open access for K–12 students and educators across India.',
           args: [
-            'Class 1–12 NCERT, CBSE & State Board textbooks',
+            'Class 1–12 NCERT, CBSE and State Board textbooks',
             'In-browser high-density PDF viewer with download',
-            'Full Study Hub: Board exam PYQs & chapter mindmaps',
-            'Interactive MCQ quizzes & revision cheatsheets',
-            'Instant search across grade, subject & chapter',
+            'Study Hub with Board exam PYQs and chapter mindmaps',
+            'Interactive MCQ quizzes and revision cheatsheets',
+            'Instant search across grade, subject and chapter',
           ],
         },
         {
           key: 'extended',
-          name: 'Atlas ESP32 Offline Kit',
-          price: '899',
-          period: 'One-time Hardware',
-          text: 'Dedicated offline reader hardware for rural schools, tutoring centers, and low-connectivity homes.',
+          name: 'Atlas ESP32 Hardware',
+          price: '0',
+          period: 'Open Source',
+          text: 'Self-hosted offline reader for schools and communities without internet access.',
           args: [
-            'Pre-assembled ESP32 hardware device (C++ firmware)',
-            'Pre-flashed 32GB MicroSD FAT32 high-speed card',
-            'Local Wi-Fi hotspot mode (no mobile data or internet needed)',
-            'Multi-device classroom streaming over local LAN',
-            'Open-source hardware schematics & firmware updates',
+            'Complete ESP32 hardware blueprints and C++ firmware',
+            'Ready-to-flash 32GB MicroSD FAT32 disk image',
+            'Local Wi-Fi hotspot mode with no mobile data required',
+            'Multi-device classroom streaming over local network',
+            'Free hardware schematics and firmware on GitHub',
           ],
         },
       ],
@@ -171,48 +176,44 @@ export const siteContent = {
     questions: [
       {
         question: 'What is NovaSlate and who created it?',
-        answer: 'NovaSlate is an automated curriculum curation platform engineered by <strong>Reyansh Niranjan</strong>. It solves the fragmented learning landscape by automatically scraping, grading, and organizing educational resources for Indian K-12 students (Class 1–12) into a unified digital library and companion offline hardware reader.',
+        answer: 'NovaSlate is an educational platform created by <strong>Reyansh Niranjan</strong>. It organizes scattered curriculum materials into a unified digital library for Class 1–12 students, paired with an offline hardware reader for low-connectivity classrooms.',
       },
       {
         question: 'How does the automated scraping and PDF compression pipeline work?',
-        answer: 'NovaSlate features an automated Python 3.11 ingestion pipeline using PyMuPDF, Pillow, and pdfsizeopt. It crawls educational portals, strips distracting watermarks, normalizes layouts, and applies multi-engine compression so high-density textbook PDFs load instantly even on 2G/3G mobile connections.',
+        answer: 'NovaSlate uses a Python ingestion pipeline to collect textbooks directly from NCERT portals. The pipeline strips recurring watermarks, cleans up document structure, and compresses file sizes without degrading text sharpness, so PDFs download quickly over slow mobile connections.',
       },
       {
         question: 'What is the Atlas ESP32 companion device and how does it work offline?',
-        answer: 'Atlas is a custom-engineered portable hardware reader powered by an ESP32 microcontroller and FAT32 MicroSD card. It creates a local zero-data Wi-Fi hotspot, allowing students in rural and low-connectivity regions to connect phone, tablet, or laptop browsers and study entire Class 1–12 textbook libraries without needing an active internet connection or mobile data recharge.',
+        answer: 'Atlas is a compact reader built on an ESP32 microcontroller and a MicroSD card. It broadcasts a local Wi-Fi hotspot that nearby phones, tablets, or computers can connect to directly in a browser. Students can read the full Class 1–12 library without internet access or cellular data.',
       },
       {
         question: 'What study tools are included in the NovaSlate Study Hub?',
-        answer: 'The Study Hub includes Board Exam Previous Year Questions (PYQs), chapter mindmaps, concise revision notes, formula cheatsheets, and interactive MCQ quizzes specifically aligned to CBSE and state board syllabi for classes 9 through 12.',
+        answer: 'The Study Hub includes Board Exam Previous Year Questions (PYQs), chapter mindmaps, concise revision notes, formula cheatsheets, and interactive MCQ quizzes aligned to CBSE and state board syllabi for classes 9 through 12.',
       },
       {
         question: 'Which educational boards and classes are currently supported?',
-        answer: 'NovaSlate supports Class 1 through Class 12 across NCERT, CBSE, and major Indian state board frameworks, spanning foundational literacy and numeracy (Class 1–5), middle school sciences and social studies (Class 6–8), secondary board subjects (Class 9–10), and senior secondary STEM and commerce streams (Class 11–12).',
+        answer: 'NovaSlate supports Class 1 through Class 12 across national curricula (NCERT and CBSE) as well as state board syllabi: primary grades (Class 1–5), middle school (Class 6–8), secondary boards (Class 9–10), and senior secondary streams (Class 11–12).',
       },
       {
         question: 'Where are the textbooks and educational archives hosted?',
-        answer: 'All high-density PDF archives are hosted on the Internet Archive (IAS3) Zero-Egress CDN. This ensures permanent, non-commercial availability and blazing-fast download speeds without incurring bandwidth charges that could threaten free access.',
+        answer: 'All textbook archives are stored on the Internet Archive (IAS3) zero-egress storage. This guarantees permanent, non-commercial hosting with reliable downloads without incurring bandwidth fees that could jeopardize free access.',
       },
       {
         question: 'Can teachers and tutoring centers download materials for classroom use?',
-        answer: 'Yes. Teachers, coaching institutes, and parents can browse cross-grade content, preview PDFs directly in the browser, and download high-resolution copies for printing and offline classroom distribution.',
+        answer: 'Yes. Educators and parents can preview any textbook in the browser and download print-ready PDF copies for classroom use.',
       },
       {
         question: 'Is NovaSlate free for students?',
-        answer: 'Yes. The entire NovaSlate web platform, in-browser PDF reader, and Study Hub resources are 100% free and open-access. The optional Atlas ESP32 hardware device is provided at cost for schools and students in zero-internet areas, with open-source firmware and schematics available on GitHub.',
+        answer: 'Yes. The entire NovaSlate web platform, digital library, and study tools are 100% free and open-access. For classrooms without internet, Atlas ESP32 schematics and MicroSD card images are completely open-source on GitHub.',
       },
     ] as FaqQuestion[],
   },
   finalCTA: {
-    eyebrow: 'OPEN INFRASTRUCTURE · ZERO INTERNET BARRIERS',
-    title: 'Equipping every student<br>with timeless knowledge.',
-    subtitle: 'Explore the complete Class 1–12 digital library online, or deploy the companion Atlas ESP32 reader for zero-connectivity classrooms.',
-    button: 'Connect & Request Access',
-    links: [
-      { label: 'Digital Library (Class 1–12)', href: '#curriculum' },
-      { label: 'Atlas ESP32 Hardware', href: '#pricing' },
-      { label: 'Technical Pipeline', href: '#features' },
-    ],
+    eyebrow: '',
+    title: 'Learning.<br />Finally, in one place',
+    subtitle: '',
+    button: 'Verify it yourself',
+    links: [],
   },
   strings: {
     projectLink: 'Open textbook',

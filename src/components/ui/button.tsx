@@ -1,30 +1,39 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
-
 import { cn } from "@/lib/utils"
 
+function extractText(node: React.ReactNode): string {
+  if (typeof node === "string") return node;
+  if (typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(extractText).filter(Boolean).join(" ").trim();
+  if (React.isValidElement(node) && (node.props as any)?.children) {
+    return extractText((node.props as any).children);
+  }
+  return "";
+}
+
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent text-sm font-medium whitespace-nowrap transition-all duration-150 outline-none select-none focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring touch-manipulation active:scale-[0.97] cursor-pointer disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "btn-main",
   {
     variants: {
       variant: {
-        default:
-          "bg-primary text-primary-foreground hover:opacity-90 shadow-xs",
-        outline:
-          "border-border bg-transparent text-foreground hover:bg-secondary hover:text-foreground",
-        secondary:
-          "bg-secondary text-secondary-foreground hover:bg-muted",
-        ghost:
-          "text-muted-foreground hover:bg-secondary hover:text-foreground",
-        destructive:
-          "bg-pastel-red-bg text-pastel-red-text border border-destructive/30 hover:opacity-90",
-        link: "text-primary underline-offset-4 hover:underline",
+        default: "btn-main--primary btn-main--black",
+        primary: "btn-main--primary btn-main--black",
+        secondary: "btn-main--secondary btn-main--black",
+        outline: "btn-main--secondary btn-main--black",
+        ghost: "btn-main--secondary btn-main--black",
+        white: "btn-main--primary btn-main--white",
+        accent: "btn-main--primary btn-main--accent",
+        destructive: "btn-main--primary btn-main--accent",
+        link: "btn-main--secondary btn-main--black",
       },
       size: {
-        default: "h-11 sm:h-9 px-4 py-2 gap-2 text-xs sm:text-sm",
-        sm: "h-9 sm:h-8 px-3 py-1.5 text-xs gap-1.5",
-        lg: "h-12 sm:h-10 px-5 py-2.5 text-sm gap-2 font-semibold",
-        icon: "size-10 sm:size-8",
+        default: "btn-main--md",
+        md: "btn-main--md",
+        sm: "btn-main--sm",
+        lg: "btn-main--lg",
+        xs: "btn-main--xs",
+        icon: "btn-main--icon",
       },
     },
     defaultVariants: {
@@ -34,21 +43,40 @@ const buttonVariants = cva(
   }
 )
 
-function Button({
-  className,
-  variant = "default",
-  size = "default",
-  ...props
-}: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants>) {
-  return (
-    <button
-      data-slot="button"
-      data-variant={variant}
-      data-size={size}
-      className={cn(buttonVariants({ variant, size, className }))}
-      {...props}
-    />
-  )
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  dataText?: string;
+  asChild?: boolean;
 }
 
-export { Button, buttonVariants }
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant = "default", size = "default", children, dataText, type = "button", ...props }, ref) => {
+    const text = dataText || extractText(children);
+
+    return (
+      <button
+        ref={ref}
+        type={type}
+        data-slot="button"
+        data-variant={variant}
+        data-size={size}
+        className={cn(buttonVariants({ variant, size }), className)}
+        {...props}
+      >
+        <span className="btn-main__outer">
+          <span className="btn-main__inner">
+            <span className="btn-main__text u-height-fix">{children}</span>
+          </span>
+          <span className="btn-main__hover" aria-hidden="true">
+            <span className="btn-main__text u-height-fix" data-text={text}></span>
+          </span>
+        </span>
+      </button>
+    );
+  }
+);
+
+Button.displayName = "Button";
+
+export { Button, buttonVariants };

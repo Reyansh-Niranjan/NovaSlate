@@ -1,26 +1,41 @@
-# 📚 NCERT Scraper & Multi-Engine Compression Pipeline
+# 📚 NovaSlate NCERT Catalogue Discovery & Complete-Book ZIP Pipeline
 
-A high-performance, resilient NCERT textbook extraction, deep PDF size optimization, and cloud synchronization engine designed for **NovaSlate**.
+A high-performance, mathematically verified NCERT textbook discovery, archive streaming, and integrity verification pipeline.
 
----
-
-## ⚡ Key Highlights
-
-- **Multi-Engine PDF Optimization**: Integrates best-in-class techniques from three open-source compression projects:
-  - **[pdfEasyCompress](https://github.com/davidAlgis/pdfEasyCompress)**: In-stream scan image downsampling and re-encoding with Pillow, alpha channel white-background blending, with **100% preservation of vector text, fonts, and searchability**.
-  - **[pdfsizeopt](https://github.com/pts/pdfsizeopt)**: Deep stream deflation (`FlateDecode`), XObject garbage collection (`garbage=4`), and content-hash image deduplication.
-  - **[cpdfsqueeze](https://github.com/coherentgraphics/cpdfsqueeze-binaries)**: Structural object squeezing, dictionary coalescing, and binary auto-detection with pure-Python fallback.
-- **Direct JS Parser (Zero Headless Overhead)**: Extracts the full Class 1–12 textbook catalog directly from NCERT's `change1()` script without slow, flaky browser automation.
-- **Resilient Downloader**: Concurrent multi-threaded downloading with HTTP `Range` resume support, exponential backoff, CRC verification, and rapid `HEAD` size probing.
-- **Automated Watermark Removal**: Uses PyMuPDF stream fingerprinting (`watermark_remover.py`) to detect and strip recurring NCERT watermark image objects across every page.
-- **Smart PDF Assembly**: Unpacks official NCERT chapter ZIPs, orders prelims/cover pages first, and merges chapters into clean, searchable, single-book PDFs.
-- **Internet Archive (IAS3) Hosting**: Automatically uploads PDFs into the `novaslate-ncert-library` Internet Archive item with zero egress fees and unlimited storage.
-- **Supabase PostgreSQL Metadata Sync**: Synchronizes book metadata strictly into the `catalog` table via REST API (`/rest/v1/catalog`) with PostgREST duplicate merging.
-- **Automated GitHub Actions**: Scheduled monthly workflow (`.github/workflows/scrape_and_replenish.yml`) and manual `workflow_dispatch` trigger.
+> [!NOTE]
+> **Internet Archive (IAS3) Integration & Zero Supabase Catalog Dependency:**
+> Books and the authoritative `catalog.json` are hosted directly on Internet Archive S3 (`novaslate-ncert-library`).
+> Supabase PostgreSQL catalog table synchronization has been permanently eliminated. NovaSlate loads the catalog directly from `https://archive.org/download/{bucket}/catalog.json` (with local caching in `public/catalog.json`).
+> Original archives and publisher notices remain strictly preserved.
 
 ---
 
-## 🚀 Local Usage
+## ⚡ Key Highlights & Architecture
+
+- **Authoritative Deterministic Static AST Parser**: Parses official NCERT inline JavaScript (`change()` and `change1()`) in under 50ms without headless browser overhead. Strips comments and enforces ladder precedence to completely eliminate ghost books and stale option leakage.
+- **Complete-Book ZIP Pipeline**: Fetches official `{code}dd.zip` archives directly from NCERT CDN. Avoids fragmentary chapter PDF downloads unless optional assembly is requested.
+- **Cryptographic & Archive Integrity Verification**: Every archive is validated using `zipfile.is_zipfile` and full member CRC32 testing (`ZipFile.testzip()`), alongside SHA-256 digest computation.
+- **Intelligent Deduplication**: Correctly tracks books sharing upstream codes (e.g. `gsikr1` shared by *Kriti-I (Sindhi)* and *Kriti-I (Telugu)* in Class VII Arts) so the archive is downloaded only once while preserving all catalogue records.
+- **Zero Publisher Notice Modification**: Strictly preserves publisher notices, copyright pages, and original archives. Watermark removal is completely disabled.
+- **Resilient Chunked Streaming**: Downloads with exponential backoff, jitter, and HTTP `Range` header resumption.
+- **Atomic Operations**: All manifests and book archives use temporary files (`.part` / `.tmp`) with atomic rename (`os.replace`) to prevent corrupted states.
+
+---
+
+## 📊 Verified Catalogue Metrics
+
+| Metric | Verified Value | Notes |
+| :--- | :--- | :--- |
+| **Classes Covered** | **13** | Class I through Class XII + Combined Class XI & XII |
+| **Total Valid Records** | **1,067** | Exact 100% convergence across independent audited crawls |
+| **Unique Book Codes** | **1,066** | Code `gsikr1` shared by Sindhi & Telugu in Class VII Arts |
+| **Documented Failures** | **1** | `Class IX -> ICT -> Coming Soon` (unreleased placeholder) |
+| **Total Baseline Combinations** | **1,068** | 1,067 verified active books + 1 documented failure |
+| **Archive URL Format** | `https://ncert.nic.in/textbook/pdf/{code}dd.zip` | Complete-book official archive |
+
+---
+
+## 🛠️ CLI Usage & Operational Commands
 
 ### 1. Installation
 
@@ -29,51 +44,77 @@ cd scraper
 pip install -r requirements.txt
 ```
 
-### 2. Environment Configuration
+### 2. Catalogue Discovery (`scraper.py`)
 
-Create a `.env` in the root or `scraper/` folder (or use existing `.env.local`):
-
-```env
-IA_ACCESS_KEY=your-ia-access-key
-IA_SECRET_KEY=your-ia-secret-key
-IA_BUCKET=novaslate-ncert-library
-
-SUPABASE_URL=https://your-project-ref.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key-here
-```
-
-### 3. CLI Commands
+Run the static AST scraper against the authoritative offline fixture or live portal:
 
 ```bash
-# Preview books without downloading (dry run)
+# Deterministic offline run using fixture
+python scraper/scraper.py --fixture scraper/tests/fixtures/textbook.php.html
+
+# Live portal scrape
+python scraper/scraper.py
+
+# Live scrape with CDN sample probing (e.g. 15 books)
+python scraper/scraper.py --validate-cdn --cdn-sample-size 15
+```
+
+### 3. Complete-Book Downloader (`download_books.py`)
+
+```bash
+# Dry run: preview planned downloads without network traffic
+python scraper/download_books.py --class 10 --dry-run
+
+# Dry run for a specific subject
+python scraper/download_books.py --class 10 --subject Mathematics --dry-run
+
+# Download all books for a specific class with 4 concurrent workers
+python scraper/download_books.py --class 10 --out downloads --manifest download_manifest.json --concurrency 4
+
+# Download specific book codes
+python scraper/download_books.py --books aemr1,jemh1 --out downloads
+
+# Safe testing with limit
+python scraper/download_books.py --class 1 --limit 2 --dry-run
+```
+
+### 4. Unified Pipeline Entry Point (`main.py`)
+
+```bash
+# Dry run across Class 10
 python scraper/main.py --class 10 --dry-run
 
-# Download all Class 10 books with automated multi-pass compression
-python scraper/main.py --class 10
+# Download Class 10 books into downloads/
+python scraper/main.py --class 10 --out downloads
 
-# Download a specific subject with custom DPI and JPEG quality
-python scraper/main.py --class 12 --subject Physics --dpi 130 --quality 70
+# Download Class 12 Physics books and optionally assemble unified PDF
+python scraper/main.py --class 12 --subject Physics --assemble-pdf --out downloads
 
-# Download & sync to Internet Archive & Supabase PostgreSQL catalog table
-python scraper/main.py --class 10 --upload-to-ia --clean-local
+# Download, assemble, and upload to Internet Archive (and update catalog.json)
+python scraper/main.py --class 10 --subject Mathematics --assemble-pdf --upload-to-ia
 
-# Run complete Class 1-12 catalog sync with 8 concurrent workers
-python scraper/main.py --class all --upload-to-ia --clean-local --concurrency 8
+# Synchronize authoritative catalog.json to Internet Archive root without downloading
+python scraper/main.py --sync-catalog
+```
 
-# Standalone PDF Optimizer CLI (test or compress any individual PDF)
-python scraper/optimizer.py input.pdf output.pdf --dpi 140 --quality 75
+### 5. Internet Archive Uploader & Synchronizer (`ia_uploader.py`)
+
+```bash
+# Synchronize verified catalog.json manifest to IA item root and local public/catalog.json
+python scraper/ia_uploader.py --sync-catalog
+
+# Upload an entire directory of assembled books to IA item
+python scraper/ia_uploader.py --upload-dir downloads/ --concurrency 4
 ```
 
 ---
 
-## 🤖 GitHub Actions Setup
+## 🧪 Testing & Verification
 
-To enable automated textbook replenishment in your GitHub repository:
+Run the full automated test suite (37 unit and regression tests):
 
-1. Go to your GitHub repository -> **Settings** -> **Secrets and variables** -> **Actions**.
-2. Add the following repository secrets:
-   - `IA_ACCESS_KEY`: Internet Archive S3 Access Key.
-   - `IA_SECRET_KEY`: Internet Archive S3 Secret Key.
-   - `SUPABASE_URL`: Your Supabase Project URL.
-   - `SUPABASE_SERVICE_ROLE_KEY`: Your Supabase `service_role` secret key.
-3. Under the **Actions** tab on GitHub, you can now trigger the **"NCERT Scraper & Internet Archive Replenish"** workflow manually or let it run automatically on its monthly schedule.
+```bash
+python -m unittest discover -s scraper/tests
+```
+
+All tests pass deterministically without initiating unprompted full-catalogue downloads.

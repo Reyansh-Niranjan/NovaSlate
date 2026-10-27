@@ -12,9 +12,7 @@ export const Catchphrase: React.FC = () => {
     if (!el) return;
 
     const updateHeight = () => {
-      const activeContent =
-        el.querySelector<HTMLElement>('[data-impeccable-variant]:not([style*="display: none"]) .s__content') ||
-        el.querySelector<HTMLElement>('.s__content');
+      const activeContent = el.querySelector<HTMLElement>('.s__content');
       if (activeContent && el) {
         el.style.setProperty('--content-height', `${activeContent.offsetHeight}px`);
       }
@@ -24,7 +22,6 @@ export const Catchphrase: React.FC = () => {
     window.addEventListener('resize', updateHeight);
 
     const ctx = gsap.context(() => {
-      const content = el.querySelector<HTMLElement>('.s__content');
       const titles = el.querySelectorAll<HTMLElement>('.s__title');
       titles.forEach((title) => {
         const lines = Array.from(title.querySelectorAll('.line')).reverse() as HTMLElement[];
@@ -54,24 +51,7 @@ export const Catchphrase: React.FC = () => {
             f * 0.025
           );
         });
-
-        // Clean exit fade before next section
-        tl.to(title, { opacity: 0, y: '-20%', ease: 'power2.in', duration: 0.4 });
       });
-
-      // Strict visibility gating to ensure zero ghost overlay past boundary
-      if (content) {
-        ScrollTrigger.create({
-          trigger: el,
-          start: 'top bottom',
-          end: 'bottom top',
-          onToggle: (self) => {
-            gsap.set(content, {
-              visibility: self.isActive ? 'visible' : 'hidden',
-            });
-          },
-        });
-      }
     }, el);
 
     ScrollTrigger.refresh();
@@ -86,10 +66,8 @@ export const Catchphrase: React.FC = () => {
     <section ref={elRef} className="s-catchphrase relative">
       <div className="s__content">
         <h2 className="s__title t-h-3xl">
-          <span className="line block">Democratizing</span>
-          <span className="line block">Class 1–12</span>
-          <span className="line block">learning across</span>
-          <span className="line block">every pin code.</span>
+          <span className="line block">Better access to learning.</span>
+          <span className="line block">Fewer barriers to it.</span>
         </h2>
       </div>
     </section>

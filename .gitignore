@@ -10,6 +10,9 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+.env
+.env.local
+.env.*.local
 *.local
 !.env.example
 
@@ -35,3 +38,11 @@ failures.json
 *.sln
 *.sw?
 .impeccable/
+
+# Local media projects & agent caches
+archive_brand-film_v1/
+brand-film-project/
+graphify-out/
+research/
+.codex/
+scraper/data/

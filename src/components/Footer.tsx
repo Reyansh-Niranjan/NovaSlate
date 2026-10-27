@@ -36,16 +36,16 @@ export default function Footer() {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
             <Button
               onClick={navigateToLogin}
-              className="h-11 px-6 font-bold font-heading rounded-full bg-foreground text-background hover:opacity-90 cursor-pointer shadow-sm gap-2"
+              size="md"
             >
-              <ReaderIcon className="w-4 h-4" />
+              <ReaderIcon className="w-4 h-4 mr-1 inline-block" />
               <span>Launch Free Library</span>
-              <ArrowTopRightIcon className="w-3.5 h-3.5" />
+              <ArrowTopRightIcon className="w-3.5 h-3.5 ml-1 inline-block" />
             </Button>
             <Button
               variant="outline"
+              size="md"
               onClick={() => scrollToSection("#pricing")}
-              className="h-11 px-5 font-semibold font-heading rounded-full border-border/80 text-foreground hover:bg-secondary cursor-pointer"
             >
               <span>View Hardware &amp; Plans</span>
             </Button>
@@ -103,11 +103,6 @@ export default function Footer() {
               <li>
                 <a href="#hardware" onClick={() => scrollToSection("#hardware")} className="text-muted-foreground hover:text-foreground transition-colors">
                   Atlas Hardware
-                </a>
-              </li>
-              <li>
-                <a href="#pricing" onClick={() => scrollToSection("#pricing")} className="text-muted-foreground hover:text-foreground transition-colors">
-                  Pricing &amp; Plans
                 </a>
               </li>
               <li>

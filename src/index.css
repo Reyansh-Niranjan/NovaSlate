@@ -1080,3 +1080,33 @@ input[type="range"].mobile-slider:active::-moz-range-thumb {
   background: #ffffff;
   border: 1px solid rgba(43, 43, 43, 0.1);
 }
+
+/* Catchphrase title width for 2-line layout */
+.landing-page-root .s-catchphrase .s__title {
+  max-width: 14em !important;
+  margin: 0 auto;
+}
+
+/* Final CTA Card layout */
+.landing-page-root .s-final-cta__card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2rem;
+  padding: 4rem;
+  min-height: 380px;
+}
+.landing-page-root .s-final-cta__heading {
+  max-width: 18ch;
+  line-height: 0.95;
+}
+
+/* Hero container spacing without logos row */
+.landing-page-root .s-hero .u-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}

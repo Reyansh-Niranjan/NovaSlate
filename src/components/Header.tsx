@@ -10,7 +10,6 @@ import {
   ReaderIcon,
   MagicWandIcon,
   Component1Icon,
-  CheckCircledIcon,
   CounterClockwiseClockIcon,
   QuestionMarkCircledIcon,
 } from "@radix-ui/react-icons";
@@ -52,7 +51,6 @@ export default function Header() {
     { label: "Overview",       href: "#home",      icon: ReaderIcon },
     { label: "Study Tools",    href: "#features",  icon: MagicWandIcon },
     { label: "Atlas Hardware", href: "#hardware",  icon: Component1Icon },
-    { label: "Pricing",        href: "#pricing",   icon: CheckCircledIcon },
     { label: "Evolution",      href: "#timeline",  icon: CounterClockwiseClockIcon },
     { label: "FAQ",            href: "#faq",       icon: QuestionMarkCircledIcon },
   ];
@@ -127,19 +125,19 @@ export default function Header() {
         {/* Right CTA Actions */}
         <div className="hidden md:flex items-center gap-3">
           <ThemeToggle />
-          <button
+          <Button
+            variant="outline"
+            size="sm"
             onClick={navigateToLogin}
-            className="text-xs font-semibold font-heading text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full hover:bg-secondary cursor-pointer interactive-tap active:scale-[0.97]"
           >
             Log In
-          </button>
+          </Button>
           <Button
             size="sm"
             onClick={navigateToLogin}
-            className="text-xs h-8 px-4 gap-1.5 font-bold cursor-pointer rounded-full font-heading bg-foreground text-background hover:opacity-90 shadow-xs interactive-tap active:scale-[0.97]"
           >
             <span>Start Free</span>
-            <ArrowTopRightIcon className="w-3.5 h-3.5" />
+            <ArrowTopRightIcon className="w-3.5 h-3.5 ml-1 inline-block" />
           </Button>
         </div>
 

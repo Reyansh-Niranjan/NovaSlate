@@ -20,7 +20,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, ini
     if (initialData?.deliveryMode?.includes('Atlas') || initialData?.plan?.includes('Atlas')) {
       setInquiryType('Request Atlas ESP32 Hardware Kit');
       setMessage(
-        `Hi Reyansh,\n\nI would like to request an Atlas ESP32 Offline Hardware Reader:\n- Target Classes: ${initialData.gradeLevel || 'Class 11–12'}\n- Content Scope: ${initialData.contentScope || 'Complete Exam Prep'}\n- Storage Required: ${initialData.storage || '32 GB MicroSD'}\n- Est. Cost: ${initialData.cost || '₹899 (Hardware cost)'}\n\nPlease share delivery details and MicroSD flashing instructions!`
+        `Hi Reyansh,\n\nI would like to inquire about building / deploying an Atlas ESP32 Offline Reader:\n- Target Classes: ${initialData.gradeLevel || 'Class 11–12'}\n- Content Scope: ${initialData.contentScope || 'Complete Exam Prep'}\n- Storage Required: ${initialData.storage || '32 GB MicroSD'}\n\nPlease share open-source schematics, firmware and MicroSD flashing instructions!`
       );
     } else if (initialData?.gradeLevel) {
       setGradeBand(initialData.gradeLevel);

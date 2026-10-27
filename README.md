@@ -48,38 +48,38 @@
 
 ## Overview
 
-**NovaSlate** is an automated educational content management and curriculum delivery platform designed for Indian K–12 schools, educators, and students. Instead of manually scouring dozens of websites for scattered textbooks and lesson resources, NovaSlate continuously indexes, grades readability, and organizes state board and NCERT curriculum materials into a unified digital library.
+**NovaSlate** is an open curriculum delivery system for K–12 education across India. Instead of searching across fragmented state portals, NovaSlate indexes and organizes NCERT and state board materials into a structured digital library paired with an offline hardware reader.
 
 ### Problems Solved
-- ⏰ **Curriculum Discovery Grunt Work** — Automates resource finding and eliminates manual downloading.
-- 📚 **Broken Structuring & Missing Taxonomies** — Automatically categorizes textbooks from Class 1 through Class 12.
-- ⚡ **Bloated Downloads & Intrusive Watermarks** — Multi-engine compression and automated watermark removal deliver lightweight, distraction-free PDFs.
-- 📡 **Offline & Low-Connectivity Resilience** — Companion **Atlas** hardware device caches curricula onto SD cards for rural environments.
+- ⏰ **Centralized Indexing** — Collects textbooks from official portals automatically.
+- 📚 **Class 1–12 Taxonomy** — Categorizes materials by grade and subject level.
+- ⚡ **Clean, Compressed PDFs** — Strips repetitive watermarks and reduces file sizes while preserving sharp vector text.
+- 📡 **Offline Hardware Reader** — Serves the textbook library from an ESP32 companion device for areas without internet.
 
 ---
 
 ## Key Capabilities
 
 ### 📖 Class 1–12 Digital Library
-- **Structured Hierarchy:** Browse by grade level, subject taxonomy, and chapter streams.
+- **Structured Hierarchy:** Browse by grade level and subject taxonomy.
 - **In-Browser Reader:** Full-screen reader with zoom, keyboard navigation, and instant download.
-- **Watermark Cleaned:** Processed PDFs stripped of visual artifacts for clean printing and study.
+- **Watermark Cleaned:** Processed PDFs stripped of visual artifacts for legible printing and study.
 
 ### ⚙️ Automated Ingestion & Compression Pipeline
 - **Direct Catalog Parser:** Fast, resilient extraction directly from the NCERT portal without headless browser overhead.
 - **Stream Watermark Removal:** PyMuPDF fingerprinting automatically identifies and strips recurring watermarks.
-- **Vector-Preserving Optimization:** Downsamples raster assets and coalesces stream dictionaries (`pdfEasyCompress`, `pdfsizeopt`) while keeping vector text 100% sharp.
+- **Vector-Preserving Optimization:** Downsamples raster assets and coalesces stream dictionaries (`pdfEasyCompress`, `pdfsizeopt`) while keeping vector text sharp.
 
 ### 📝 Integrated Study Hub & Exam Preparation
 - **Board PYQs & Practice:** Dedicated repository of past-year question papers (PYQs) and interactive MCQ quizzes categorized by grade and subject.
 - **Visual Learning & Revision:** Chapter mindmaps, quick-reference flashcards, formula cheatsheets, and personalized study notes alongside textbook reading.
 
-### 🌟 Unified Open-Source EdTech Stack (6 Integrated Engines)
-NovaSlate deeply assimilates 6 specialized open-source educational platforms into a cohesive, zero-mock operating system:
-- **`CaviraOSS/PageLM` & `Kaju-Open-Source/ORE`**: AI Knowledge & RAG Studio with semantic vector search across state/NCERT textbooks, automated concept quizzes, Leitner spaced-repetition flashcards, and 2-host synthesized audio podcasts (`window.speechSynthesis`).
-- **`anushkaadak2684/ClassSphere` & `edrys-org/edrys`**: Synchronous virtual classrooms with live media stage, hand-raise queue, collaborative digital blackboard, automated session duration logger with **1-Click Attendance CSV Export**, and **Atlas ESP32 Remote Lab Hardware Simulator** (live serial console, GPIO pin control, and 1000Hz oscilloscope waveform stream).
-- **`Sameerkhan9412/StudyByte`**: Modular curriculum course catalog, video lecture player with completion checkmarks, and educator course studio.
-- **`Asfer-dev/study-ai`**: Dynamic peer discussion feed with topic tagging, question upvoting, solution discussions, assignment turn-in workflow, and study buddy network.
+### 🌟 Integrated Open-Source Engines
+NovaSlate incorporates specialized open-source tools across learning domains:
+- **Study & RAG Tools (`CaviraOSS/PageLM` & `Kaju-Open-Source/ORE`)**: Textbook semantic search, spaced-repetition flashcards, and audio review.
+- **Classroom & Lab Tools (`anushkaadak2684/ClassSphere` & `edrys-org/edrys`)**: Virtual classroom board, attendance logging with CSV export, and Atlas ESP32 hardware simulation.
+- **Curriculum Catalog (`Sameerkhan9412/StudyByte`)**: Structured video modules and course management.
+- **Discussion & Assignments (`Asfer-dev/study-ai`)**: Question threads, peer discussion, and assignment submissions.
 
 <a id="hardware-companion"></a>
 ### ⚡ Dual Ecosystem: Cloud + Embedded Hardware
@@ -108,13 +108,13 @@ NovaSlate
 │   └── Multi-Engine PDF Optimizer (pdfEasyCompress, pdfsizeopt)
 │
 ├── 📦 Content Delivery (Internet Archive IAS3 CDN - Zero Egress)
-│   ├── Class1/ through Class12/ (Optimized PDF archives)
-│   └── structure.json & catalog.json
+│   ├── Class 1/ through Class 12/ (Complete textbook PDF archives)
+│   └── catalog.json (Authoritative catalog manifest, zero-database discovery)
 │
 ├── 🗄️ Backend Services (Supabase)
 │   ├── JWT Authentication & User Profiles
 │   ├── Row-Level Security (RLS)
-│   └── Content Metadata & Activity Logs
+│   └── User Activity Logs (Zero catalog database dependency)
 │
 └── 📟 Embedded Hardware (Atlas-Device)
     ├── ESP32 Dual-Core Microcontroller
@@ -149,7 +149,7 @@ NovaSlate
 
 ## Creator
 
-**Reyansh Niranjan** — Creator, Architect & Lead Developer (Web Platform, Scraper Pipeline & Atlas ESP32 Offline Device).
+**Reyansh Niranjan** — Creator and Lead Developer (Web Platform, Ingestion Pipeline & Atlas ESP32 Offline Device).
 
 ---
 
