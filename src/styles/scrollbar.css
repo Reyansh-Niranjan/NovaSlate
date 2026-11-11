@@ -6,6 +6,7 @@
   z-index: 50;
   width: 20px;
   height: 100%;
+  pointer-events: none;
 }
 
 .site-scrollbar__track {
@@ -27,6 +28,7 @@
   width: 6px;
   border-radius: 999em;
   cursor: grab;
+  pointer-events: auto;
   transform: translateY(var(--scrollbar-top, 0px));
   scale: 1 1;
   transition: scale 0.2s cubic-bezier(0.215, 0.61, 0.355, 1), opacity 0.07s linear;

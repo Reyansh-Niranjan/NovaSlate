@@ -11,33 +11,37 @@ const kl = 4;
 const Ut = 5;
 const cr = 1.5;
 const ur = 0.025;
-const SVG_NS = 'http://www.w3.org/2000/svg';
 
 const colors = ['#1883B1', '#47A2C6', '#E4B34C', '#EBC36F', '#F3D698'];
 
-function fmt(n: number) {
-  return Number(n).toFixed(2);
+interface RectItem {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  color: string;
 }
 
 export const CapacityAsset: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const svgRef = useRef<SVGSVGElement | null>(null);
-  const gRef = useRef<SVGGElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
     const container = containerRef.current;
-    const svg = svgRef.current;
-    const g = gRef.current;
-    if (!container || !svg || !g) return;
+    const canvas = canvasRef.current;
+    if (!container || !canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
     let width = 0;
     let height = 0;
     let a = 0;
     let d = 0;
     let duration = 0;
+    const dpr = window.devicePixelRatio || 1;
 
     const data = {
-      el: [] as SVGRectElement[],
+      items: [] as RectItem[],
       level: [] as number[],
     };
 
@@ -60,44 +64,54 @@ export const CapacityAsset: React.FC = () => {
       const rect = container.getBoundingClientRect();
       width = rect.width;
       height = rect.height;
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+    };
+
+    const render = () => {
+      if (!ctx || !width || !height) return;
+      ctx.save();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.scale(dpr, dpr);
+
+      for (let b = a; b >= 0; b--) {
+        const item = data.items[b];
+        if (!item) continue;
+        ctx.fillStyle = item.color;
+        ctx.fillRect(item.x, item.y, item.w, item.h);
+      }
+      ctx.restore();
     };
 
     const build = () => {
       if (!width || !height) return;
-      g.innerHTML = '';
-      data.el.length = 0;
+      data.items.length = 0;
       data.level.length = 0;
 
-      svg.setAttribute('viewBox', `0 0 ${fmt(width)} ${fmt(height)}`);
       a = 0;
       let M = 0;
       for (; M < kl && (a++, u(a) < 0 && M++, !(a > 200)); );
       d = ((a - 1) % Ut + Ut) % Ut;
 
-      const rects: SVGRectElement[] = new Array(a + 1);
-      for (let b = a; b >= 0; b--) {
-        const L = ((b - 1) % Ut + Ut) % Ut;
-        const rect = document.createElementNS(SVG_NS, 'rect');
-        rect.setAttribute('x', fmt(barX(b)));
-        rect.setAttribute('y', fmt(u(b)));
-        rect.setAttribute('width', fmt(barWidth(b)));
-        rect.setAttribute('height', fmt(p(b)));
-        rect.setAttribute('fill', colors[L]);
-        g.appendChild(rect);
-        rects[b] = rect;
-      }
-
       for (let b = 0; b <= a; b++) {
-        data.el.push(rects[b]);
-        data.level.push(b);
+        const L = ((b - 1) % Ut + Ut) % Ut;
+        data.items[b] = {
+          x: barX(b),
+          y: u(b),
+          w: barWidth(b),
+          h: p(b),
+          color: colors[L],
+        };
+        data.level[b] = b;
       }
 
       duration = cr + a * ur;
+      render();
     };
 
     const animateStep = () => {
-      if (!data.el.length) return;
-      data.el.forEach((rect, b) => {
+      if (!data.items.length) return;
+      data.items.forEach((item, b) => {
         const lvl = data.level[b];
         const delay = lvl * ur;
         const H = { y: u(lvl), h: p(lvl), w: barWidth(lvl) };
@@ -109,7 +123,8 @@ export const CapacityAsset: React.FC = () => {
             delay,
             ease: 'backExpoInOut',
             onUpdate() {
-              rect.setAttribute('y', fmt(H.y));
+              item.y = H.y;
+              render();
             },
           });
           return;
@@ -122,8 +137,9 @@ export const CapacityAsset: React.FC = () => {
           delay,
           ease: 'backExpoInOut',
           onUpdate() {
-            rect.setAttribute('y', fmt(H.y));
-            rect.setAttribute('height', fmt(H.h));
+            item.y = H.y;
+            item.h = H.h;
+            render();
           },
         });
 
@@ -133,15 +149,16 @@ export const CapacityAsset: React.FC = () => {
           delay: Math.max(0, delay - 0.25),
           ease: 'backExpoInOut',
           onUpdate() {
-            rect.setAttribute('x', fmt((width - H.w) / 2));
-            rect.setAttribute('width', fmt(H.w));
+            item.x = (width - H.w) / 2;
+            item.w = H.w;
+            render();
           },
         });
       });
     };
 
     const onCycle = () => {
-      gsap.killTweensOf(data.el);
+      gsap.killTweensOf(data.items);
       const zeroIdx = data.level.findIndex((lvl) => lvl === 0);
       for (let i = 0; i < data.level.length; i++) {
         data.level[i]--;
@@ -150,13 +167,12 @@ export const CapacityAsset: React.FC = () => {
       if (zeroIdx !== -1) {
         d = (d + 1) % Ut;
         data.level[zeroIdx] = a;
-        const recycled = data.el[zeroIdx];
-        recycled.setAttribute('x', fmt(barX(a)));
-        recycled.setAttribute('y', fmt(u(a)));
-        recycled.setAttribute('width', fmt(barWidth(a)));
-        recycled.setAttribute('height', fmt(p(a)));
-        recycled.setAttribute('fill', colors[d]);
-        g.insertBefore(recycled, g.firstChild);
+        const recycled = data.items[zeroIdx];
+        recycled.x = barX(a);
+        recycled.y = u(a);
+        recycled.w = barWidth(a);
+        recycled.h = p(a);
+        recycled.color = colors[d];
       }
 
       animateStep();
@@ -169,7 +185,7 @@ export const CapacityAsset: React.FC = () => {
     const runner = registerUspAsset(duration, onCycle);
 
     const handleResize = () => {
-      gsap.killTweensOf(data.el);
+      gsap.killTweensOf(data.items);
       measure();
       build();
       runner.updateDuration(duration);
@@ -179,7 +195,7 @@ export const CapacityAsset: React.FC = () => {
     window.addEventListener('resize', handleResize);
 
     return () => {
-      gsap.killTweensOf(data.el);
+      gsap.killTweensOf(data.items);
       runner.unregister();
       window.removeEventListener('resize', handleResize);
     };
@@ -187,9 +203,7 @@ export const CapacityAsset: React.FC = () => {
 
   return (
     <div ref={containerRef} className="b-usp-asset-capacity absolute inset-0 w-full h-full z-[2]" aria-hidden="true">
-      <svg ref={svgRef} className="b__svg block w-full h-full overflow-hidden" xmlns={SVG_NS}>
-        <g ref={gRef} className="b__svg__rects" />
-      </svg>
+      <canvas ref={canvasRef} className="b__svg block w-full h-full overflow-hidden" />
     </div>
   );
 };

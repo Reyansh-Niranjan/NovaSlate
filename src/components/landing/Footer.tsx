@@ -45,7 +45,7 @@ export const Footer: React.FC = () => {
         </div>
         <ul className="s__socials">
           <li className="s__social">
-            <span className="text-[var(--color-gray)]">
+            <span className="text-[var(--color-gray)] leading-relaxed">
               © {new Date().getFullYear()} NovaSlate. Open-access curriculum infrastructure & offline hardware for Indian K-12 education.
             </span>
           </li>

@@ -23,30 +23,28 @@ import {
   UserCheck,
 } from "lucide-react";
 import {
-  STUDYOS_CATALOG,
-  CLASS_SUBJECT_ORDERS,
-  STREAM_SUBJECT_ORDERS,
+  getSubject,
+  getSubjectListForClass,
+  getSubjectChapters,
   isBoardClass,
-} from "../../lib/studyosCatalog";
+} from "../../lib/curriculumCatalog";
 import type {
   SubjectData,
   ChapterItem,
   ClassNumber,
   StreamKey,
-} from "../../lib/studyosCatalog";
+} from "../../lib/curriculumCatalog";
 import {
-  fetchPYQs,
-  fetchChapterKit,
-  getSubjectChapters,
+  loadChapterStudyBundle,
   toggleBookmarkPYQ,
   isPYQBookmarked,
   getBookmarkedPYQs,
-} from "../../lib/studyos";
+} from "../../lib/studyKitStore";
 import type {
   PYQQuestion,
   PYQResponse,
   ChapterKitData,
-} from "../../lib/studyos";
+} from "../../lib/studyKitStore";
 
 export type StudyHubTab = "pyq" | "cheatsheet" | "flashcards" | "quiz" | "important" | "mindmap";
 
@@ -122,15 +120,16 @@ export const StudyHub: React.FC<StudyHubProps> = ({
   const [chapterSearch, setChapterSearch] = useState("");
 
   // Get available subjects for active class/stream
-  const availableSubjectKeys = useMemo(() => {
-    if (selectedClass === "11" || selectedClass === "12") {
-      return STREAM_SUBJECT_ORDERS[selectedClass]?.[selectedStream] || [];
-    }
-    return CLASS_SUBJECT_ORDERS[selectedClass] || [];
+  const availableSubjectSummaries = useMemo(() => {
+    return getSubjectListForClass(selectedClass, selectedStream);
   }, [selectedClass, selectedStream]);
 
+  const availableSubjectKeys = useMemo(() => {
+    return availableSubjectSummaries.map((s) => s.cacheKey);
+  }, [availableSubjectSummaries]);
+
   // Current Subject Data
-  const currentSubject: SubjectData | undefined = STUDYOS_CATALOG[selectedCacheKey];
+  const currentSubject: SubjectData | undefined = getSubject(selectedCacheKey);
 
   // Rendered Groups / Chapters
   const renderedGroups = useMemo(() => {
@@ -188,28 +187,17 @@ export const StudyHub: React.FC<StudyHubProps> = ({
     setIsFlipped(false);
     setBookmarkedList(getBookmarkedPYQs());
 
-    const isBoardClass = selectedClass === "10" || selectedClass === "12";
+    const isBoard = isBoardClass(selectedClass);
 
-    Promise.allSettled([
-      isBoardClass ? fetchPYQs(selectedCacheKey, activeChapter.code) : Promise.resolve(null),
-      fetchChapterKit(selectedCacheKey, activeChapter.code),
-    ])
-      .then(([pyqResult, kitResult]) => {
+    loadChapterStudyBundle(selectedCacheKey, activeChapter.code, isBoard)
+      .then((bundle) => {
         if (!isMounted) return;
-
-        if (pyqResult.status === "fulfilled" && pyqResult.value) {
-          setPyqData(pyqResult.value);
-        } else {
-          setPyqData(null);
+        setPyqData(bundle.pyq);
+        setKitData(bundle.kit);
+        if (bundle.error && !bundle.pyq && !bundle.kit) {
+          setError(bundle.error);
         }
-
-        if (kitResult.status === "fulfilled" && kitResult.value) {
-          setKitData(kitResult.value);
-        } else {
-          setKitData(null);
-        }
-
-        if (!isBoardClass && activeTab === "pyq") {
+        if (!isBoard && activeTab === "pyq") {
           setActiveTab("cheatsheet");
         }
       })
@@ -223,7 +211,7 @@ export const StudyHub: React.FC<StudyHubProps> = ({
     return () => {
       isMounted = false;
     };
-  }, [selectedCacheKey, activeChapter?.code, selectedClass]);
+  }, [selectedCacheKey, activeChapter?.code, selectedClass, activeTab]);
 
   // Filtered PYQ Questions
   const filteredQuestions = useMemo(() => {
@@ -302,7 +290,7 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                   edu://cbse.ncert/pyq-archive
                 </span>
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-mono font-medium text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" /> Live Indexed
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Live Indexed
                 </span>
               </div>
               <h1 className="text-base sm:text-lg font-heading font-semibold tracking-tight text-foreground">
@@ -392,25 +380,23 @@ export const StudyHub: React.FC<StudyHubProps> = ({
           <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mr-1 font-bold">
             Subject:
           </span>
-          {availableSubjectKeys.map((key) => {
-            const subj = STUDYOS_CATALOG[key];
-            if (!subj) return null;
-            const isSelected = selectedCacheKey === key;
+          {availableSubjectSummaries.map((item) => {
+            const isSelected = selectedCacheKey === item.cacheKey;
             return (
               <button
-                key={key}
+                key={item.cacheKey}
                 type="button"
-                onClick={() => setSelectedCacheKey(key)}
+                onClick={() => setSelectedCacheKey(item.cacheKey)}
                 className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs transition-all cursor-pointer whitespace-nowrap ${
                   isSelected
                     ? "bg-foreground text-background font-semibold shadow-xs"
                     : "border border-border/80 bg-card text-muted-foreground hover:text-foreground hover:bg-secondary"
                 }`}
               >
-                <span>{subj.icon}</span>
-                <span>{subj.label}</span>
+                <span>{item.icon}</span>
+                <span>{item.label}</span>
                 <span className="text-[10px] opacity-70 font-mono">
-                  [{getSubjectChapters(subj).length}]
+                  [{item.chapterCount}]
                 </span>
               </button>
             );
@@ -529,7 +515,7 @@ export const StudyHub: React.FC<StudyHubProps> = ({
                 </div>
               ) : !isBoardClass(selectedClass) ? (
                 <div className="flex items-center gap-2 rounded-full border border-border/80 bg-secondary/50 px-4 py-1.5 text-xs font-mono text-muted-foreground">
-                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="h-2 w-2 rounded-full bg-emerald-500" />
                   <span>NCERT Study Kit & Cheatsheet</span>
                 </div>
               ) : null}

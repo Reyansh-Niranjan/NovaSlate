@@ -31,6 +31,7 @@ import os
 from pathlib import Path
 import random
 import re
+import ssl
 import sys
 import tempfile
 import time
@@ -96,6 +97,8 @@ class CatalogueRecord:
     source_method: str = "static_ast_parser"
     verification_status: str = "verified"  # verified, candidate, placeholder, unpublished
     cdn_validated: Optional[bool] = None
+    total_chapters: Optional[int] = None
+    has_prelims: Optional[bool] = None
 
     def to_dict(self) -> Dict[str, Any]:
         res = {
@@ -111,6 +114,10 @@ class CatalogueRecord:
         }
         if self.cdn_validated is not None:
             res["cdn_validated"] = self.cdn_validated
+        if self.total_chapters is not None:
+            res["total_chapters"] = self.total_chapters
+        if self.has_prelims is not None:
+            res["has_prelims"] = self.has_prelims
         return res
 
 
@@ -146,19 +153,8 @@ def atomic_write_json(file_path: Path, data: Any) -> None:
 
 
 def strip_javascript_comments(js_code: str) -> str:
-    """Remove single-line (//) and multi-line (/* ... */) comments from JavaScript code.
-
-    Essential to avoid capturing retired textbook codes commented out by NCERT developers.
-    """
-    # Remove block comments
-    no_block = re.sub(r"/\*.*?\*/", "", js_code, flags=re.DOTALL)
-    # Remove line comments
-    clean_lines = []
-    for line in no_block.splitlines():
-        # Strip everything after // unless inside quotes
-        stripped = re.sub(r"//.*$", "", line)
-        clean_lines.append(stripped)
-    return "\n".join(clean_lines)
+    """Remove single-line (//) and multi-line (/* ... */) comments from JavaScript code in one pass."""
+    return re.sub(r"/\*.*?\*/|//[^\r\n]*", "", js_code, flags=re.DOTALL)
 
 
 def normalize_whitespace(text: str) -> str:
@@ -171,13 +167,21 @@ def normalize_whitespace(text: str) -> str:
 # HTTP & Network Engine
 # -----------------------------------------------------------------------------
 
+def _create_ssl_context() -> ssl.SSLContext:
+    """Create SSL context with fallback for government / NIC intermediate certificates."""
+    try:
+        return ssl.create_default_context()
+    except Exception:
+        return ssl._create_unverified_context()
+
+
 def fetch_url_with_retry(
     url: str,
     max_retries: int = 4,
     backoff_factor: float = 1.5,
     timeout: int = 30,
 ) -> str:
-    """Fetch URL with exponential backoff, jitter, and browser user-agent."""
+    """Fetch URL with exponential backoff, jitter, browser user-agent, and SSL resilience."""
     headers = {
         "User-Agent": USER_AGENT,
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -185,13 +189,27 @@ def fetch_url_with_retry(
         "Connection": "close",
     }
     req = urllib.request.Request(url, headers=headers)
+    ctx = _create_ssl_context()
     
     last_error: Optional[Exception] = None
     for attempt in range(1, max_retries + 1):
         try:
-            with urllib.request.urlopen(req, timeout=timeout) as resp:
+            with urllib.request.urlopen(req, context=ctx, timeout=timeout) as resp:
                 raw_bytes = resp.read()
                 return raw_bytes.decode("utf-8", errors="replace")
+        except urllib.error.URLError as exc:
+            # If SSL certificate verification fails on Windows/Docker due to NIC CA, fall back to unverified
+            if isinstance(getattr(exc, "reason", None), ssl.SSLCertVerificationError) or "CERTIFICATE_VERIFY_FAILED" in str(exc):
+                ctx = ssl._create_unverified_context()
+            last_error = exc
+            if attempt == max_retries:
+                break
+            sleep_duration = (backoff_factor ** attempt) + random.uniform(0.1, 0.5)
+            logger.warning(
+                "Network request to %s failed (attempt %d/%d): %s. Retrying in %.2fs...",
+                url, attempt, max_retries, exc, sleep_duration
+            )
+            time.sleep(sleep_duration)
         except Exception as exc:
             last_error = exc
             if attempt == max_retries:
@@ -221,6 +239,7 @@ def probe_cdn_resource(
         (f"{cdn_base_url}{book_code}ps.pdf", b"%PDF", "pdf"),
         (f"{cdn_base_url}{book_code}01.pdf", b"%PDF", "chapter_pdf"),
     ]
+    ctx = _create_ssl_context()
 
     for target_url, magic_header, kind in targets:
         req = urllib.request.Request(
@@ -232,7 +251,7 @@ def probe_cdn_resource(
             },
         )
         try:
-            with urllib.request.urlopen(req, timeout=timeout) as resp:
+            with urllib.request.urlopen(req, context=ctx, timeout=timeout) as resp:
                 status = resp.status
                 chunk = resp.read(64)
                 if status in (200, 206):
@@ -347,6 +366,9 @@ class NcertParser:
             r"(?:if|else\s+if)\s*\(\s*\(?\s*document\.test\.tclass\.value\s*==\s*(\d+)\s*\)?\s*&&\s*\(?\s*document\.test\.tsubject\.options\[sind\]\.text\s*==\s*\"([^\"]+)\"\s*\)?\s*\)\s*\{([^}]*)\}",
             re.DOTALL,
         )
+        text_pat = re.compile(r'tbook\.options\[(\d+)\]\.text\s*=\s*"([^"]*)"')
+        val_pat = re.compile(r'tbook\.options\[(\d+)\]\.value\s*=\s*"([^"]*)"')
+        code_pat = re.compile(r"textbook\.php\?([a-zA-Z0-9_-]+)(?:=(\d+)-(\d+))?")
 
         for m in branch_pat.finditer(change1_code):
             cls_num, raw_subj, body = m.groups()
@@ -373,9 +395,9 @@ class NcertParser:
             texts: Dict[int, str] = {}
             values: Dict[int, str] = {}
 
-            for m_text in re.finditer(r'tbook\.options\[(\d+)\]\.text\s*=\s*"([^"]*)"', body):
+            for m_text in text_pat.finditer(body):
                 texts[int(m_text.group(1))] = normalize_whitespace(m_text.group(2))
-            for m_val in re.finditer(r'tbook\.options\[(\d+)\]\.value\s*=\s*"([^"]*)"', body):
+            for m_val in val_pat.finditer(body):
                 values[int(m_val.group(1))] = m_val.group(2).strip()
 
             found_any_book = False
@@ -389,8 +411,8 @@ class NcertParser:
 
                 found_any_book = True
 
-                # Extract book code from URL query: e.g. textbook.php?aemr1=0-9
-                code_m = re.search(r"textbook\.php\?([a-zA-Z0-9_-]+)(?:=.*)?", val)
+                # Extract book code and chapter range from URL query: e.g. textbook.php?aemr1=0-9
+                code_m = code_pat.search(val)
                 if not code_m or not code_m.group(1):
                     # Placeholder or unreleased book (e.g. Class IX ICT "Coming Soon")
                     failures.append(
@@ -408,6 +430,10 @@ class NcertParser:
                     continue
 
                 code = code_m.group(1).strip()
+                start_ch = int(code_m.group(2)) if code_m.group(2) else None
+                total_ch = int(code_m.group(3)) if code_m.group(3) else None
+                has_prelims = (start_ch == 0) if start_ch is not None else None
+
                 dedup_key = (cls_label, subj_name, title, code)
                 if dedup_key in seen_keys:
                     continue
@@ -428,6 +454,8 @@ class NcertParser:
                     source_url=self.source_url,
                     source_method="static_ast_parser",
                     verification_status="verified",
+                    total_chapters=total_ch,
+                    has_prelims=has_prelims,
                 )
                 records.append(rec)
 

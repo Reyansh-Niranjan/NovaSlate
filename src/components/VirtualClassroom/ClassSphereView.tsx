@@ -492,7 +492,7 @@ export const ClassSphereView: React.FC = () => {
 
               {/* Watermark Overlay Info */}
               <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-xs text-[11px] font-mono text-white border border-white/10">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
                 <span>Class 10 Physics · Room Alpha</span>
               </div>
 

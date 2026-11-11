@@ -19,7 +19,7 @@ export const Header: React.FC<HeaderProps> = ({
           <img
             src="/novaslate_icon.png"
             alt="NovaSlate"
-            className="w-9 h-9 object-contain transform group-hover:scale-105 transition-transform duration-200"
+            className="w-9 h-9 object-contain"
           />
           <span className="font-bold text-xl tracking-tight hidden sm:inline-block text-[var(--color-heading)] font-['Proxima_Nova','Montserrat',sans-serif]">
             NovaSlate

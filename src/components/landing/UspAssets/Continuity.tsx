@@ -8,88 +8,94 @@ const rr = 5;
 const Kn = 5;
 const or = 1.5;
 const lr = 0.05;
-const SVG_NS = 'http://www.w3.org/2000/svg';
 
 const colors = ['#1883B1', '#2898C7', '#58B0D3', '#88A9B6', '#B2CAD2'];
 
-function fmt(n: number) {
-  return Number(n).toFixed(2);
-}
-
 export const ContinuityAsset: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const svgRef = useRef<SVGSVGElement | null>(null);
-  const gRef = useRef<SVGGElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
     const container = containerRef.current;
-    const svg = svgRef.current;
-    const g = gRef.current;
-    if (!container || !svg || !g) return;
+    const canvas = canvasRef.current;
+    if (!container || !canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
     let width = 0;
     let height = 0;
     let duration = 0;
+    let offsetX = 0;
+    let offsetY = 0;
+    const dpr = window.devicePixelRatio || 1;
 
     const data = {
-      el: [] as SVGRectElement[],
       proxy: [] as { ox: number; oy: number }[],
       x: [] as number[],
       y: [] as number[],
       offsetX: [] as number[],
       offsetY: [] as number[],
+      colors: [] as string[],
     };
 
     const measure = () => {
       const rect = container.getBoundingClientRect();
       width = rect.width;
       height = rect.height;
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+    };
+
+    const render = () => {
+      if (!ctx || !width || !height) return;
+      ctx.save();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.scale(dpr, dpr);
+      ctx.translate(offsetX, offsetY);
+
+      for (let i = 0; i < data.x.length; i++) {
+        const x = data.x[i] + (data.proxy[i]?.ox ?? 0);
+        const y = data.y[i] + (data.proxy[i]?.oy ?? 0);
+        ctx.fillStyle = data.colors[i];
+        ctx.fillRect(x, y, Qn, Qn);
+      }
+      ctx.restore();
     };
 
     const build = () => {
       if (!width || !height) return;
-      g.innerHTML = '';
-      data.el.length = 0;
       data.proxy.length = 0;
       data.x.length = 0;
       data.y.length = 0;
       data.offsetX.length = 0;
       data.offsetY.length = 0;
+      data.colors.length = 0;
 
-      svg.setAttribute('viewBox', `0 0 ${fmt(width)} ${fmt(height)}`);
       const S = Math.max(Math.ceil((width - Qn) / Dt) + 1, Math.ceil((height - Qn) / Dt) + 1);
       const totalSpan = (S - 1) * Dt + Qn;
-      const offsetX = (width - totalSpan) / 2;
-      const offsetY = (height - totalSpan) / 2;
-      g.setAttribute('transform', `translate(${fmt(offsetX)}, ${fmt(offsetY)})`);
+      offsetX = (width - totalSpan) / 2;
+      offsetY = (height - totalSpan) / 2;
 
       for (let v = -rr; v <= S; v++) {
-        const rect = document.createElementNS(SVG_NS, 'rect');
-        rect.setAttribute('x', fmt(v * Dt));
-        rect.setAttribute('y', fmt(v * Dt));
-        rect.setAttribute('width', fmt(Qn));
-        rect.setAttribute('height', fmt(Qn));
         const color = colors[((v % Kn) + Kn) % Kn];
-        rect.setAttribute('fill', color);
-        g.appendChild(rect);
-
-        data.el.push(rect);
         data.proxy.push({ ox: 0, oy: 0 });
         data.x.push(v * Dt);
         data.y.push(v * Dt);
         data.offsetX.push(0);
         data.offsetY.push(0);
+        data.colors.push(color);
       }
 
-      duration = or + (data.el.length - 1) * lr;
+      duration = or + (data.x.length - 1) * lr;
+      render();
     };
 
     const animateStep = () => {
-      const count = data.el.length;
+      const count = data.x.length;
       if (!count) return;
       const R = Dt * rr;
 
-      data.el.forEach((rect, i) => {
+      data.x.forEach((_, i) => {
         const p = data.proxy[i];
         p.ox = data.offsetX[i];
         p.oy = data.offsetY[i];
@@ -106,9 +112,8 @@ export const ContinuityAsset: React.FC = () => {
             if (data.x[i] != null) {
               data.offsetX[i] = p.ox;
               data.offsetY[i] = p.oy;
-              rect.setAttribute('x', fmt(data.x[i] + p.ox));
-              rect.setAttribute('y', fmt(data.y[i] + p.oy));
             }
+            render();
           },
           onComplete() {
             if (data.offsetX[i] != null) {
@@ -150,9 +155,7 @@ export const ContinuityAsset: React.FC = () => {
 
   return (
     <div ref={containerRef} className="b-usp-asset-continuity absolute inset-0 w-full h-full z-[2]" aria-hidden="true">
-      <svg ref={svgRef} className="b__svg block w-full h-full overflow-hidden" xmlns={SVG_NS}>
-        <g ref={gRef} className="b__svg__squares" />
-      </svg>
+      <canvas ref={canvasRef} className="b__svg block w-full h-full overflow-hidden" />
     </div>
   );
 };

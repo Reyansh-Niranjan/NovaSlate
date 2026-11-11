@@ -90,6 +90,17 @@ class TestNcertScraper(unittest.TestCase):
                 f"Invalid book code format: {rec.book_code}",
             )
 
+    def test_chapter_count_and_prelims_extraction(self):
+        """Verify that chapter count and prelims flag are extracted from selection values."""
+        records, _ = self.parser.parse_catalogue()
+        # Find aemr1 (Class I English Mridang -> textbook.php?aemr1=0-9)
+        mridang = next((r for r in records if r.book_code == "aemr1"), None)
+        self.assertIsNotNone(mridang)
+        self.assertEqual(mridang.total_chapters, 9)
+        self.assertTrue(mridang.has_prelims)
+        self.assertIn("total_chapters", mridang.to_dict())
+        self.assertEqual(mridang.to_dict()["total_chapters"], 9)
+
     def test_dual_mapping_edge_case_gsikr1(self):
         """Class VII Arts has Kriti-I in Sindhi and Telugu both mapped to gsikr1."""
         records, _ = self.parser.parse_catalogue()

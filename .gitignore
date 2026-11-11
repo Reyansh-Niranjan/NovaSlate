@@ -46,3 +46,7 @@ graphify-out/
 research/
 .codex/
 scraper/data/
+.arena/
+screenshots/
+checkpoint.json
+failed_combinations.json

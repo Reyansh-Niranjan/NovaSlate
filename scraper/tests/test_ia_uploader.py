@@ -87,6 +87,77 @@ class TestIAUploader(unittest.TestCase):
         finally:
             tmp_path.unlink(missing_ok=True)
 
+    def test_should_upload_sha1_match_and_mismatch(self):
+        """Verifies should_upload skips upload if SHA-1 matches, and triggers upload if SHA-1 differs."""
+        content = b"%PDF-1.4 mock content with deterministic hash"
+        with tempfile.NamedTemporaryFile("wb", suffix=".pdf", delete=False) as tmp:
+            tmp.write(content)
+            tmp_path = Path(tmp.name)
+
+        try:
+            local_sha1 = self.uploader.compute_sha1(tmp_path)
+
+            # Scenario 1: Remote SHA-1 matches local SHA-1 -> SKIP upload
+            self.uploader._remote_files_meta = {
+                "Class 10/Math.pdf": {"size": len(content), "sha1": local_sha1, "md5": ""}
+            }
+            should_up, reason = self.uploader.should_upload(tmp_path, "Class 10/Math.pdf")
+            self.assertFalse(should_up)
+            self.assertIn("SHA-1 match", reason)
+
+            # Scenario 2: Remote SHA-1 differs -> REPLACE on IA
+            self.uploader._remote_files_meta = {
+                "Class 10/Math.pdf": {"size": len(content), "sha1": "different_hash_0000", "md5": ""}
+            }
+            should_up, reason = self.uploader.should_upload(tmp_path, "Class 10/Math.pdf")
+            self.assertTrue(should_up)
+            self.assertIn("SHA-1 mismatch", reason)
+
+            # Scenario 3: File does not exist on IA -> UPLOAD new file
+            should_up, reason = self.uploader.should_upload(tmp_path, "Class 10/NewBook.pdf")
+            self.assertTrue(should_up)
+            self.assertIn("New file", reason)
+        finally:
+            tmp_path.unlink(missing_ok=True)
+
+    @patch("requests.Session.delete")
+    def test_delete_file(self, mock_delete):
+        """Verifies S3 DELETE removes file and updates cache."""
+        resp_204 = MagicMock()
+        resp_204.status_code = 204
+        mock_delete.return_value = resp_204
+
+        self.uploader._remote_files = {"Class 10/OldBook.pdf": 100}
+        self.uploader._remote_files_meta = {"Class 10/OldBook.pdf": {"size": 100}}
+
+        ok = self.uploader.delete_file("Class 10/OldBook.pdf")
+        self.assertTrue(ok)
+        self.assertNotIn("Class 10/OldBook.pdf", self.uploader._remote_files)
+        self.assertNotIn("Class 10/OldBook.pdf", self.uploader._remote_files_meta)
+
+    @patch.object(IAUploader, "delete_file", return_value=True)
+    def test_prune_orphaned_books(self, mock_delete_file):
+        """Verifies orphaned IA files not in the active NCERT catalog are identified and pruned."""
+        mock_catalog = {
+            "Class 10": {
+                "Mathematics": [
+                    {"code": "jemh1", "title": "Mathematics", "class": "Class 10", "subject": "Mathematics"}
+                ]
+            }
+        }
+        # IA has the active Math book AND an old deleted Physics book
+        with patch.object(self.uploader, "fetch_existing_files", return_value={
+            "Class 10/Mathematics/Mathematics.pdf": 5000,
+            "Class 10/Physics/OldDeletedPhysics.pdf": 3000,
+            "catalog.json": 1000,  # Protected
+        }):
+            deleted = self.uploader.prune_orphaned_books(catalog=mock_catalog, dry_run=False)
+
+        self.assertIn("Class 10/Physics/OldDeletedPhysics.pdf", deleted)
+        self.assertNotIn("Class 10/Mathematics/Mathematics.pdf", deleted)
+        self.assertNotIn("catalog.json", deleted)
+        mock_delete_file.assert_called_once_with("Class 10/Physics/OldDeletedPhysics.pdf")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -39,19 +39,19 @@ export const Usps: React.FC = () => {
       const iTl = gsap.timeline({
         scrollTrigger: {
           trigger: el,
-          start: 'top bottom',
+          start: 'top 75%',
           end: 'bottom bottom',
           scrub: 0,
         },
       });
-      iTl.fromTo(header, { y: () => window.innerHeight * 0.25 }, { y: 0, ease: 'power4.out', duration: 2 }, 0);
+      iTl.fromTo(header, { y: () => window.innerHeight * 0.2, opacity: 0 }, { y: 0, opacity: 1, ease: 'power3.out', duration: 1 }, 0);
       iTl.fromTo(header, { scale: 1 }, { scale: 0.85, ease: 'none', duration: f }, 1);
 
       // Card stacking scrub timeline
       const tTl = gsap.timeline({
         scrollTrigger: {
           trigger: list,
-          start: 'top bottom',
+          start: 'top 20%',
           end: 'bottom bottom',
           scrub: 0,
         },

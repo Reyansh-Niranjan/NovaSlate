@@ -6,7 +6,6 @@ import Header from "./components/Header";
 import LandingPage from "./components/landing/LandingPage";
 import { supabase } from "./lib/supabaseClient";
 
-const Login = lazy(() => import("./components/Login"));
 const Dashboard = lazy(() => import("./components/Dashboard"));
 const PrivacyPolicy = lazy(() => import("./components/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./components/TermsOfService"));
@@ -22,17 +21,15 @@ function FullPageLoader() {
   );
 }
 
-type View = "home" | "login" | "dashboard" | "privacy" | "terms";
+type View = "home" | "dashboard" | "privacy" | "terms";
 
 const getViewFromURL = (): View => {
   const { pathname, hash } = window.location;
 
-  if (hash.startsWith("#login")) return "login";
   if (hash.startsWith("#dashboard")) return "dashboard";
   if (hash.startsWith("#privacy")) return "privacy";
   if (hash.startsWith("#terms")) return "terms";
 
-  if (pathname === "/login") return "login";
   if (pathname === "/dashboard") return "dashboard";
   if (pathname === "/privacy") return "privacy";
   if (pathname === "/terms") return "terms";
@@ -57,7 +54,6 @@ export default function App() {
   }, [currentView]);
 
   useEffect(() => {
-
     const handleRouteChange = () => {
       if (window.location.hash.includes("access_token")) {
         const baseHash = window.location.hash.split("#")[1] || "";
@@ -97,9 +93,6 @@ export default function App() {
       if (!isMounted) return;
       if (data.session) {
         setIsLoggedIn(true);
-        if (currentView === "login") {
-          goToDashboard();
-        }
       } else {
         setIsLoggedIn(false);
       }
@@ -114,9 +107,7 @@ export default function App() {
       }
       if (session) {
         setIsLoggedIn(true);
-        if (currentView === "login") {
-          goToDashboard();
-        }
+        goToDashboard();
       }
     });
 
@@ -124,7 +115,7 @@ export default function App() {
       isMounted = false;
       listener.subscription.unsubscribe();
     };
-  }, [currentView]);
+  }, []);
 
   useEffect(() => {
     if (currentView === "privacy" || currentView === "terms") {
@@ -136,30 +127,7 @@ export default function App() {
     <ErrorBoundary>
       <Analytics />
       <div className="min-h-[100dvh] relative bg-background text-foreground">
-        {currentView === "login" ? (
-          <Suspense fallback={<FullPageLoader />}>
-            <Login
-              onCancel={() => {
-                try {
-                  window.history.pushState({}, "", "/");
-                } catch {
-                  // noop
-                }
-                window.location.hash = "";
-                setCurrentView("home");
-              }}
-              onSuccess={() => {
-                try {
-                  window.history.pushState({}, "", "/");
-                } catch {
-                  // noop
-                }
-                window.location.hash = "#dashboard";
-                setCurrentView("dashboard");
-              }}
-            />
-          </Suspense>
-        ) : currentView === "dashboard" ? (
+        {currentView === "dashboard" ? (
           <Suspense fallback={<FullPageLoader />}>
             <Dashboard
               onLogout={() => {
@@ -186,15 +154,6 @@ export default function App() {
         ) : (
           <LandingPage
             isLoggedIn={isLoggedIn}
-            onNavigateToLogin={() => {
-              try {
-                window.history.pushState({}, "", "/#login");
-              } catch {
-                // noop
-              }
-              window.location.hash = "#login";
-              setCurrentView("login");
-            }}
             onNavigateToDashboard={() => {
               try {
                 window.history.pushState({}, "", "/#dashboard");

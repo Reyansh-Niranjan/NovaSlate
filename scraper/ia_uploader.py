@@ -11,13 +11,14 @@ from __future__ import annotations
 import argparse
 import concurrent.futures
 from datetime import datetime, timezone
+import hashlib
 import json
 import logging
 import os
 from pathlib import Path
 import tempfile
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 from urllib.parse import quote
 
 from dotenv import load_dotenv
@@ -61,6 +62,7 @@ class IAUploader:
         )
 
         self._remote_files: Optional[Dict[str, int]] = None
+        self._remote_files_meta: Optional[Dict[str, Dict[str, Any]]] = None
 
         self.session = requests.Session()
         retries = Retry(
@@ -99,6 +101,7 @@ class IAUploader:
             return self._remote_files
 
         collected: Dict[str, int] = {}
+        collected_meta: Dict[str, Dict[str, Any]] = {}
         metadata_url = f"https://archive.org/metadata/{self.bucket_name}/files"
 
         try:
@@ -113,13 +116,180 @@ class IAUploader:
                     except (ValueError, TypeError):
                         size = 0
                     if name:
-                        collected[name.strip("/")] = size
+                        clean_name = name.strip("/")
+                        collected[clean_name] = size
+                        collected_meta[clean_name] = {
+                            "size": size,
+                            "sha1": str(f.get("sha1", "")).lower().strip(),
+                            "md5": str(f.get("md5", "")).lower().strip(),
+                            "mtime": f.get("mtime", ""),
+                            "format": f.get("format", ""),
+                        }
         except Exception as e:
             logger.warning("Could not query Internet Archive metadata files: %s", e)
 
         self._remote_files = collected
+        self._remote_files_meta = collected_meta
         logger.info("Found %d files in Internet Archive item '%s'", len(collected), self.bucket_name)
         return collected
+
+    def get_remote_file_meta(self, remote_path: str) -> Optional[Dict[str, Any]]:
+        """Get cached metadata (size, sha1, md5) for a file on Internet Archive."""
+        clean_path = remote_path.replace("\\", "/").strip("/")
+        if self._remote_files_meta is None:
+            self.fetch_existing_files()
+        return (self._remote_files_meta or {}).get(clean_path)
+
+    @staticmethod
+    def compute_sha1(file_path: Path) -> str:
+        """Compute SHA-1 hash of a local file (matches Internet Archive's native sha1 metadata)."""
+        h = hashlib.sha1()
+        with open(file_path, "rb") as f:
+            for chunk in iter(lambda: f.read(131072), b""):
+                h.update(chunk)
+        return h.hexdigest().lower()
+
+    @staticmethod
+    def compute_sha256(file_path: Path) -> str:
+        """Compute SHA-256 hash of a local file."""
+        h = hashlib.sha256()
+        with open(file_path, "rb") as f:
+            for chunk in iter(lambda: f.read(131072), b""):
+                h.update(chunk)
+        return h.hexdigest().lower()
+
+    def should_upload(self, local_path: Path, remote_path: str) -> Tuple[bool, str]:
+        """Determine if local file needs uploading to IA by checking existence and SHA-1 checksum.
+
+        Returns (True, reason) if file is new or modified.
+        Returns (False, reason) if file is already on IA with identical SHA-1 hash.
+        """
+        local_path = Path(local_path)
+        if not local_path.exists():
+            return False, "Local file missing"
+
+        clean_path = remote_path.replace("\\", "/").strip("/")
+        remote_meta = self.get_remote_file_meta(clean_path)
+
+        if not remote_meta:
+            return True, "New file (not on IA)"
+
+        remote_size = remote_meta.get("size", 0)
+        local_size = local_path.stat().st_size
+
+        remote_sha1 = remote_meta.get("sha1")
+        if remote_sha1:
+            local_sha1 = self.compute_sha1(local_path)
+            if local_sha1 == remote_sha1:
+                return False, f"SHA-1 match ({local_sha1[:8]}...)"
+            return True, f"SHA-1 mismatch (local={local_sha1[:8]} != remote={remote_sha1[:8]})"
+
+        # Fallback to size check if SHA-1 is unavailable
+        if remote_size > 0 and remote_size == local_size:
+            return False, "Size match"
+        return True, f"Size mismatch (local={local_size} != remote={remote_size})"
+
+    def delete_file(self, remote_path: str, max_retries: int = 3) -> bool:
+        """Delete file from Internet Archive S3 (IAS3) storage.
+
+        Sends HTTP DELETE to https://s3.us.archive.org/{bucket}/{key}.
+        """
+        if not self.is_ia_configured():
+            logger.error("Cannot delete: Internet Archive credentials missing.")
+            return False
+
+        clean_remote_path = remote_path.replace("\\", "/").strip("/")
+        safe_encoded_path = "/".join(quote(seg, safe="()-_.!~*'()") for seg in clean_remote_path.split("/"))
+        api_url = f"https://s3.us.archive.org/{self.bucket_name}/{safe_encoded_path}"
+        headers = {"Authorization": self._ia_auth_header()}
+
+        for attempt in range(1, max_retries + 1):
+            try:
+                resp = self.session.delete(
+                    api_url,
+                    headers=headers,
+                    timeout=60,
+                    allow_redirects=True,
+                )
+                if resp.status_code in (200, 204, 404):
+                    if self._remote_files is not None:
+                        self._remote_files.pop(clean_remote_path, None)
+                    if self._remote_files_meta is not None:
+                        self._remote_files_meta.pop(clean_remote_path, None)
+                    logger.info("Deleted from Internet Archive: %s", clean_remote_path)
+                    return True
+
+                logger.warning(
+                    "IAS3 delete attempt %d for '%s' returned HTTP %d: %s",
+                    attempt, clean_remote_path, resp.status_code, resp.text[:120]
+                )
+                time.sleep(2 * attempt)
+            except Exception as e:
+                logger.warning("IAS3 delete attempt %d for '%s' failed: %s", attempt, clean_remote_path, e)
+                time.sleep(2 * attempt)
+
+        logger.error("Failed to delete '%s' from Internet Archive after %d attempts.", clean_remote_path, max_retries)
+        return False
+
+    def prune_orphaned_books(
+        self,
+        catalog: Optional[Dict[str, Any]] = None,
+        dry_run: bool = False,
+    ) -> List[str]:
+        """Identify and delete remote files on Internet Archive that no longer exist in NCERT catalog.
+
+        Scans IA items under Class */ and compares against active books in catalog.
+        Protected root files (catalog.json, metadata files) are preserved.
+        """
+        if catalog is None:
+            catalog = fetch_catalog()
+
+        # Build set of all expected remote paths from current active NCERT catalog
+        active_remote_paths: Set[str] = set()
+        active_codes: Set[str] = set()
+
+        for cls_name, subj_name, book in iter_books(catalog):
+            code = book.get("code", "").lower().strip()
+            title = book.get("title", "").strip()
+            c_num = normalize_class_key(cls_name)
+            class_folder = f"Class {c_num}" if c_num.isdigit() else cls_name
+
+            active_codes.add(code)
+            # Both .pdf and .zip path variants
+            active_remote_paths.add(f"{class_folder}/{subj_name}/{title}.pdf")
+            active_remote_paths.add(f"{class_folder}/{subj_name}/{title}.zip")
+
+        remote_files = self.fetch_existing_files(refresh=True)
+        orphaned: List[str] = []
+
+        # System and root files to protect from pruning
+        protected_prefixes = ("catalog.json", "__ia_thumb", "novaslate_icon")
+
+        for r_path in remote_files.keys():
+            if any(r_path.startswith(p) for p in protected_prefixes):
+                continue
+            # Only prune textbook files under Class directories
+            if not r_path.lower().startswith("class"):
+                continue
+
+            if r_path not in active_remote_paths:
+                # Also check by code in filename in case title was sanitized differently
+                code_matched = any(c in r_path.lower() for c in active_codes if len(c) >= 4)
+                if not code_matched:
+                    orphaned.append(r_path)
+
+        logger.info("Found %d orphaned files on Internet Archive to prune", len(orphaned))
+
+        deleted: List[str] = []
+        for path_to_del in orphaned:
+            if dry_run:
+                logger.info("[DRY-RUN] Would delete orphaned file: %s", path_to_del)
+                deleted.append(path_to_del)
+            else:
+                if self.delete_file(path_to_del):
+                    deleted.append(path_to_del)
+
+        return deleted
 
     def exists(self, remote_path: str) -> bool:
         """Check if file exists in Internet Archive item with non-zero size."""

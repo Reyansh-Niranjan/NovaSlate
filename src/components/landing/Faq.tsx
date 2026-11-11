@@ -13,7 +13,7 @@ export const Faq: React.FC<FaqProps> = ({ onOpenContact: _onOpenContact }) => {
   };
 
   return (
-    <section className="s-faq u-container relative z-10 bg-[var(--color-bg)] py-16 sm:py-24">
+    <section className="s-faq u-container relative z-[1] bg-[var(--color-bg)] py-16 sm:py-24">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="t-h-lg text-[var(--color-heading)] font-heading mb-3">
@@ -41,9 +41,11 @@ export const Faq: React.FC<FaqProps> = ({ onOpenContact: _onOpenContact }) => {
                 }`}
               >
                 <button
+                  id={`faq-question-${idx}`}
                   type="button"
                   className="w-full flex items-center justify-between text-left group cursor-pointer bg-transparent border-0 p-0"
                   aria-expanded={isOpen}
+                  aria-controls={`faq-answer-${idx}`}
                   onClick={() => toggle(idx)}
                 >
                   <span className="text-base sm:text-lg font-heading font-medium text-[var(--color-heading)] group-hover:text-[var(--color-primary)] transition-colors pr-4">
@@ -60,14 +62,16 @@ export const Faq: React.FC<FaqProps> = ({ onOpenContact: _onOpenContact }) => {
                   </span>
                 </button>
                 <div
+                  id={`faq-answer-${idx}`}
+                  role="region"
+                  aria-labelledby={`faq-question-${idx}`}
+                  hidden={!isOpen}
                   className="grid transition-[grid-template-rows] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
                   style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
                 >
                   <div className="overflow-hidden">
                     <div
-                      className={`pt-3 pl-3 border-l-2 border-[var(--color-primary)]/40 text-sm text-[var(--color-gray-dark)] leading-relaxed pr-6 mt-1 transition-all duration-200 ease-out motion-reduce:transition-none ${
-                        isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
-                      }`}
+                      className="pt-3 pl-3 border-l-2 border-[var(--color-primary)]/40 text-sm text-[var(--color-gray-dark)] leading-relaxed pr-6 mt-1"
                       dangerouslySetInnerHTML={{ __html: item.answer }}
                     />
                   </div>

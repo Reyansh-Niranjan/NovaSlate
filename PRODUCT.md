@@ -8,7 +8,7 @@ web
 
 ## Users
 
-**Primary:** Indian K-12 students (Class 1–12) who need organized, accessible textbooks and educational materials for their specific grade and subject.
+**Primary:** Indian school learners across Classes 1 through 12 who need structured, accessible textbooks for their specific grade and subject.
 
 **Secondary:** Teachers and tutoring-center educators who browse cross-grade content, download materials for classroom use, and track platform updates.
 
@@ -16,7 +16,7 @@ web
 
 ## Product Purpose
 
-NovaSlate is an automated curriculum curation platform. It scrapes, grades, organizes, and delivers educational resources so students and educators can access quality materials from a single place instead of hunting across dozens of websites. Success means a student can find, open, and study their textbook in seconds — on any device, even with limited connectivity.
+NovaSlate is an automated curriculum curation platform. It indexes textbook archives and organizes them by grade and subject, giving learners direct access without searching across disparate portals. A student can open and read their textbook in seconds on any device, even with low bandwidth.
 
 ## Positioning
 
@@ -35,8 +35,8 @@ The full end-to-end pipeline: automated scraping → readability grading → cur
 
 **Confirmed capabilities:**
 - Grade-based digital library (Class 1–12) with subject hierarchy
-- In-browser PDF viewer with navigation, zoom, and download
-- Study Hub with board exam PYQs, interactive MCQ quizzes, chapter mindmaps, flashcards, cheatsheets, and revision notes
+- In-browser PDF reader with zoom controls and offline download
+- Study Hub with board exam question archives, chapter mindmaps, and revision notes
 - Multi-engine PDF compression pipeline with automated watermark removal
 - Role-based access (Student, Teacher, Admin)
 - Dark/light theme toggle

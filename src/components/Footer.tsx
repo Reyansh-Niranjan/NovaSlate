@@ -183,7 +183,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Sub-Bar */}
-        <div className="pt-8 sm:pt-10 mt-8 sm:mt-10 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-muted-foreground font-mono text-[11px]">
+        <div className="pt-8 sm:pt-10 mt-8 sm:mt-10 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-muted-foreground font-mono text-xs">
           <div>
             © {currentYear} NovaSlate. Solo-Architected &amp; Engineered by{" "}
             <a

@@ -1,0 +1,244 @@
+/* ═══════════════════════════════════════════════════════════
+   Reverse-Engineered incredibles.dev SModal Architecture & Styles
+   Direct 1:1 reproduction of .s-modal, .s__outer, .s__inner,
+   .s__scroller, .s__overlay, .s__close, and .b-form layout.
+   ═══════════════════════════════════════════════════════════ */
+
+.s-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 100%;
+  height: 100lvh;
+  height: 100dvh;
+  opacity: 0;
+  overflow: hidden;
+  visibility: hidden;
+  overscroll-behavior: contain;
+}
+
+.s-modal.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Outer Shell (Host for the GSAP bottom-slit clip-path expansion) */
+.s-modal .s__outer {
+  position: relative;
+  z-index: 2;
+  padding: 1.5rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom));
+  width: 100%;
+  height: 100%;
+  background: var(--color-white-dark, #fafafa);
+  will-change: clip-path;
+}
+
+@media only screen and (max-width: 1080px) {
+  .s-modal .s__outer {
+    padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom));
+  }
+}
+
+@media only screen and (max-width: 987px) {
+  .s-modal .s__outer {
+    padding: 0;
+  }
+}
+
+/* Inner Shell (Host for scale & translate drop on close) */
+.s-modal .s__inner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  background: var(--color-white-dark, #fafafa);
+}
+
+@media only screen and (max-width: 1080px) {
+  .s-modal .s__inner {
+    border-radius: 1rem;
+  }
+}
+
+@media only screen and (max-width: 987px) {
+  .s-modal .s__inner {
+    border-radius: 0;
+    align-items: stretch;
+  }
+}
+
+/* Scroller Area (Centers content with internal scroll) */
+.s-modal .s__scroller {
+  margin: auto 0;
+  padding: 2.5rem 1.5rem;
+  width: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+
+.s-modal .s__scroller::-webkit-scrollbar {
+  display: none;
+}
+
+@media only screen and (max-width: 1080px) {
+  .s-modal .s__scroller {
+    padding: 1.5rem 1rem;
+  }
+}
+
+@media only screen and (max-width: 987px) {
+  .s-modal .s__scroller {
+    padding: 3.5rem 1.25rem 2rem;
+  }
+}
+
+/* Backdrop Overlay */
+.s-modal .s__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background-color: rgba(20, 20, 20, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  cursor: pointer;
+}
+
+@media only screen and (max-width: 1080px) {
+  .s-modal .s__overlay {
+    background-color: rgba(20, 20, 20, 0.6);
+  }
+}
+
+/* Close Button Placement */
+.s-modal .s__close {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  z-index: 30;
+  cursor: pointer;
+}
+
+@media only screen and (max-width: 1080px) {
+  .s-modal .s__close {
+    top: 1.25rem;
+    right: 1.25rem;
+  }
+}
+
+@media only screen and (max-width: 576px) {
+  .s-modal .s__close {
+    top: 1rem;
+    right: 1rem;
+  }
+}
+
+/* Fluid Canvas Background */
+.s-modal .s__fluid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+/* Modal Internal Split Layout (b-form) */
+.s-modal .b-form__core {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 3.5rem;
+  width: 100%;
+  max-width: 68rem;
+  margin: 0 auto;
+}
+
+@media only screen and (max-width: 1200px) {
+  .s-modal .b-form__core {
+    gap: 2rem;
+    max-width: 58rem;
+  }
+}
+
+@media only screen and (max-width: 987px) {
+  .s-modal .b-form__core {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.5rem;
+    max-width: 100%;
+  }
+}
+
+.s-modal .b-form__left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex: 0 0 22rem;
+  gap: 1.5rem;
+  will-change: clip-path, transform;
+}
+
+@media only screen and (max-width: 1200px) {
+  .s-modal .b-form__left {
+    flex: 0 0 17rem;
+  }
+}
+
+@media only screen and (max-width: 987px) {
+  .s-modal .b-form__left {
+    flex: 0 0 auto;
+    width: 100%;
+    gap: 1rem;
+  }
+}
+
+.s-modal .b-form__right {
+  flex: 1 1 34rem;
+  max-width: 38rem;
+  min-width: 0;
+  will-change: clip-path, transform;
+}
+
+@media only screen and (max-width: 987px) {
+  .s-modal .b-form__right {
+    flex: 0 0 auto;
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+/* White Elevated Form Card */
+.s-modal .u-white-box {
+  padding: 2.75rem;
+  background-color: var(--color-white, #ffffff);
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 45px -12px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--color-gray-lighter, #dedede);
+}
+
+@media only screen and (max-width: 1080px) {
+  .s-modal .u-white-box {
+    padding: 2rem;
+    border-radius: 1.25rem;
+  }
+}
+
+@media only screen and (max-width: 576px) {
+  .s-modal .u-white-box {
+    padding: 1.5rem;
+    border-radius: 1rem;
+  }
+}

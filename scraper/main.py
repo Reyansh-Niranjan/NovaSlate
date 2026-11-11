@@ -155,6 +155,11 @@ def main():
         help="Generate and synchronize authoritative catalog.json to Internet Archive root without downloading",
     )
     parser.add_argument(
+        "--prune-deleted",
+        action="store_true",
+        help="Prune orphaned books and archives from Internet Archive that no longer exist in NCERT",
+    )
+    parser.add_argument(
         "--bucket",
         default=None,
         help="Target Internet Archive item identifier (default: novaslate-ncert-library)",
@@ -170,7 +175,7 @@ def main():
     setup_logger(args.verbose)
 
     uploader: Optional[IAUploader] = None
-    if args.upload_to_ia or args.sync_catalog:
+    if args.upload_to_ia or args.sync_catalog or args.prune_deleted:
         uploader = IAUploader(bucket_name=args.bucket)
         if not uploader.is_ia_configured() and not args.dry_run:
             console.print(
@@ -179,6 +184,16 @@ def main():
             )
             return 1
         console.print(f"[green]✓ Internet Archive S3 uploader initialized for item '{uploader.bucket_name}'.[/green]")
+
+    if args.prune_deleted and uploader:
+        console.print(f"\n[bold yellow]Auditing Internet Archive item '{uploader.bucket_name}' for retired/deleted NCERT books...[/bold yellow]")
+        pruned_files = uploader.prune_orphaned_books(dry_run=args.dry_run)
+        if pruned_files:
+            console.print(f"[bold red]✓ Pruned {len(pruned_files)} deleted books from Internet Archive.[/bold red]")
+        else:
+            console.print("[bold green]✓ Internet Archive item is in sync. No orphaned books found.[/bold green]")
+        if not args.sync_catalog and not args.upload_to_ia:
+            return 0
 
     if args.sync_catalog:
         console.print(f"\n[bold yellow]Synchronizing verified NCERT catalog.json to Internet Archive item '{uploader.bucket_name}'...[/bold yellow]")
@@ -302,17 +317,19 @@ def main():
                     jpeg_quality=args.quality,
                 )
 
-            # Upload to Internet Archive
+            # Upload to Internet Archive with smart SHA verification
             if args.upload_to_ia and uploader:
                 remote_pdf_path = f"{class_folder}/{subj_name}/{book['title']}.pdf"
-                if uploader.exists(remote_pdf_path):
+                target_upload = pdf_path if (pdf_path.exists() and pdf_path.stat().st_size > 0) else zip_path
+                content_type = "application/pdf" if target_upload.suffix.lower() == ".pdf" else "application/zip"
+                remote_target_path = remote_pdf_path if target_upload.suffix.lower() == ".pdf" else f"{class_folder}/{subj_name}/{book['title']}.zip"
+
+                should_up, reason = uploader.should_upload(target_upload, remote_target_path)
+                if not should_up:
                     already_on_ia_count += 1
-                    console.print(f"[dim]Already on IA: {remote_pdf_path}[/dim]")
+                    console.print(f"[dim]Unchanged on IA ({reason}): {remote_target_path}[/dim]")
                 else:
-                    target_upload = pdf_path if (pdf_path.exists() and pdf_path.stat().st_size > 0) else zip_path
-                    content_type = "application/pdf" if target_upload.suffix.lower() == ".pdf" else "application/zip"
-                    remote_target_path = remote_pdf_path if target_upload.suffix.lower() == ".pdf" else f"{class_folder}/{subj_name}/{book['title']}.zip"
-                    console.print(f"[*] Uploading to IA: {remote_target_path} ({target_upload.stat().st_size} bytes)...")
+                    console.print(f"[*] Uploading to IA ({reason}): {remote_target_path} ({target_upload.stat().st_size} bytes)...")
                     ok = uploader.upload_file(target_upload, remote_target_path, content_type=content_type)
                     if ok:
                         uploaded_count += 1

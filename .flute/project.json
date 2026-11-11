@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "projectId": "6754efc0-3214-402d-b681-adfcd79d2a3b",
+  "entry": "src/flute/ProjectPreview.jsx",
+  "packageManager": "npm",
+  "adapter": "react"
+}

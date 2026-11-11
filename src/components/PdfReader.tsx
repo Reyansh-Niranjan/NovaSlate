@@ -22,15 +22,22 @@ import {
 } from "lucide-react";
 import * as pdfjsLib from "pdfjs-dist";
 import {
-  findChaptersForBook,
-  fetchPYQs,
-  fetchChapterKit,
-} from "../lib/studyos";
-import { isBoardClass } from "../lib/studyosCatalog";
-import type {
-  PYQResponse,
-  ChapterKitData,
-} from "../lib/studyos";
+  calculateFitWidthScale,
+  clampScale,
+  clampPage,
+  cycleReadingTheme,
+  RenderQueue,
+  type ReadingTheme,
+} from "../lib/readingEngine";
+import {
+  resolveBookMatch,
+  isBoardClass,
+} from "../lib/curriculumCatalog";
+import {
+  loadChapterStudyBundle,
+  type PYQResponse,
+  type ChapterKitData,
+} from "../lib/studyKitStore";
 
 // Configure PDF.js worker with matching version
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
@@ -44,7 +51,6 @@ interface PdfReaderProps {
   subject?: string;
 }
 
-type ReadingTheme = "light" | "dark" | "sepia" | "charcoal";
 
 export const PdfReader: React.FC<PdfReaderProps> = ({
   isOpen,
@@ -79,7 +85,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mainViewportRef = useRef<HTMLElement | null>(null);
-  const renderTaskRef = useRef<any>(null);
+  const renderQueueRef = useRef<RenderQueue>(new RenderQueue());
 
   // Fit to Width Handler
   const handleFitToWidth = useCallback(async () => {
@@ -88,12 +94,9 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
       const page = await pdfDoc.getPage(currentPage);
       const viewport = page.getViewport({ scale: 1.0, rotation });
       const isMobile = window.innerWidth < 640;
-      const padding = isMobile ? 12 : 48;
-      const availableWidth = mainViewportRef.current.clientWidth - padding;
-      if (availableWidth > 0 && viewport.width > 0) {
-        const calculatedScale = Math.min(Math.max(availableWidth / viewport.width, 0.4), 3.0);
-        setScale(parseFloat(calculatedScale.toFixed(2)));
-      }
+      const availableWidth = mainViewportRef.current.clientWidth;
+      const newScale = calculateFitWidthScale(viewport.width, availableWidth, isMobile);
+      setScale(newScale);
     } catch (e) {
       console.warn("Fit to width error:", e);
     }
@@ -168,9 +171,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
       if (!pdfDoc || !canvasRef.current) return;
 
       try {
-        if (renderTaskRef.current) {
-          renderTaskRef.current.cancel();
-        }
+        renderQueueRef.current.cancelActive();
 
         const page = await pdfDoc.getPage(pageNum);
         const canvas = canvasRef.current;
@@ -194,11 +195,11 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
         };
 
         const renderTask = page.render(renderContext);
-        renderTaskRef.current = renderTask;
+        renderQueueRef.current.setActive(renderTask);
 
         await renderTask.promise;
       } catch (err: any) {
-        if (err.name !== "RenderingCancelledException") {
+        if (!renderQueueRef.current.isCancelledError(err)) {
           console.error("PDF render error:", err);
         }
       }
@@ -218,15 +219,11 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
 
   // Navigation handlers
   const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage((prev) => prev - 1);
-    }
+    setCurrentPage((prev) => clampPage(prev - 1, numPages));
   };
 
   const handleNextPage = () => {
-    if (currentPage < numPages) {
-      setCurrentPage((prev) => prev + 1);
-    }
+    setCurrentPage((prev) => clampPage(prev + 1, numPages));
   };
 
   const handlePageJump = (e: React.FormEvent) => {
@@ -239,8 +236,8 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
     }
   };
 
-  const handleZoomIn = () => setScale((prev) => Math.min(parseFloat((prev + 0.15).toFixed(2)), 3.0));
-  const handleZoomOut = () => setScale((prev) => Math.max(parseFloat((prev - 0.15).toFixed(2)), 0.4));
+  const handleZoomIn = () => setScale((prev) => clampScale(prev + 0.15));
+  const handleZoomOut = () => setScale((prev) => clampScale(prev - 0.15));
   const handleRotate = () => setRotation((prev) => (prev + 90) % 360);
 
   const toggleFullscreen = () => {
@@ -256,7 +253,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
 
   // Keyboard navigation
   const resolvedContext = useMemo(() => {
-    return findChaptersForBook(title, className, subject);
+    return resolveBookMatch(title, className, subject);
   }, [title, className, subject]);
 
   const isBoard = isBoardClass(className || "");
@@ -271,13 +268,10 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
       setStudyPanelTab("cheatsheet");
     }
 
-    Promise.allSettled([
-      isBoard ? fetchPYQs(cacheKey, chapterCode) : Promise.resolve(null),
-      fetchChapterKit(cacheKey, chapterCode),
-    ])
-      .then(([pyqRes, kitRes]) => {
-        if (pyqRes.status === "fulfilled" && pyqRes.value) setStudyPYQ(pyqRes.value);
-        if (kitRes.status === "fulfilled" && kitRes.value) setStudyKit(kitRes.value);
+    loadChapterStudyBundle(cacheKey, chapterCode, isBoard)
+      .then((bundle) => {
+        if (bundle.pyq) setStudyPYQ(bundle.pyq);
+        if (bundle.kit) setStudyKit(bundle.kit);
       })
       .finally(() => {
         setStudyLoading(false);
@@ -305,12 +299,7 @@ export const PdfReader: React.FC<PdfReaderProps> = ({
       } else if (e.key === "f" || e.key === "F") {
         toggleFullscreen();
       } else if (e.key === "t" || e.key === "T") {
-        setReadingTheme((prev) => {
-          if (prev === "dark") return "sepia";
-          if (prev === "sepia") return "charcoal";
-          if (prev === "charcoal") return "light";
-          return "dark";
-        });
+        setReadingTheme((prev) => cycleReadingTheme(prev));
       } else if (e.key === "?") {
         setShowShortcuts((prev) => !prev);
       }

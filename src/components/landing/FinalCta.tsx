@@ -7,7 +7,7 @@ interface FinalCtaProps {
 
 export const FinalCta: React.FC<FinalCtaProps> = () => {
   return (
-    <section className="s-final-cta relative z-10 bg-[var(--color-bg)]">
+    <section className="s-final-cta relative z-[1] bg-[var(--color-bg)]">
       <div className="u-container">
         <div className="s-final-cta__card relative overflow-hidden border-2 border-[var(--color-primary)]/25 bg-[var(--color-white-darker)] shadow-xs">
           {/* Static Dithered Hero Pattern Layer with Architectural Tint */}

@@ -20,19 +20,17 @@ import {
   BookCheck,
 } from "lucide-react";
 import * as pdfjsLib from "pdfjs-dist";
-import { findChaptersForBook } from "../lib/studyos";
-import { isBoardClass } from "../lib/studyosCatalog";
+import {
+  resolveBookMatch,
+  isBoardClass,
+  getInternetArchiveUrl,
+  IA_BUCKET,
+} from "../lib/curriculumCatalog";
+
+export { IA_BUCKET, getInternetArchiveUrl };
 
 // Configure PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
-
-export const IA_BUCKET = "novaslate-ncert-library";
-
-export function getInternetArchiveUrl(fullPath: string): string {
-  const clean = fullPath.replace(/\\/g, "/").replace(/^\/+/, "");
-  const safe = clean.split("/").map((seg) => encodeURIComponent(seg)).join("/");
-  return `https://archive.org/download/${IA_BUCKET}/${safe}`;
-}
 
 export interface StorageItem {
   name: string;
@@ -587,7 +585,7 @@ export const NestedLibrary: React.FC<NestedLibraryProps> = ({
                         <button
                           type="button"
                           onClick={() => {
-                            const match = findChaptersForBook(book.title, book.className, book.subjectName);
+                            const match = resolveBookMatch(book.title, book.className, book.subjectName);
                             onOpenStudyHub(
                               book.className.replace(/\D/g, ""),
                               match?.subject.cacheKey,
@@ -632,7 +630,7 @@ export const NestedLibrary: React.FC<NestedLibraryProps> = ({
                         <button
                           type="button"
                           onClick={() => {
-                            const match = findChaptersForBook(book.title, book.className, book.subjectName);
+                            const match = resolveBookMatch(book.title, book.className, book.subjectName);
                             onOpenStudyHub(
                               book.className.replace(/\D/g, ""),
                               match?.subject.cacheKey,
@@ -742,7 +740,7 @@ export const NestedLibrary: React.FC<NestedLibraryProps> = ({
                       : "border border-border/80 bg-card text-muted-foreground hover:bg-secondary hover:text-foreground"
                   }`}
                 >
-                  {isAccountClass && <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />}
+                  {isAccountClass && <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />}
                   <span>{cls.name}</span>
                   <span className="opacity-70 font-mono">({cls.totalBooks})</span>
                 </button>
@@ -962,7 +960,7 @@ export const NestedLibrary: React.FC<NestedLibraryProps> = ({
                           <button
                             type="button"
                             onClick={() => {
-                              const match = findChaptersForBook(book.title, book.className, book.subjectName);
+                              const match = resolveBookMatch(book.title, book.className, book.subjectName);
                               onOpenStudyHub(
                                 book.className.replace(/\D/g, ""),
                                 match?.subject.cacheKey,
@@ -1005,7 +1003,7 @@ export const NestedLibrary: React.FC<NestedLibraryProps> = ({
                           <button
                             type="button"
                             onClick={() => {
-                              const match = findChaptersForBook(book.title, book.className, book.subjectName);
+                              const match = resolveBookMatch(book.title, book.className, book.subjectName);
                               onOpenStudyHub(
                                 book.className.replace(/\D/g, ""),
                                 match?.subject.cacheKey,
